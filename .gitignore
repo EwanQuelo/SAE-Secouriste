@@ -1,7 +1,7 @@
 .vscode/
-
-.DS_Store
-
 target/
 
+.DS_Store
 DAO.java
+dependency-reduced-pom.xml
+out.txt
