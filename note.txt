@@ -1,0 +1,4 @@
+Chose pas terribe :
+
+- Le dao oblige renvoie de nombre de ligne affecter mais je l'utilise pour recup l'id crée par auto increment 
+- Pas de datepicker/form, pour l'instant dateNaissance =  date du jour
