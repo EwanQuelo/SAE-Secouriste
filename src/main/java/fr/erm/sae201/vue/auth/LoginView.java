@@ -7,6 +7,10 @@ import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
+import javafx.util.Duration;
+
+import org.controlsfx.control.Notifications;
+
 import fr.erm.sae201.utils.RessourceLoader;
 
 public class LoginView {
@@ -60,7 +64,7 @@ public class LoginView {
         signupButton = new Button("Inscription");
         signupButton.getStyleClass().add("signup-button");
         signupButton.setMaxWidth(Double.MAX_VALUE);
-
+        
         loginBox.getChildren().addAll(
                 titleLabel,
                 emailField,
@@ -82,6 +86,16 @@ public class LoginView {
         rootPane.getChildren().add(mainContent);
         StackPane.setAlignment(mainContent, Pos.CENTER);
         // --- Fin de la Section Commune ---
+    }
+
+    public void sendNotif() {
+        Notifications.create()
+            .title("Application SECOURS")
+            .text("ControlsFX est correctement intégré !")
+            .hideAfter(Duration.seconds(3))
+            .position(Pos.BOTTOM_RIGHT)
+            .showInformation();
+            
     }
 
     // Getters pour le contrôleur

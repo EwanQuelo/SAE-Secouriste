@@ -1,0 +1,107 @@
+/*******************************************************************************
+ *
+ * Style général pour toutes les notifications de ControlFX
+ * Basé sur des sélecteurs validés.
+ *
+ ******************************************************************************/
+
+/* Style de base pour le conteneur de la notification */
+.notification-bar > .pane {
+    -fx-background-color: white;
+    -fx-background-insets: 0;
+    -fx-border-color: #a0a0a0;
+    -fx-border-width: 1px;
+    -fx-border-radius: 5px;
+    -fx-background-radius: 5px;
+    -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.2), 10, 0, 0, 5);
+}
+
+/* Style de base pour le titre */
+.notification-bar > .pane .title {
+    -fx-font-size: 1.1em; /* 14px environ */
+    -fx-font-weight: bold;
+    -fx-text-fill: #333333;
+}
+
+/* Style de base pour le texte du message (utilise le sélecteur correct) */
+.notification-bar > .pane .label {
+    -fx-font-size: 1em; /* 12px environ */
+    -fx-text-fill: #555555;
+    -fx-alignment: top-left;
+}
+
+
+/*******************************************************************************
+ *
+ * Styles spécifiques par type de notification (Succès, Avertissement, Erreur)
+ *
+ ******************************************************************************/
+
+/* --- Style pour les notifications de SUCCÈS (type 'info') --- */
+.notification-bar.info > .pane {
+    -fx-background-color: #d4edda; /* Vert clair */
+    -fx-border-color: #5cb85c;     /* Vert plus foncé */
+}
+.notification-bar.info > .pane .title {
+    -fx-text-fill: #155724; /* Vert très foncé pour le titre */
+}
+.notification-bar.info > .pane .label {
+    -fx-text-fill: #155724; /* Vert très foncé pour le message */
+}
+
+
+/* --- Style pour les notifications d'AVERTISSEMENT (type 'warning') --- */
+.notification-bar.warning > .pane {
+    -fx-background-color: #fff3cd; /* Jaune clair */
+    -fx-border-color: #f0ad4e;     /* Orange/jaune plus foncé */
+}
+.notification-bar.warning > .pane .title {
+    -fx-text-fill: #856404; /* Jaune/marron foncé */
+}
+.notification-bar.warning > .pane .label {
+    -fx-text-fill: #856404; /* Jaune/marron foncé */
+}
+
+
+/* --- Style pour les notifications d'ERREUR (type 'error') --- */
+.notification-bar.error > .pane {
+    -fx-background-color: #f8d7da; /* Rouge clair */
+    -fx-border-color: #d9534f;     /* Rouge plus foncé */
+}
+.notification-bar.error > .pane .title {
+    -fx-text-fill: #721c24; /* Rouge très foncé */
+}
+.notification-bar.error > .pane .label {
+    -fx-text-fill: #721c24; /* Rouge très foncé */
+}
+
+
+/*******************************************************************************
+ *
+ * Style pour le bouton de fermeture
+ *
+ ******************************************************************************/
+
+.notification-bar > .pane .close-button {
+    -fx-background-color: transparent;
+    -fx-background-insets: 0;
+    -fx-background-radius: 0;
+    -fx-cursor: hand;
+}
+.notification-bar > .pane .close-button:hover {
+    -fx-background-color: rgba(0,0,0,0.1);
+}
+.notification-bar > .pane .close-button:pressed {
+    -fx-background-color: rgba(0,0,0,0.2);
+}
+
+/* La croix du bouton de fermeture */
+.notification-bar > .pane .close-button > .graphic {
+    -fx-background-color: #666666; /* Couleur de la croix */
+    -fx-scale-shape: false;
+    -fx-padding: 4.5 4.5 4.5 4.5;
+     -fx-shape: "M395.992,296.758l1.794-1.794l7.292,7.292l-1.795,1.794 L395.992,296.758z M403.256,294.992l1.794,1.794l-7.292,7.292l-1.794-1.795 L403.256,294.992z";
+}
+.notification-bar > .pane .close-button:hover > .graphic {
+    -fx-background-color: black; /* Croix plus foncée au survol */
+}

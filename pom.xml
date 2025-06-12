@@ -1,58 +1,78 @@
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
-  <modelVersion>4.0.0</modelVersion>
-  <groupId>fr.erm.sae201</groupId>
-  <artifactId>sae201</artifactId>
-  <packaging>jar</packaging>
-  <version>1.0-SNAPSHOT</version>
-  <name>sae201</name>
-  <url>http://maven.apache.org</url>
-  <properties>
-    <maven.compiler.source>17</maven.compiler.source>
-    <maven.compiler.target>17</maven.compiler.target>
-    <javafx.version>17.0.2</javafx.version>
-    <mysql.version>8.4.0</mysql.version>
-  </properties>
-  <dependencies>
-    <!-- JUnit pour les tests -->
-    <dependency>
-      <groupId>junit</groupId>
-      <artifactId>junit</artifactId>
-      <version>4.12</version>
-      <scope>test</scope>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"   
+  xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">   
+  <modelVersion>4.0.0</modelVersion>   
+  <groupId>fr.erm.sae201</groupId>   
+  <artifactId>sae201</artifactId>   
+  <packaging>jar</packaging>   
+  <version>1.0-SNAPSHOT</version>   
+  <name>sae201</name>   
+  <url>http://maven.apache.org</url>   
+  
+  <properties>     
+    <maven.compiler.source>17</maven.compiler.source>     
+    <maven.compiler.target>17</maven.compiler.target>     
+    <javafx.version>17.0.2</javafx.version>     
+    <mysql.version>8.4.0</mysql.version>     
+    <controlsfx.version>11.1.2</controlsfx.version>
+    <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>   
+  </properties>   
+  
+  <dependencies>     
+    <!-- JUnit pour les tests -->     
+    <dependency>       
+      <groupId>junit</groupId>       
+      <artifactId>junit</artifactId>       
+      <version>4.12</version>       
+      <scope>test</scope>     
+    </dependency>          
+    
+    <!-- MySQL Connector/J pour JDBC -->     
+    <dependency>       
+      <groupId>com.mysql</groupId>       
+      <artifactId>mysql-connector-j</artifactId>       
+      <version>${mysql.version}</version>     
+    </dependency>          
+    
+    <!-- JavaFX Controls -->     
+    <dependency>       
+      <groupId>org.openjfx</groupId>       
+      <artifactId>javafx-controls</artifactId>       
+      <version>${javafx.version}</version>     
+    </dependency>          
+    
+    <!-- JavaFX Web -->     
+    <dependency>       
+      <groupId>org.openjfx</groupId>       
+      <artifactId>javafx-web</artifactId>       
+      <version>${javafx.version}</version>     
+    </dependency>      
+    
+    <!-- JBCrypt pour le hachage des mots de passe -->     
+    <dependency>       
+      <groupId>org.mindrot</groupId>       
+      <artifactId>jbcrypt</artifactId>       
+      <version>0.4</version>     
     </dependency>
     
-    <!-- MySQL Connector/J pour JDBC -->
+    <!-- ControlsFX pour des contrôles avancés -->
     <dependency>
-      <groupId>com.mysql</groupId>
-      <artifactId>mysql-connector-j</artifactId>
-      <version>${mysql.version}</version>
+      <groupId>org.controlsfx</groupId>
+      <artifactId>controlsfx</artifactId>
+      <version>${controlsfx.version}</version>
     </dependency>
     
-    <!-- JavaFX Controls -->
-    <dependency>
-      <groupId>org.openjfx</groupId>
-      <artifactId>javafx-controls</artifactId>
-      <version>${javafx.version}</version>
-    </dependency>
-    
-    <!-- JavaFX Web -->
-    <dependency>
-      <groupId>org.openjfx</groupId>
-      <artifactId>javafx-web</artifactId>
-      <version>${javafx.version}</version>
-    </dependency>
-  </dependencies>
-  <build>
-    <plugins>
-      <plugin>
-        <groupId>org.openjfx</groupId>
-        <artifactId>javafx-maven-plugin</artifactId>
-        <version>0.0.8</version>
-        <configuration>
-          <mainClass>fr.erm.sae201.vue.MainApp</mainClass>
-        </configuration>
-      </plugin>
-    </plugins>
-  </build>
+  </dependencies>   
+  
+  <build>     
+    <plugins>       
+      <plugin>         
+        <groupId>org.openjfx</groupId>         
+        <artifactId>javafx-maven-plugin</artifactId>         
+        <version>0.0.8</version>         
+        <configuration>           
+          <mainClass>fr.erm.sae201.vue.MainApp</mainClass>         
+        </configuration>       
+      </plugin>     
+    </plugins>   
+  </build> 
 </project>

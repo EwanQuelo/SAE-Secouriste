@@ -72,31 +72,57 @@ public class SecouristeDAO extends DAO<Secouriste> {
         return secouriste;
     }
 
-    @Override
-    public int create(Secouriste secouriste) {
+    /**
+     * Crée un nouveau secouriste dans la base de données.
+     * L'ID est auto-généré par la base de données.
+     * @param secouriste L'objet Secouriste à créer (sans ID défini).
+     * @return L'ID généré par la base de données en cas de succès, ou -1 en cas d'erreur.
+     */
+    public int create(Secouriste secouriste) { // MODIFIÉ : le type de retour est maintenant long
         if (secouriste == null) {
             throw new IllegalArgumentException("Secouriste to create cannot be null.");
         }
-        String sql = "INSERT INTO Secouriste (id, nom, prenom, dateNaissance, email, tel, adresse) VALUES (?, ?, ?, ?, ?, ?, ?)";
+        // MODIFIÉ : La colonne 'id' n'est plus dans la requête INSERT
+        String sql = "INSERT INTO Secouriste (nom, prenom, dateNaissance, email, tel, adresse) VALUES (?, ?, ?, ?, ?, ?)";
+        
+        // MODIFIÉ : On ajoute Statement.RETURN_GENERATED_KEYS pour récupérer l'ID
         try (Connection conn = getConnection();
-             PreparedStatement pstmt = conn.prepareStatement(sql)) {
+             PreparedStatement pstmt = conn.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
 
-            pstmt.setLong(1, secouriste.getId());
-            pstmt.setString(2, secouriste.getNom());
-            pstmt.setString(3, secouriste.getPrenom());
+            // Les index sont décalés car on n'insère plus l'ID
+            pstmt.setString(1, secouriste.getNom());
+            pstmt.setString(2, secouriste.getPrenom());
             if (secouriste.getDateNaissance() != null) {
-                pstmt.setDate(4, new java.sql.Date(secouriste.getDateNaissance().getTime()));
+                // Pour le constructeur, j'ai mis "new Date()", mais si le POJO
+                // stocke null, il faut gérer ce cas.
+                pstmt.setDate(3, new java.sql.Date(secouriste.getDateNaissance().getTime()));
             } else {
-                pstmt.setNull(4, Types.DATE);
+                pstmt.setNull(3, Types.DATE);
             }
-            pstmt.setString(5, secouriste.getEmail());
-            pstmt.setString(6, secouriste.getTel());
-            pstmt.setString(7, secouriste.getAddresse());
+            pstmt.setString(4, secouriste.getEmail());
+            pstmt.setString(5, secouriste.getTel());
+            pstmt.setString(6, secouriste.getAddresse());
 
-            return pstmt.executeUpdate();
+            int affectedRows = pstmt.executeUpdate();
+
+            if (affectedRows == 0) {
+                // Aucun enregistrement n'a été créé, c'est une erreur.
+                return -1;
+            }
+
+            // NOUVEAU : Bloc pour récupérer l'ID auto-généré
+            try (ResultSet generatedKeys = pstmt.getGeneratedKeys()) {
+                if (generatedKeys.next()) {
+                    return (int) generatedKeys.getLong(1); // On retourne le nouvel ID
+                } else {
+                    // L'insertion a fonctionné mais on n'a pas pu récupérer l'ID, erreur grave.
+                    throw new SQLException("La création a échoué, impossible d'obtenir l'ID.");
+                }
+            }
+
         } catch (SQLException e) {
             System.err.println("Error creating Secouriste: " + e.getMessage());
-            return -1; // Error indicator as per example
+            return -1;
         }
     }
     

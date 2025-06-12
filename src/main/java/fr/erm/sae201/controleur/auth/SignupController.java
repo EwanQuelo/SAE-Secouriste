@@ -1,5 +1,7 @@
 package fr.erm.sae201.controleur.auth;
 
+import fr.erm.sae201.metier.service.AuthService;
+import fr.erm.sae201.utils.NotificationUtils;
 import fr.erm.sae201.vue.MainApp;
 import fr.erm.sae201.vue.auth.SignupView;
 
@@ -7,10 +9,12 @@ public class SignupController {
 
     private final SignupView view;
     private final MainApp navigator;
+    private final AuthService authService;
 
     public SignupController(SignupView view, MainApp navigator) {
         this.view = view;
         this.navigator = navigator;
+        this.authService = new AuthService();
         initializeListeners();
     }
 
@@ -25,33 +29,26 @@ public class SignupController {
         String email = view.getEmail();
         String password = view.getPassword();
 
-        System.out.println("CONTROLLER: Tentative d'inscription...");
-        System.out.println("Prénom: " + firstName);
-        System.out.println("Nom: " + lastName);
-        System.out.println("Email: " + email);
-
-        // Logique d'inscription ici
         if (firstName.isEmpty() || lastName.isEmpty() || email.isEmpty() || password.isEmpty()) {
-            System.out.println("ERREUR: Tous les champs sont requis.");
-            // Idéalement, afficher une alerte dans la vue
-        } else {
-            // Ici, vous appelleriez votre service d'authentification
-            // boolean success = authService.register(firstName, lastName, email, password);
-            boolean success = true; // Simuler un succès
-            
+            NotificationUtils.showWarning("Formulaire incomplet", "Veuillez remplir tous les champs requis.");
+            return;
+        }
+
+        try {
+            boolean success = authService.registerSecouriste(firstName, lastName, email, password);
             if (success) {
-                System.out.println("SUCCÈS: Inscription réussie. Navigation vers la connexion.");
-                // Après une inscription réussie, on redirige généralement l'utilisateur vers la page de connexion
+                NotificationUtils.showSuccess("Inscription réussie !", "Vous pouvez maintenant vous connecter avec votre email.");
                 navigator.showLoginScreen();
             } else {
-                System.out.println("ERREUR: L'inscription a échoué (ex: email déjà utilisé).");
-                // Afficher une alerte
+                NotificationUtils.showError("Erreur d'inscription", "Une erreur inconnue est survenue. Veuillez réessayer.");
             }
+        } catch (Exception e) {
+            // Affiche une erreur claire à l'utilisateur, ex: "Cet email est déjà utilisé"
+            NotificationUtils.showError("Erreur d'inscription", e.getMessage());
         }
     }
 
     private void handleNavigateToLogin() {
-        System.out.println("CONTROLLER: Demande de retour vers la page de connexion.");
         navigator.showLoginScreen();
     }
 }

@@ -1,5 +1,8 @@
 package fr.erm.sae201.controleur.auth;
 
+import javax.management.Notification;
+
+import fr.erm.sae201.utils.NotificationUtils;
 import fr.erm.sae201.vue.MainApp;
 import fr.erm.sae201.vue.auth.ForgotPasswordView;
 
@@ -26,6 +29,7 @@ public class ForgotPasswordController {
         if (email.isEmpty() || !email.contains("@")) {
             System.out.println("ERREUR: Email invalide.");
             // Afficher une alerte
+            NotificationUtils.showWarning("Email invalide", "Veuillez saisir un email valide.");
             return;
         }
 

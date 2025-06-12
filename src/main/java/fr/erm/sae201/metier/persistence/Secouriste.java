@@ -45,6 +45,17 @@ public class Secouriste {
         this.competences = new HashSet<>();
     }
 
+    public Secouriste(String nom, String prenom, Date dateNaissance, String email, String tel, String addresse) {
+        setNom(nom);
+        setPrenom(prenom);
+        setDateNaissance(dateNaissance); // Uses setter which clones
+        setEmail(email);
+        setTel(tel);
+        setAddresse(addresse);
+        this.disponibilites = new HashSet<>();
+        this.competences = new HashSet<>();
+    }
+
     /**
      * Gets the ID of the secouriste.
      * @return The ID.
