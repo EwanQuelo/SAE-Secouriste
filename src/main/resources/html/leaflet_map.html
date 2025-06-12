@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="fr">
+
+<head>
+    <meta charset="utf-8" />
+    <title>Carte Leaflet dynamique</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <!-- Leaflet -->
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.7.1/dist/leaflet.css"
+        integrity="sha512-xodZBNTC5n17Xt2atTPuE1HxjVMSvLVW9ocqUKLsCC5CXdbqCmblAshOMAS6/keqq/sMZMZ19scR4PsZChSR7A=="
+        crossorigin="" />
+    <script src="https://unpkg.com/leaflet@1.7.1/dist/leaflet.js"
+        integrity="sha512-XQoYMqMTK8LvdxXYG3nZ448hOEQiglfqkJs1NOQV44cWnUrBc8PkAOcXy20w0vlaXaVUearIOBhiXZ5V3ynxwA=="
+        crossorigin=""></script>
+
+    <style>
+        html, body, #map {
+            height: 100%;
+            margin: 0;
+        }
+    </style>
+</head>
+
+<body>
+    <div id="map"></div>
+
+    <script>
+        const accessToken = 'pk.eyJ1IjoiZXdhbnEiLCJhIjoiY20zbHhubTZ5MHIyazJ3cXo5emdjaDRqYyJ9.DxeE-l9AzdCD5xcBH845zQ';
+
+        const currentHour = new Date().getHours();
+        const styleId = (currentHour >= 21 || currentHour < 7) ? 'dark-v11' : 'outdoors-v12';
+
+        const map = L.map('map').setView([45.8326, 6.8652], 10);
+        const tileLayer = L.tileLayer(`https://api.mapbox.com/styles/v1/mapbox/${styleId}/tiles/{z}/{x}/{y}@2x?access_token=${accessToken}`, {
+            tileSize: 512,
+            zoomOffset: -1,
+            // attribution: '© <a href="https://www.mapbox.com/">Mapbox</a> © <a href="https://www.openstreetmap.org/">OpenStreetMap</a>'
+        }).addTo(map);
+
+        const markers = {};
+
+        function addOrUpdateMarker(id, lat, lng, popupHtml, iconHtmlOrUrl) {
+            if (markers[id]) {
+                markers[id].setLatLng([lat, lng]);
+                if (popupHtml) markers[id].setPopupContent(popupHtml);
+            } else {
+                let iconToUse;
+                if (iconHtmlOrUrl?.startsWith('<')) {
+                    iconToUse = L.divIcon({
+                        className: 'custom-marker-icon-container',
+                        html: iconHtmlOrUrl,
+                        iconSize: [24, 24], iconAnchor: [12, 24], popupAnchor: [0, -24]
+                    });
+                } else if (iconHtmlOrUrl) {
+                    iconToUse = L.icon({
+                        iconUrl: iconHtmlOrUrl,
+                        iconSize: [25, 41], iconAnchor: [12, 41], popupAnchor: [1, -34]
+                    });
+                }
+                markers[id] = L.marker([lat, lng], iconToUse ? { icon: iconToUse } : {}).addTo(map);
+                if (popupHtml) markers[id].bindPopup(popupHtml);
+            }
+        }
+
+        function removeMarker(id) {
+            if (!markers[id]) return;
+            map.removeLayer(markers[id]);
+            delete markers[id];
+        }
+
+        function clearAllMarkers() {
+            for (const id in markers) {
+                map.removeLayer(markers[id]);
+                delete markers[id];
+            }
+        }
+
+        function flyTo(lat, lng, zoom) {
+            map.flyTo([lat, lng], zoom || map.getZoom());
+        }
+    </script>
+</body>
+
+</html>
