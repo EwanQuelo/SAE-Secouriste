@@ -10,7 +10,13 @@ import java.time.ZoneId;
 import java.util.Date;
 
 /**
- * Controller for the signup view. Handles user registration logic.
+ * Controller for the signup view.
+ * This class manages the user registration process. It collects user details
+ * from the {@link SignupView}, validates them, and then uses the {@link AuthService}
+ * to create a new "Secouriste" (rescuer) account.
+ *
+ * @author Ewan QUELO, Raphael MILLE, Matheo BIET
+ * @version 1.0
  */
 public class SignupController {
 
@@ -19,11 +25,12 @@ public class SignupController {
     private final AuthService authService;
 
     /**
-     * Constructor for SignupController.
+     * Constructs a new SignupController.
      *
-     * @param view        The associated {@link SignupView}.
-     * @param navigator   The main application navigator for screen transitions.
-     * @param authService The service responsible for authentication logic.
+     * @param view        The {@link SignupView} instance this controller manages.
+     * @param navigator   The {@link MainApp} instance used for navigating between screens.
+     * @param authService The {@link AuthService} instance responsible for user registration
+     *                    and other authentication logic.
      */
     public SignupController(SignupView view, MainApp navigator, AuthService authService) {
         this.view = view;
@@ -32,19 +39,33 @@ public class SignupController {
         initializeListeners();
     }
 
+    /**
+     * Initializes event listeners for the UI components in the {@link SignupView}.
+     * Sets up actions for the signup button and the link to navigate to the login screen.
+     */
     private void initializeListeners() {
         view.getSignupButton().setOnAction(e -> handleSignup());
         view.getLoginLink().setOnAction(e -> handleNavigateToLogin());
     }
 
+    /**
+     * Handles the user signup process.
+     * Retrieves user information (first name, last name, email, password, and date of birth)
+     * from the {@link SignupView}. Validates that all fields are filled.
+     * Converts the {@link LocalDate} date of birth to {@link java.util.Date} as expected by the
+     * {@link AuthService#registerSecouriste(String, String, String, String, Date)} method.
+     * Attempts to register the user as a "Secouriste".
+     * If registration is successful, navigates to the login screen.
+     * Displays appropriate notifications for success, failure, or validation errors.
+     */
     private void handleSignup() {
         String firstName = view.getFirstName();
         String lastName = view.getLastName();
         String email = view.getEmail();
         String password = view.getPassword();
-        LocalDate dob = view.getDateOfBirth(); // MODIFIED: Get LocalDate from the view's widget
+        LocalDate dob = view.getDateOfBirth(); 
 
-        // MODIFIED: Added check for date of birth
+
         if (firstName.isEmpty() || lastName.isEmpty() || email.isEmpty() || password.isEmpty() || dob == null) {
             NotificationUtils.showWarning("Incomplete Form", "Please fill in all required fields, including a valid date of birth.");
             return;
@@ -54,7 +75,6 @@ public class SignupController {
         Date dateOfBirth = Date.from(dob.atStartOfDay(ZoneId.systemDefault()).toInstant());
 
         try {
-            // MODIFIED: Pass the actual date of birth
             boolean success = authService.registerSecouriste(firstName, lastName, email, password, dateOfBirth);
             if (success) {
                 NotificationUtils.showSuccess("Registration Successful!", "You can now log in with your email.");
@@ -67,6 +87,10 @@ public class SignupController {
         }
     }
 
+    /**
+     * Handles navigation back to the login screen.
+     * This action is triggered when the user clicks the "Login" link.
+     */
     private void handleNavigateToLogin() {
         navigator.showLoginScreen();
     }
