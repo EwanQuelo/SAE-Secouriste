@@ -61,6 +61,13 @@
       <version>${controlsfx.version}</version>
     </dependency>
     
+    <!-- Pour l'envoi d'emails via MailerSend -->
+    <dependency>
+        <groupId>com.mailjet</groupId>
+        <artifactId>mailjet-client</artifactId>
+        <version>6.0.0</version>
+    </dependency>
+
   </dependencies>   
   
   <build>     

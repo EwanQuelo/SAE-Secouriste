@@ -21,7 +21,7 @@ CREATE TABLE Secouriste (
     nom VARCHAR(30),
     prenom VARCHAR(30),
     dateNaissance DATE,
-    email VARCHAR(40),
+    email VARCHAR(40) UNIQUE,
     tel VARCHAR(10),
     adresse VARCHAR(50),
     CONSTRAINT pk_Secouriste PRIMARY KEY (id)

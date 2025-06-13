@@ -14,10 +14,10 @@ public class LoginController {
     private final MainApp navigator;
     private final AuthService authService;
 
-    public LoginController(LoginView view, MainApp navigator) {
+    public LoginController(LoginView view, MainApp navigator, AuthService authService) {
         this.view = view;
         this.navigator = navigator;
-        this.authService = new AuthService();
+        this.authService = authService;
         initializeListeners();
     }
 

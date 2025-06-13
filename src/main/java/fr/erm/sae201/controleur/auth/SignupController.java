@@ -9,15 +9,17 @@ public class SignupController {
 
     private final SignupView view;
     private final MainApp navigator;
-    private final AuthService authService;
+    private final AuthService authService; // Le champ existe déjà, c'est bon
 
-    public SignupController(SignupView view, MainApp navigator) {
+    // MODIFIÉ : Le constructeur accepte AuthService au lieu de le créer
+    public SignupController(SignupView view, MainApp navigator, AuthService authService) {
         this.view = view;
         this.navigator = navigator;
-        this.authService = new AuthService();
+        this.authService = authService; // On assigne l'instance injectée
         initializeListeners();
     }
-
+    
+    // ... reste de la classe inchangé ...
     private void initializeListeners() {
         view.getSignupButton().setOnAction(e -> handleSignup());
         view.getLoginLink().setOnAction(e -> handleNavigateToLogin());
@@ -43,7 +45,6 @@ public class SignupController {
                 NotificationUtils.showError("Erreur d'inscription", "Une erreur inconnue est survenue. Veuillez réessayer.");
             }
         } catch (Exception e) {
-            // Affiche une erreur claire à l'utilisateur, ex: "Cet email est déjà utilisé"
             NotificationUtils.showError("Erreur d'inscription", e.getMessage());
         }
     }

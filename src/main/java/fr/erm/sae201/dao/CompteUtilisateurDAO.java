@@ -88,4 +88,28 @@ public class CompteUtilisateurDAO extends DAO<CompteUtilisateur> {
     public int delete(CompteUtilisateur element) {
         return -1;
     }
+
+    /**
+     * Met à jour le mot de passe hashé d'un utilisateur identifié par son login.
+     * @param login L'email de l'utilisateur.
+     * @param newPasswordHash Le nouveau mot de passe hashé.
+     * @return Le nombre de lignes affectées (1 en cas de succès).
+     */
+    public int updatePassword(String login, String newPasswordHash) {
+        if (login == null || login.trim().isEmpty() || newPasswordHash == null || newPasswordHash.isEmpty()) {
+            throw new IllegalArgumentException("Login et hash du mot de passe ne peuvent pas être nuls.");
+        }
+        String sql = "UPDATE CompteUtilisateur SET motDePasseHash = ? WHERE login = ?";
+        try (Connection conn = getConnection();
+             PreparedStatement pstmt = conn.prepareStatement(sql)) {
+
+            pstmt.setString(1, newPasswordHash);
+            pstmt.setString(2, login);
+
+            return pstmt.executeUpdate();
+        } catch (SQLException e) {
+            System.err.println("Erreur lors de la mise à jour du mot de passe pour " + login + ": " + e.getMessage());
+            return -1;
+        }
+    }
 }
