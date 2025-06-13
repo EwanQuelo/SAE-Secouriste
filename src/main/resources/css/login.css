@@ -16,6 +16,15 @@
     -fx-font-family: "Arial", sans-serif; /* Or your preferred sans-serif font */
 }
 
+/* ADDED: A style for form field labels like "Date of Birth" */
+.form-label {
+    -fx-font-size: 14px;
+    -fx-text-fill: white;
+    -fx-font-family: "Arial", sans-serif;
+    -fx-padding: 10px 0 0 5px; /* Top padding and slight left indent */
+}
+
+/* This style is now applied to TextFields, PasswordFields, AND ComboBoxes */
 .login-input {
     -fx-background-color: #A9A9A9; /* Light grey background */
     -fx-text-fill: #333333; /* Dark grey text */
@@ -29,7 +38,7 @@
 
 .login-input:focused {
     -fx-border-color: #0078D7; /* Optional: highlight on focus */
-    -fx-border-width: 1px;
+    -fx-border-width: 1.5px;
 }
 
 .forgot-password-link {
@@ -68,4 +77,3 @@
 .signup-button:hover {
     -fx-background-color: #4D4D4D;
 }
-

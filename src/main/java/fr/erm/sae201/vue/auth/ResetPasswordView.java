@@ -9,6 +9,7 @@ import javafx.scene.image.ImageView;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
+import javafx.scene.text.TextAlignment; // Import TextAlignment
 import fr.erm.sae201.utils.RessourceLoader;
 
 public class ResetPasswordView {
@@ -40,7 +41,10 @@ public class ResetPasswordView {
 
         Label titleLabel = new Label("RÉINITIALISER LE MOT DE PASSE");
         titleLabel.getStyleClass().add("title-label");
-        titleLabel.setWrapText(true); // Pour s'assurer que le titre ne dépasse pas
+        
+        // MODIFIED: Ensure the title wraps and is centered if it's too long
+        titleLabel.setWrapText(true);
+        titleLabel.setTextAlignment(TextAlignment.CENTER);
 
         newPasswordField = new PasswordField();
         newPasswordField.setPromptText("Nouveau mot de passe");
@@ -82,7 +86,7 @@ public class ResetPasswordView {
         StackPane.setAlignment(mainContent, Pos.CENTER);
     }
     
-    // Getters pour le contrôleur
+    // Getters remain unchanged
     public StackPane getView() { return rootPane; }
     public String getNewPassword() { return newPasswordField.getText(); }
     public String getConfirmPassword() { return confirmPasswordField.getText(); }

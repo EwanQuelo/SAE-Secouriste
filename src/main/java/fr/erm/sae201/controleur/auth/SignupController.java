@@ -5,21 +5,33 @@ import fr.erm.sae201.utils.NotificationUtils;
 import fr.erm.sae201.vue.MainApp;
 import fr.erm.sae201.vue.auth.SignupView;
 
+import java.time.LocalDate;
+import java.time.ZoneId;
+import java.util.Date;
+
+/**
+ * Controller for the signup view. Handles user registration logic.
+ */
 public class SignupController {
 
     private final SignupView view;
     private final MainApp navigator;
-    private final AuthService authService; // Le champ existe déjà, c'est bon
+    private final AuthService authService;
 
-    // MODIFIÉ : Le constructeur accepte AuthService au lieu de le créer
+    /**
+     * Constructor for SignupController.
+     *
+     * @param view        The associated {@link SignupView}.
+     * @param navigator   The main application navigator for screen transitions.
+     * @param authService The service responsible for authentication logic.
+     */
     public SignupController(SignupView view, MainApp navigator, AuthService authService) {
         this.view = view;
         this.navigator = navigator;
-        this.authService = authService; // On assigne l'instance injectée
+        this.authService = authService;
         initializeListeners();
     }
-    
-    // ... reste de la classe inchangé ...
+
     private void initializeListeners() {
         view.getSignupButton().setOnAction(e -> handleSignup());
         view.getLoginLink().setOnAction(e -> handleNavigateToLogin());
@@ -30,22 +42,28 @@ public class SignupController {
         String lastName = view.getLastName();
         String email = view.getEmail();
         String password = view.getPassword();
+        LocalDate dob = view.getDateOfBirth(); // MODIFIED: Get LocalDate from the view's widget
 
-        if (firstName.isEmpty() || lastName.isEmpty() || email.isEmpty() || password.isEmpty()) {
-            NotificationUtils.showWarning("Formulaire incomplet", "Veuillez remplir tous les champs requis.");
+        // MODIFIED: Added check for date of birth
+        if (firstName.isEmpty() || lastName.isEmpty() || email.isEmpty() || password.isEmpty() || dob == null) {
+            NotificationUtils.showWarning("Incomplete Form", "Please fill in all required fields, including a valid date of birth.");
             return;
         }
 
+        // Convert LocalDate to java.util.Date for the service layer
+        Date dateOfBirth = Date.from(dob.atStartOfDay(ZoneId.systemDefault()).toInstant());
+
         try {
-            boolean success = authService.registerSecouriste(firstName, lastName, email, password);
+            // MODIFIED: Pass the actual date of birth
+            boolean success = authService.registerSecouriste(firstName, lastName, email, password, dateOfBirth);
             if (success) {
-                NotificationUtils.showSuccess("Inscription réussie !", "Vous pouvez maintenant vous connecter avec votre email.");
+                NotificationUtils.showSuccess("Registration Successful!", "You can now log in with your email.");
                 navigator.showLoginScreen();
             } else {
-                NotificationUtils.showError("Erreur d'inscription", "Une erreur inconnue est survenue. Veuillez réessayer.");
+                NotificationUtils.showError("Registration Error", "An unknown error occurred. Please try again.");
             }
         } catch (Exception e) {
-            NotificationUtils.showError("Erreur d'inscription", e.getMessage());
+            NotificationUtils.showError("Registration Error", e.getMessage());
         }
     }
 

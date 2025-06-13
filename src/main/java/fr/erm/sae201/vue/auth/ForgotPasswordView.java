@@ -1,20 +1,27 @@
 package fr.erm.sae201.vue.auth;
 
+import fr.erm.sae201.utils.RessourceLoader;
+import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.control.Button;
+import javafx.scene.control.Hyperlink;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
-import fr.erm.sae201.utils.RessourceLoader;
+import javafx.scene.text.TextAlignment;
 
+/**
+ * Represents the user interface for the "Forgot Password" screen.
+ */
 public class ForgotPasswordView {
 
     private StackPane rootPane;
     private TextField emailField;
     private TextField codeField;
     private Button sendCodeButton;
+    private Hyperlink loginLink; // ADDED: Hyperlink to go back to login
 
     public ForgotPasswordView() {
         createView();
@@ -32,10 +39,13 @@ public class ForgotPasswordView {
         VBox formBox = new VBox(20);
         formBox.getStyleClass().add("login-box");
         formBox.setAlignment(Pos.CENTER);
-        formBox.setMaxSize(380, 400);
+        formBox.setMaxSize(420, 450);
 
         Label titleLabel = new Label("MOT DE PASSE OUBLIÉ");
         titleLabel.getStyleClass().add("title-label");
+        // MODIFIED: Allow text to wrap to a new line if it's too long
+        titleLabel.setWrapText(true);
+        titleLabel.setTextAlignment(TextAlignment.CENTER);
 
         emailField = new TextField();
         emailField.setPromptText("Email");
@@ -48,16 +58,20 @@ public class ForgotPasswordView {
         codeField = new TextField();
         codeField.setPromptText("Code reçu par email");
         codeField.getStyleClass().add("login-input");
-        // Optionnel : cacher le champ de code au début
         codeField.setVisible(false);
         codeField.setManaged(false);
 
+        // ADDED: Create and style the login link
+        loginLink = new Hyperlink("Retour à la connexion");
+        loginLink.getStyleClass().add("forgot-password-link");
+        VBox.setMargin(loginLink, new Insets(10, 0, 0, 0)); // Add some top margin
 
         formBox.getChildren().addAll(
                 titleLabel,
                 emailField,
                 sendCodeButton,
-                codeField
+                codeField,
+                loginLink // ADDED: Add the link to the form
         );
 
         ImageView olympicRingsView = new ImageView(RessourceLoader.loadImage("olympic_rings.png"));
@@ -77,9 +91,10 @@ public class ForgotPasswordView {
         codeField.setManaged(true);
     }
 
-    // Getters pour le contrôleur
+    // Getters for the controller
     public StackPane getView() { return rootPane; }
     public String getEmail() { return emailField.getText(); }
     public String getCode() { return codeField.getText(); }
     public Button getSendCodeButton() { return sendCodeButton; }
+    public Hyperlink getLoginLink() { return loginLink; } // ADDED: Getter for the new link
 }
