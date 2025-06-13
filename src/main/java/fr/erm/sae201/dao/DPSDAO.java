@@ -1,94 +1,30 @@
 package fr.erm.sae201.dao;
 
-import fr.erm.sae201.metier.persistence.DPS;
-import fr.erm.sae201.metier.persistence.Site;    // For creating Site objects
-import fr.erm.sae201.metier.persistence.Sport;   // For creating Sport objects
-import fr.erm.sae201.metier.persistence.Journee; // For creating Journee objects
-
+import fr.erm.sae201.metier.persistence.*;
 import java.sql.*;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.Objects;
 
-/**
- * DAO for the DPS entity, extending the generic DAO.
- * @author Raphael Mille, Ewan Quelo, Matheo Biet
- * @version 1.2
- */
+
 public class DPSDAO extends DAO<DPS> {
 
-    // Helper to convert int[2] time to DB integer format (e.g., HHMM)
-    private int timeArrayToInt(int[] timeArray) {
-        if (timeArray == null || timeArray.length != 2) {
-            throw new IllegalArgumentException("Time array must have 2 elements {hour, minute}.");
-        }
-        if (timeArray[0] < 0 || timeArray[0] > 23 || timeArray[1] < 0 || timeArray[1] > 59) {
-            throw new IllegalArgumentException("Invalid hour/minute in time array.");
-        }
-        return timeArray[0] * 100 + timeArray[1];
-    }
-
-    // Helper to convert DB integer time (HHMM) to int[2] format
-    private int[] intToTimeArray(int timeInt) {
-        if (timeInt < 0 || timeInt > 2359 || (timeInt % 100) > 59) {
-             // Basic validation for common errors, more robust validation might be needed
-            throw new IllegalArgumentException("Invalid integer time format from DB: " + timeInt);
-        }
-        return new int[]{timeInt / 100, timeInt % 100};
-    }
+    private final SiteDAO siteDAO = new SiteDAO();
+    private final SportDAO sportDAO = new SportDAO();
+    private final JourneeDAO journeeDAO = new JourneeDAO();
+    private final CompetenceDAO competenceDAO = new CompetenceDAO();
 
     @Override
     public List<DPS> findAll() {
-        String sql = "SELECT D.id, D.horaire_depart, D.horaire_fin, D.lieu AS site_code, D.sport AS sport_code " +
-                     // ", J.jour AS journee_jour, J.mois AS journee_mois, J.annee AS journee_annee " + // If Journee FKs were in DPS table
-                     "FROM DPS D ";
-                     // "LEFT JOIN Site S ON D.lieu = S.code " + // To get Site name directly (optional join)
-                     // "LEFT JOIN Sport SP ON D.sport = SP.code " + // To get Sport name directly (optional join)
-                     // "LEFT JOIN Journee J ON D.journee_jour = J.jour AND D.journee_mois = J.mois AND D.journee_annee = J.annee"; // If FKs existed
-
+        String sql = "SELECT id, horaire_depart, horaire_fin, lieu, sport, jour FROM DPS";
         List<DPS> dpsList = new ArrayList<>();
-        SiteDAO siteDAO = new SiteDAO(); // To fetch full Site objects
-        SportDAO sportDAO = new SportDAO(); // To fetch full Sport objects
-        JourneeDAO journeeDAO = new JourneeDAO(); // To fetch full Journee objects (if linked)
-
         try (Connection conn = getConnection();
              Statement stmt = conn.createStatement();
              ResultSet rs = stmt.executeQuery(sql)) {
-
             while (rs.next()) {
-                Site site = siteDAO.findByCode(rs.getString("site_code"));
-                Sport sport = sportDAO.findByCode(rs.getString("sport_code"));
-                
-                // === Journee Handling ===
-                // The SQL for DPS table doesn't have a direct FK to Journee.
-                // The UML 'EstProgramme (Journee 1 - DPS 0..*)' implies a DPS MUST have ONE Journee.
-                // This needs to be resolved in the DB schema:
-                // Option A: Add journee_jour, journee_mois, journee_annee FKs to DPS table.
-                // Option B: An association table DPS_Journee (idDPS, jour, mois, annee) - less likely for 1-to-many.
-                // For now, as the schema stands, we cannot reliably fetch the associated Journee.
-                // A placeholder is used, but this is a critical point.
-                Journee journee;
-                // if (rs.getString("journee_jour") != null) { // If FKs were present and joined
-                //    journee = journeeDAO.findByDate(rs.getInt("journee_jour"), rs.getInt("journee_mois"), rs.getInt("journee_annee"));
-                // } else {
-                    // This is a temporary, WRONG placeholder. The application logic
-                    // would need to ensure every DPS has a Journee linked somehow.
-                    System.err.println("WARNING (DPSDAO.findAll): Journee for DPS ID " + rs.getLong("id") + 
-                                       " cannot be reliably fetched with current schema. Using placeholder.");
-                    journee = new Journee(1, 1, 1900); // Invalid placeholder
-                // }
-                if (site == null || sport == null || journee == null) {
-                     System.err.println("Skipping DPS ID " + rs.getLong("id") + " due to missing Site, Sport, or Journee.");
-                     continue;
-                }
-
-                dpsList.add(new DPS(
-                        rs.getLong("id"),
-                        intToTimeArray(rs.getInt("horaire_depart")),
-                        intToTimeArray(rs.getInt("horaire_fin")),
-                        site,
-                        journee, // This Journee is problematic
-                        sport
-                ));
+                dpsList.add(mapResultSetToDPS(rs));
             }
         } catch (SQLException e) {
             System.err.println("Error finding all DPS: " + e.getMessage());
@@ -99,132 +35,167 @@ public class DPSDAO extends DAO<DPS> {
     @Override
     public DPS findByID(Long id) {
         if (id == null) return null;
-        String sql = "SELECT D.id, D.horaire_depart, D.horaire_fin, D.lieu AS site_code, D.sport AS sport_code " +
-                     // Add Journee columns if they exist in DPS table or are joined
-                     "FROM DPS D WHERE D.id = ?";
-        DPS dps = null;
-        SiteDAO siteDAO = new SiteDAO();
-        SportDAO sportDAO = new SportDAO();
-        JourneeDAO journeeDAO = new JourneeDAO();
-
-
+        String sql = "SELECT id, horaire_depart, horaire_fin, lieu, sport, jour FROM DPS WHERE id = ?";
         try (Connection conn = getConnection();
              PreparedStatement pstmt = conn.prepareStatement(sql)) {
-
             pstmt.setLong(1, id);
             try (ResultSet rs = pstmt.executeQuery()) {
                 if (rs.next()) {
-                    Site site = siteDAO.findByCode(rs.getString("site_code"));
-                    Sport sport = sportDAO.findByCode(rs.getString("sport_code"));
-                    
-                    // Journee: Same issue as in findAll().
-                    Journee journee;
-                    System.err.println("WARNING (DPSDAO.findByID): Journee for DPS ID " + rs.getLong("id") + 
-                                       " cannot be reliably fetched. Using placeholder.");
-                    journee = new Journee(1, 1, 1900); // Invalid placeholder
-
-                    if (site == null || sport == null || journee == null) {
-                        System.err.println("Could not fully construct DPS ID " + id + " due to missing Site, Sport, or Journee.");
-                        return null;
-                    }
-
-                    dps = new DPS(
-                            rs.getLong("id"),
-                            intToTimeArray(rs.getInt("horaire_depart")),
-                            intToTimeArray(rs.getInt("horaire_fin")),
-                            site,
-                            journee, // Problematic
-                            sport
-                    );
+                    return mapResultSetToDPS(rs);
                 }
             }
         } catch (SQLException e) {
             System.err.println("Error finding DPS by ID " + id + ": " + e.getMessage());
         }
-        return dps;
+        return null;
     }
 
     @Override
     public int create(DPS dps) {
-        if (dps == null || dps.getSite() == null || dps.getSport() == null || dps.getJournee() == null) {
-            throw new IllegalArgumentException("DPS or its required associations (Site, Sport, Journee) cannot be null for creating.");
-        }
-        // How is dps.getJournee() persisted? The DPS table SQL does not have columns for it.
-        // This implies 'EstProgramme' might be an association table OR Journee FKs are missing in DPS table.
-        // For now, I will only insert data present in the current DPS table structure.
-        // IF Journee FKs were in DPS table (e.g., journee_jour, journee_mois, journee_annee):
-        // String sql = "INSERT INTO DPS (id, horaire_depart, horaire_fin, lieu, sport, journee_jour, journee_mois, journee_annee) VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
-        
-        String sql = "INSERT INTO DPS (id, horaire_depart, horaire_fin, lieu, sport) VALUES (?, ?, ?, ?, ?)";
+        if (dps == null) throw new IllegalArgumentException("DPS cannot be null.");
+        String sql = "INSERT INTO DPS (horaire_depart, horaire_fin, lieu, sport, jour) VALUES (?, ?, ?, ?, ?)";
         try (Connection conn = getConnection();
-             PreparedStatement pstmt = conn.prepareStatement(sql)) {
+             PreparedStatement pstmt = conn.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
+            
+            pstmt.setInt(1, timeArrayToInt(dps.getHoraireDepart()));
+            pstmt.setInt(2, timeArrayToInt(dps.getHoraireFin()));
+            pstmt.setString(3, dps.getSite().getCode());
+            pstmt.setString(4, dps.getSport().getCode());
+            pstmt.setDate(5, Date.valueOf(dps.getJournee().getDate()));
 
-            pstmt.setLong(1, dps.getId());
-            pstmt.setInt(2, timeArrayToInt(dps.getHoraireDepart()));
-            pstmt.setInt(3, timeArrayToInt(dps.getHoraireFin()));
-            pstmt.setString(4, dps.getSite().getCode());
-            pstmt.setString(5, dps.getSport().getCode());
-            // If Journee FKs were in DPS table:
-            // pstmt.setInt(6, dps.getJournee().getJour());
-            // pstmt.setInt(7, dps.getJournee().getMois());
-            // pstmt.setInt(8, dps.getJournee().getAnnee());
-
-            return pstmt.executeUpdate();
-        } catch (SQLException e) {
-            System.err.println("Error creating DPS " + dps.getId() + ": " + e.getMessage());
-             if (e.getMessage().toLowerCase().contains("unique constraint") || e.getErrorCode() == 1062) { // MySQL duplicate
-                 System.err.println("Potential UNIQUE constraint violation on horaire_depart or horaire_fin for DPS " + dps.getId());
+            int affectedRows = pstmt.executeUpdate();
+            if (affectedRows > 0) {
+                try (ResultSet generatedKeys = pstmt.getGeneratedKeys()) {
+                    if (generatedKeys.next()) {
+                        dps.setId(generatedKeys.getLong(1)); // Met à jour l'ID de l'objet
+                    }
+                }
             }
+            return affectedRows;
+        } catch (SQLException e) {
+            System.err.println("Error creating DPS: " + e.getMessage());
             return -1;
         }
     }
 
     @Override
     public int update(DPS dps) {
-        if (dps == null || dps.getSite() == null || dps.getSport() == null || dps.getJournee() == null) {
-            throw new IllegalArgumentException("DPS or its required associations cannot be null for updating.");
-        }
-        // String sql = "UPDATE DPS SET horaire_depart = ?, horaire_fin = ?, lieu = ?, sport = ?, journee_jour = ?, journee_mois = ?, journee_annee = ? WHERE id = ?";
-        String sql = "UPDATE DPS SET horaire_depart = ?, horaire_fin = ?, lieu = ?, sport = ? WHERE id = ?";
+        if (dps == null) throw new IllegalArgumentException("DPS to update cannot be null.");
+        String sql = "UPDATE DPS SET horaire_depart = ?, horaire_fin = ?, lieu = ?, sport = ?, jour = ? WHERE id = ?";
         try (Connection conn = getConnection();
              PreparedStatement pstmt = conn.prepareStatement(sql)) {
-
             pstmt.setInt(1, timeArrayToInt(dps.getHoraireDepart()));
             pstmt.setInt(2, timeArrayToInt(dps.getHoraireFin()));
             pstmt.setString(3, dps.getSite().getCode());
             pstmt.setString(4, dps.getSport().getCode());
-            // If Journee FKs were in DPS table:
-            // pstmt.setInt(5, dps.getJournee().getJour());
-            // pstmt.setInt(6, dps.getJournee().getMois());
-            // pstmt.setInt(7, dps.getJournee().getAnnee());
-            // pstmt.setLong(8, dps.getId());
-            pstmt.setLong(5, dps.getId());
-
-
+            pstmt.setDate(5, Date.valueOf(dps.getJournee().getDate()));
+            pstmt.setLong(6, dps.getId());
             return pstmt.executeUpdate();
         } catch (SQLException e) {
             System.err.println("Error updating DPS " + dps.getId() + ": " + e.getMessage());
-            if (e.getMessage().toLowerCase().contains("unique constraint") || e.getErrorCode() == 1062) {
-                 System.err.println("Potential UNIQUE constraint violation on horaire_depart or horaire_fin for DPS " + dps.getId());
-            }
             return -1;
         }
     }
 
     @Override
     public int delete(DPS dps) {
-        if (dps == null) {
-            throw new IllegalArgumentException("DPS to delete cannot be null.");
-        }
+        if (dps == null) throw new IllegalArgumentException("DPS to delete cannot be null.");
         String sql = "DELETE FROM DPS WHERE id = ?";
         try (Connection conn = getConnection();
              PreparedStatement pstmt = conn.prepareStatement(sql)) {
-
             pstmt.setLong(1, dps.getId());
             return pstmt.executeUpdate();
         } catch (SQLException e) {
             System.err.println("Error deleting DPS " + dps.getId() + ": " + e.getMessage());
             return -1;
         }
+    }
+
+    private DPS mapResultSetToDPS(ResultSet rs) throws SQLException {
+        Site site = siteDAO.findByCode(rs.getString("lieu"));
+        Sport sport = sportDAO.findByCode(rs.getString("sport"));
+        Journee journee = journeeDAO.findByDate(rs.getDate("jour").toLocalDate());
+
+        if (site == null || sport == null || journee == null) {
+            System.err.println("Could not fully construct DPS ID " + rs.getLong("id") + " due to missing Site, Sport, or Journee.");
+            return null; // ou lancer une exception
+        }
+
+        return new DPS(
+                rs.getLong("id"),
+                intToTimeArray(rs.getInt("horaire_depart")),
+                intToTimeArray(rs.getInt("horaire_fin")),
+                site,
+                journee,
+                sport
+        );
+    }
+
+        // --- GESTION RELATION : ABesoin (DPS <-> Competence) ---
+    public Map<Competence, Integer> findRequiredCompetencesForDps(long dpsId) {
+        Map<Competence, Integer> requirements = new HashMap<>();
+        String sql = "SELECT intituleCompetence, nombre FROM ABesoin WHERE idDPS = ?";
+        try (Connection conn = getConnection(); PreparedStatement pstmt = conn.prepareStatement(sql)) {
+            pstmt.setLong(1, dpsId);
+            try (ResultSet rs = pstmt.executeQuery()) {
+                while(rs.next()) {
+                    Competence comp = competenceDAO.findByIntitule(rs.getString("intituleCompetence"));
+                    if (comp != null) {
+                        requirements.put(comp, rs.getInt("nombre"));
+                    }
+                }
+            }
+        } catch (SQLException e) {
+            System.err.println("Error finding required competences for DPS " + dpsId + ": " + e.getMessage());
+        }
+        return requirements;
+    }
+
+    public int setRequiredCompetence(long dpsId, String intituleCompetence, int nombre) {
+        // Utilise INSERT ... ON DUPLICATE KEY UPDATE pour créer ou mettre à jour la ligne
+        String sql = "INSERT INTO ABesoin (idDPS, intituleCompetence, nombre) VALUES (?, ?, ?) ON DUPLICATE KEY UPDATE nombre = VALUES(nombre)";
+        try (Connection conn = getConnection(); PreparedStatement pstmt = conn.prepareStatement(sql)) {
+            pstmt.setLong(1, dpsId);
+            pstmt.setString(2, intituleCompetence);
+            pstmt.setInt(3, nombre);
+            return pstmt.executeUpdate();
+        } catch (SQLException e) {
+            System.err.println("Error setting required competence: " + e.getMessage());
+            return -1;
+        }
+    }
+
+    public int removeRequiredCompetence(long dpsId, String intituleCompetence) {
+        String sql = "DELETE FROM ABesoin WHERE idDPS = ? AND intituleCompetence = ?";
+        try (Connection conn = getConnection(); PreparedStatement pstmt = conn.prepareStatement(sql)) {
+            pstmt.setLong(1, dpsId);
+            pstmt.setString(2, intituleCompetence);
+            return pstmt.executeUpdate();
+        } catch (SQLException e) {
+            System.err.println("Error removing required competence: " + e.getMessage());
+            return -1;
+        }
+    }
+
+    // --- Méthodes CRUD et utilitaires ---
+    private DPS mapResultSetToDPS(ResultSet rs, boolean fetchRelations) throws SQLException {
+        Site site = siteDAO.findByCode(rs.getString("lieu"));
+        Sport sport = sportDAO.findByCode(rs.getString("sport"));
+        Journee journee = journeeDAO.findByDate(rs.getDate("jour").toLocalDate());
+
+        DPS dps = new DPS(rs.getLong("id"), intToTimeArray(rs.getInt("horaire_depart")), intToTimeArray(rs.getInt("horaire_fin")), site, journee, sport);
+        
+        if (fetchRelations) {
+            dps.setCompetencesRequises(findRequiredCompetencesForDps(dps.getId()));
+        }
+        return dps;
+    }
+    
+    // --- Helpers pour la conversion des horaires ---
+    private int timeArrayToInt(int[] timeArray) {
+        return timeArray[0] * 100 + timeArray[1];
+    }
+    private int[] intToTimeArray(int timeInt) {
+        return new int[]{timeInt / 100, timeInt % 100};
     }
 }

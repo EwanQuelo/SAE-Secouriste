@@ -63,12 +63,13 @@ public class AuthService {
             throw new Exception("This email is already used by another account.");
         }
 
-        // MODIFIED: Use the provided dateOfBirth instead of a placeholder
         Secouriste nouveauSecouriste = new Secouriste(lastName, firstName, dateOfBirth, email, "", "");
         
+        // CHANGED: secouristeId is now a long
         long secouristeId = secouristeDAO.create(nouveauSecouriste);
         
-        if (secouristeId == -1) {
+        // CHANGED: check against -1L
+        if (secouristeId == -1L) {
             throw new Exception("Critical error while creating the first aider profile.");
         }
 

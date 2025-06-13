@@ -6,5 +6,51 @@ Chose pas terribe :
 Changer par rapport a la maquette :
 - Ajout d'un champ pour choisir datedenaissance lors de l'inscription
 
+
 Commande utile :
 cat $(find . -name "*.java") > out.txt
+
+
+
+Schéma UML base de donnée :
+Secouriste 
+- id: long (1)
+-nom String
+-prenom: string
+-dateNaissance
+-email: string
+-tel: string
+- addresse : String
+
+Journee
+-jour: int (1)
+-mois: int (1)
+-annee: int (1)
+
+DPS
+-id: long (1)
+-horaire_depart: int[2]
+-horaire_fin: int[2]
+
+Site
+-code: string (1)
+-nom: string
+-longitude: float
+-lattitude: float
+
+Sport
+-code: string (1)
+-nom: string
+
+Competence :
+- intitule: string (1)
+
+Relations :
+EstDisponible (Secouriste 0..* - Journee  0..*)
+Possede (Secouriste  0..*  Competence  0..*)
+EstAffecte (Secouriste  0..* - Competence  0..* - DPS  0..*)
+Necessite (Competence  0..* - Competence  0..*)
+ABesoin (Competence 1..* - DPS 0..*) - a un attribut int nombre
+ALieuDans (DPS  0..* - 1 Site)
+EstProgramme (Journee 1 - DPS 0..*)
+Concerne (DPS 0..* - 1 Sport)

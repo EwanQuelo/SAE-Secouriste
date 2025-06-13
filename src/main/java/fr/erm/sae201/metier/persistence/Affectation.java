@@ -3,53 +3,45 @@ package fr.erm.sae201.metier.persistence;
 import java.util.Objects;
 
 /**
- * Represents an assignment of a Secouriste with a specific Competence to a DPS.
- * This maps to the 'Affectation' join table in the database.
- * PK: (idDPS, idSecouriste, intituleCompetence)
+ * Represents the assignment of a Secouriste to a specific DPS for a specific Competence.
+ * This corresponds to the 'Affectation' join table.
  */
 public class Affectation {
-    private DPS dps; // Foreign Key to DPS
-    private Secouriste secouriste; // Foreign Key to Secouriste
-    private Competence competence; // Foreign Key to Competence
 
+    private DPS dps;
+    private Secouriste secouriste;
+    private Competence competence;
+
+    /**
+     * Constructs a new Affectation.
+     *
+     * @param dps        The DPS the assignment is for. Must not be null.
+     * @param secouriste The Secouriste being assigned. Must not be null.
+     * @param competence The specific Competence the Secouriste is fulfilling for this DPS. Must not be null.
+     */
     public Affectation(DPS dps, Secouriste secouriste, Competence competence) {
-        setDps(dps);
-        setSecouriste(secouriste);
-        setCompetence(competence);
-    }
-
-    public DPS getDps() {
-        return dps;
-    }
-
-    public void setDps(DPS dps) {
-        if (dps == null) {
-            throw new IllegalArgumentException("DPS cannot be null in Affectation.");
+        if (dps == null || secouriste == null || competence == null) {
+            throw new IllegalArgumentException("DPS, Secouriste, and Competence for an Affectation cannot be null.");
         }
         this.dps = dps;
+        this.secouriste = secouriste;
+        this.competence = competence;
+    }
+
+    // Getters
+    public DPS getDps() {
+        return dps;
     }
 
     public Secouriste getSecouriste() {
         return secouriste;
     }
 
-    public void setSecouriste(Secouriste secouriste) {
-        if (secouriste == null) {
-            throw new IllegalArgumentException("Secouriste cannot be null in Affectation.");
-        }
-        this.secouriste = secouriste;
-    }
-
     public Competence getCompetence() {
         return competence;
     }
 
-    public void setCompetence(Competence competence) {
-        if (competence == null) {
-            throw new IllegalArgumentException("Competence cannot be null in Affectation.");
-        }
-        this.competence = competence;
-    }
+    // Setters could be added if needed, but entity is often treated as immutable once created.
 
     @Override
     public boolean equals(Object o) {
@@ -69,9 +61,9 @@ public class Affectation {
     @Override
     public String toString() {
         return "Affectation{" +
-               "dps_id=" + (dps != null ? dps.getId() : "null") +
-               ", secouriste_id=" + (secouriste != null ? secouriste.getId() : "null") +
-               ", competence_code='" + (competence != null ? competence.getCode() : "null") + '\'' +
+               "dpsId=" + dps.getId() +
+               ", secouristeId=" + secouriste.getId() +
+               ", competence=" + competence.getIntitule() +
                '}';
     }
 }

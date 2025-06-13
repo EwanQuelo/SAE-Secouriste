@@ -1,152 +1,196 @@
-package fr.erm.sae201.dao; // DAO package
+package fr.erm.sae201.dao;
 
-import fr.erm.sae201.metier.persistence.Secouriste; // POJO package
+import fr.erm.sae201.metier.persistence.Competence;
+import fr.erm.sae201.metier.persistence.Journee;
+import fr.erm.sae201.metier.persistence.Secouriste;
 
 import java.sql.*;
+import java.time.LocalDate;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
-// No need to import Date from java.util if Secouriste POJO handles it internally
+import java.util.Set;
 
-/**
- * DAO for the Secouriste entity, extending the generic DAO.
- * @author Raphael Mille, Ewan Quelo, Matheo Biet
- * @version 1.2
- */
 public class SecouristeDAO extends DAO<Secouriste> {
 
-    @Override
-    public List<Secouriste> findAll() {
-        String sql = "SELECT id, nom, prenom, dateNaissance, email, tel, adresse FROM Secouriste";
-        List<Secouriste> secouristes = new ArrayList<>();
-
-        try (Connection conn = getConnection(); // Inherited method
-             Statement stmt = conn.createStatement();
-             ResultSet rs = stmt.executeQuery(sql)) {
-
-            while (rs.next()) {
-                secouristes.add(new Secouriste(
-                        rs.getLong("id"),
-                        rs.getString("nom"),
-                        rs.getString("prenom"),
-                        // Assuming Secouriste constructor handles null java.sql.Date correctly
-                        // and expects java.util.Date
-                        rs.getDate("dateNaissance") != null ? new java.util.Date(rs.getDate("dateNaissance").getTime()) : null,
-                        rs.getString("email"),
-                        rs.getString("tel"),
-                        rs.getString("adresse")
-                ));
-            }
-        } catch (SQLException e) {
-            System.err.println("Error finding all Secouristes: " + e.getMessage());
-            // Consider throwing a custom DAOException or logging
-        }
-        return secouristes;
-    }
+    // DAOs pour les dépendances
+    private final CompetenceDAO competenceDAO = new CompetenceDAO();
+    private final JourneeDAO journeeDAO = new JourneeDAO();
 
     @Override
     public Secouriste findByID(Long id) {
         if (id == null) return null;
         String sql = "SELECT id, nom, prenom, dateNaissance, email, tel, adresse FROM Secouriste WHERE id = ?";
-        Secouriste secouriste = null;
-
         try (Connection conn = getConnection();
              PreparedStatement pstmt = conn.prepareStatement(sql)) {
-
             pstmt.setLong(1, id);
             try (ResultSet rs = pstmt.executeQuery()) {
                 if (rs.next()) {
-                    secouriste = new Secouriste(
-                            rs.getLong("id"),
-                            rs.getString("nom"),
-                            rs.getString("prenom"),
-                            rs.getDate("dateNaissance") != null ? new java.util.Date(rs.getDate("dateNaissance").getTime()) : null,
-                            rs.getString("email"),
-                            rs.getString("tel"),
-                            rs.getString("adresse")
-                    );
+                    return mapResultSetToSecouriste(rs, true); // Hydrate avec les relations
                 }
             }
         } catch (SQLException e) {
             System.err.println("Error finding Secouriste by ID " + id + ": " + e.getMessage());
         }
-        return secouriste;
+        return null;
+    }
+    
+    @Override
+    public List<Secouriste> findAll() {
+        List<Secouriste> secouristes = new ArrayList<>();
+        String sql = "SELECT id, nom, prenom, dateNaissance, email, tel, adresse FROM Secouriste";
+        try (Connection conn = getConnection();
+             Statement stmt = conn.createStatement();
+             ResultSet rs = stmt.executeQuery(sql)) {
+            while(rs.next()) {
+                secouristes.add(mapResultSetToSecouriste(rs, true)); // Hydrate avec les relations
+            }
+        } catch (SQLException e) {
+            System.err.println("Error finding all Secouristes: " + e.getMessage());
+        }
+        return secouristes;
     }
 
-    /**
-     * Crée un nouveau secouriste dans la base de données.
-     * L'ID est auto-généré par la base de données.
-     * @param secouriste L'objet Secouriste à créer (sans ID défini).
-     * @return L'ID généré par la base de données en cas de succès, ou -1 en cas d'erreur.
-     */
-    public int create(Secouriste secouriste) { // MODIFIÉ : le type de retour est maintenant long
-        if (secouriste == null) {
-            throw new IllegalArgumentException("Secouriste to create cannot be null.");
-        }
-        // MODIFIÉ : La colonne 'id' n'est plus dans la requête INSERT
-        String sql = "INSERT INTO Secouriste (nom, prenom, dateNaissance, email, tel, adresse) VALUES (?, ?, ?, ?, ?, ?)";
-        
-        // MODIFIÉ : On ajoute Statement.RETURN_GENERATED_KEYS pour récupérer l'ID
+    // --- GESTION RELATION : Possede (Secouriste <-> Competence) ---
+    public Set<Competence> findCompetencesForSecouriste(long secouristeId) {
+        Set<Competence> competences = new HashSet<>();
+        String sql = "SELECT intituleCompetence FROM Possede WHERE idSecouriste = ?";
         try (Connection conn = getConnection();
-             PreparedStatement pstmt = conn.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
+             PreparedStatement pstmt = conn.prepareStatement(sql)) {
+            pstmt.setLong(1, secouristeId);
+            try (ResultSet rs = pstmt.executeQuery()) {
+                while (rs.next()) {
+                    Competence comp = competenceDAO.findByIntitule(rs.getString("intituleCompetence"));
+                    if (comp != null) competences.add(comp);
+                }
+            }
+        } catch (SQLException e) {
+            System.err.println("Error finding competences for secouriste " + secouristeId + ": " + e.getMessage());
+        }
+        return competences;
+    }
 
-            // Les index sont décalés car on n'insère plus l'ID
+    public int addCompetenceToSecouriste(long secouristeId, String intituleCompetence) {
+        String sql = "INSERT INTO Possede (idSecouriste, intituleCompetence) VALUES (?, ?)";
+        try (Connection conn = getConnection();
+             PreparedStatement pstmt = conn.prepareStatement(sql)) {
+            pstmt.setLong(1, secouristeId);
+            pstmt.setString(2, intituleCompetence);
+            return pstmt.executeUpdate();
+        } catch (SQLException e) {
+            System.err.println("Error adding competence to secouriste: " + e.getMessage());
+            return -1;
+        }
+    }
+
+    public int removeCompetenceFromSecouriste(long secouristeId, String intituleCompetence) {
+        String sql = "DELETE FROM Possede WHERE idSecouriste = ? AND intituleCompetence = ?";
+        try (Connection conn = getConnection(); PreparedStatement pstmt = conn.prepareStatement(sql)) {
+            pstmt.setLong(1, secouristeId);
+            pstmt.setString(2, intituleCompetence);
+            return pstmt.executeUpdate();
+        } catch (SQLException e) {
+            System.err.println("Error removing competence from secouriste: " + e.getMessage());
+            return -1;
+        }
+    }
+
+    // --- GESTION RELATION : EstDisponible (Secouriste <-> Journee) ---
+    public Set<Journee> findAvailabilitiesForSecouriste(long secouristeId) {
+        Set<Journee> journees = new HashSet<>();
+        String sql = "SELECT jour FROM EstDisponible WHERE idSecouriste = ?";
+        try (Connection conn = getConnection(); PreparedStatement pstmt = conn.prepareStatement(sql)) {
+            pstmt.setLong(1, secouristeId);
+            try (ResultSet rs = pstmt.executeQuery()) {
+                while(rs.next()) {
+                    journees.add(new Journee(rs.getDate("jour").toLocalDate()));
+                }
+            }
+        } catch (SQLException e) {
+            System.err.println("Error finding availabilities for secouriste " + secouristeId + ": " + e.getMessage());
+        }
+        return journees;
+    }
+
+    public int addAvailability(long secouristeId, LocalDate date) {
+        String sql = "INSERT INTO EstDisponible (idSecouriste, jour) VALUES (?, ?)";
+        try (Connection conn = getConnection(); PreparedStatement pstmt = conn.prepareStatement(sql)) {
+            pstmt.setLong(1, secouristeId);
+            pstmt.setDate(2, Date.valueOf(date));
+            return pstmt.executeUpdate();
+        } catch (SQLException e) {
+            System.err.println("Error adding availability: " + e.getMessage());
+            return -1;
+        }
+    }
+
+    public int removeAvailability(long secouristeId, LocalDate date) {
+        String sql = "DELETE FROM EstDisponible WHERE idSecouriste = ? AND jour = ?";
+        try (Connection conn = getConnection(); PreparedStatement pstmt = conn.prepareStatement(sql)) {
+            pstmt.setLong(1, secouristeId);
+            pstmt.setDate(2, Date.valueOf(date));
+            return pstmt.executeUpdate();
+        } catch (SQLException e) {
+            System.err.println("Error removing availability: " + e.getMessage());
+            return -1;
+        }
+    }
+
+    // --- Méthodes CRUD de base et utilitaires ---
+    private Secouriste mapResultSetToSecouriste(ResultSet rs, boolean fetchRelations) throws SQLException {
+        Secouriste secouriste = new Secouriste(
+            rs.getLong("id"),
+            rs.getString("nom"),
+            rs.getString("prenom"),
+            rs.getDate("dateNaissance"),
+            rs.getString("email"),
+            rs.getString("tel"),
+            rs.getString("adresse")
+        );
+        if (fetchRelations) {
+            secouriste.setCompetences(findCompetencesForSecouriste(secouriste.getId()));
+            secouriste.setDisponibilites(findAvailabilitiesForSecouriste(secouriste.getId()));
+        }
+        return secouriste;
+    }
+    
+    @Override
+    public int create(Secouriste secouriste) {
+        String sql = "INSERT INTO Secouriste (nom, prenom, dateNaissance, email, tel, adresse) VALUES (?, ?, ?, ?, ?, ?)";
+        try (Connection conn = getConnection(); PreparedStatement pstmt = conn.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
             pstmt.setString(1, secouriste.getNom());
             pstmt.setString(2, secouriste.getPrenom());
-            if (secouriste.getDateNaissance() != null) {
-                // Pour le constructeur, j'ai mis "new Date()", mais si le POJO
-                // stocke null, il faut gérer ce cas.
-                pstmt.setDate(3, new java.sql.Date(secouriste.getDateNaissance().getTime()));
-            } else {
-                pstmt.setNull(3, Types.DATE);
-            }
+            pstmt.setDate(3, new java.sql.Date(secouriste.getDateNaissance().getTime()));
             pstmt.setString(4, secouriste.getEmail());
             pstmt.setString(5, secouriste.getTel());
             pstmt.setString(6, secouriste.getAddresse());
-
+            
             int affectedRows = pstmt.executeUpdate();
-
-            if (affectedRows == 0) {
-                // Aucun enregistrement n'a été créé, c'est une erreur.
-                return -1;
-            }
-
-            // NOUVEAU : Bloc pour récupérer l'ID auto-généré
-            try (ResultSet generatedKeys = pstmt.getGeneratedKeys()) {
-                if (generatedKeys.next()) {
-                    return (int) generatedKeys.getLong(1); // On retourne le nouvel ID
-                } else {
-                    // L'insertion a fonctionné mais on n'a pas pu récupérer l'ID, erreur grave.
-                    throw new SQLException("La création a échoué, impossible d'obtenir l'ID.");
+            if (affectedRows > 0) {
+                try (ResultSet generatedKeys = pstmt.getGeneratedKeys()) {
+                    if (generatedKeys.next()) {
+                        secouriste.setId(generatedKeys.getLong(1));
+                    }
                 }
             }
-
+            return (int) secouriste.getId(); // Retourne l'ID du nouveau secouriste
         } catch (SQLException e) {
             System.err.println("Error creating Secouriste: " + e.getMessage());
             return -1;
         }
     }
-    
+
     @Override
     public int update(Secouriste secouriste) {
-        if (secouriste == null) {
-            throw new IllegalArgumentException("Secouriste to update cannot be null.");
-        }
         String sql = "UPDATE Secouriste SET nom = ?, prenom = ?, dateNaissance = ?, email = ?, tel = ?, adresse = ? WHERE id = ?";
-        try (Connection conn = getConnection();
-             PreparedStatement pstmt = conn.prepareStatement(sql)) {
-
+        try (Connection conn = getConnection(); PreparedStatement pstmt = conn.prepareStatement(sql)) {
             pstmt.setString(1, secouriste.getNom());
             pstmt.setString(2, secouriste.getPrenom());
-            if (secouriste.getDateNaissance() != null) {
-                pstmt.setDate(3, new java.sql.Date(secouriste.getDateNaissance().getTime()));
-            } else {
-                pstmt.setNull(3, Types.DATE);
-            }
+            pstmt.setDate(3, new java.sql.Date(secouriste.getDateNaissance().getTime()));
             pstmt.setString(4, secouriste.getEmail());
             pstmt.setString(5, secouriste.getTel());
             pstmt.setString(6, secouriste.getAddresse());
             pstmt.setLong(7, secouriste.getId());
-
             return pstmt.executeUpdate();
         } catch (SQLException e) {
             System.err.println("Error updating Secouriste with ID " + secouriste.getId() + ": " + e.getMessage());
@@ -156,13 +200,9 @@ public class SecouristeDAO extends DAO<Secouriste> {
 
     @Override
     public int delete(Secouriste secouriste) {
-        if (secouriste == null) {
-            throw new IllegalArgumentException("Secouriste to delete cannot be null.");
-        }
+        if (secouriste == null) return -1;
         String sql = "DELETE FROM Secouriste WHERE id = ?";
-        try (Connection conn = getConnection();
-             PreparedStatement pstmt = conn.prepareStatement(sql)) {
-
+        try (Connection conn = getConnection(); PreparedStatement pstmt = conn.prepareStatement(sql)) {
             pstmt.setLong(1, secouriste.getId());
             return pstmt.executeUpdate();
         } catch (SQLException e) {

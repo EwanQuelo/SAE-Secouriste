@@ -1,109 +1,55 @@
 package fr.erm.sae201.metier.persistence;
 
+import java.time.LocalDate;
 import java.util.Objects;
 
 /**
- * Represents a specific day using basic numerical validation.
- * @author Raphael Mille, Ewan Quelo, Matheo Biet 
- * @version 1.1
+ * Represents a specific day using java.time.LocalDate, matching the DATE SQL type.
+ * @author L'IA qui corrige
+ * @version 2.0
  */
 public class Journee {
-    private int jour;
-    private int mois;
-    private int annee;
-
-    private static final int MIN_JOUR = 1;
-    private static final int MAX_JOUR = 31;
-    private static final int MIN_MOIS = 1;
-    private static final int MAX_MOIS = 12;
-    private static final int MIN_ANNEE = 1; // Assuming year must be a positive number
+    private LocalDate date;
 
     /**
-     * Constructs a new Journee.
-     * Note: This performs basic range checks (e.g., day 1-31) but does not validate
-     * the actual existence of the date (e.g., February 30th would be considered valid by these checks).
-     * @param jour The day of the month. Must be between 1 and 31.
-     * @param mois The month of the year. Must be between 1 and 12.
-     * @param annee The year. Must be greater than or equal to 1.
-     * @throws IllegalArgumentException if jour, mois, or annee are out of their respective valid ranges.
+     * Constructs a new Journee from a LocalDate object.
+     * @param date The specific date. Must not be null.
+     * @throws IllegalArgumentException if date is null.
+     */
+    public Journee(LocalDate date) {
+        setDate(date);
+    }
+
+    /**
+     * Legacy constructor for creating a Journee from day, month, and year.
+     * This now internally creates a LocalDate object.
+     * @param jour The day of the month.
+     * @param mois The month of the year.
+     * @param annee The year.
+     * @throws java.time.DateTimeException if the date is invalid.
      */
     public Journee(int jour, int mois, int annee) {
-        if (jour < MIN_JOUR || jour > MAX_JOUR) {
-            throw new IllegalArgumentException("Jour (day) must be between " + MIN_JOUR + " and " + MAX_JOUR + ". Received: " + jour);
-        }
-        if (mois < MIN_MOIS || mois > MAX_MOIS) {
-            throw new IllegalArgumentException("Mois (month) must be between " + MIN_MOIS + " and " + MAX_MOIS + ". Received: " + mois);
-        }
-        if (annee < MIN_ANNEE) {
-            // You might want a more practical lower bound, e.g., 1900, depending on your application.
-            throw new IllegalArgumentException("Annee (year) must be greater than or equal to " + MIN_ANNEE + ". Received: " + annee);
-        }
-        this.jour = jour;
-        this.mois = mois;
-        this.annee = annee;
+        this.date = LocalDate.of(annee, mois, jour);
     }
 
     /**
-     * Gets the day of the month.
-     * @return The day.
+     * Gets the date.
+     * @return The LocalDate object representing the day.
      */
-    public int getJour() {
-        return jour;
+    public LocalDate getDate() {
+        return date;
     }
 
     /**
-     * Sets the day of the month.
-     * Note: This only checks if the day is between 1 and 31, not if it's valid for the current month/year.
-     * @param jour The new day. Must be between 1 and 31.
-     * @throws IllegalArgumentException if jour is out of the range 1-31.
+     * Sets the date.
+     * @param date The new date. Must not be null.
+     * @throws IllegalArgumentException if date is null.
      */
-    public void setJour(int jour) {
-        if (jour < MIN_JOUR || jour > MAX_JOUR) {
-            throw new IllegalArgumentException("Jour (day) must be between " + MIN_JOUR + " and " + MAX_JOUR + ". Received: " + jour);
+    public void setDate(LocalDate date) {
+        if (date == null) {
+            throw new IllegalArgumentException("Date cannot be null.");
         }
-        this.jour = jour;
-    }
-
-    /**
-     * Gets the month of the year.
-     * @return The month.
-     */
-    public int getMois() {
-        return mois;
-    }
-
-    /**
-     * Sets the month of the year.
-     * Note: This only checks if the month is between 1 and 12.
-     * @param mois The new month. Must be between 1 and 12.
-     * @throws IllegalArgumentException if mois is out of the range 1-12.
-     */
-    public void setMois(int mois) {
-         if (mois < MIN_MOIS || mois > MAX_MOIS) {
-            throw new IllegalArgumentException("Mois (month) must be between " + MIN_MOIS + " and " + MAX_MOIS + ". Received: " + mois);
-        }
-        this.mois = mois;
-    }
-
-    /**
-     * Gets the year.
-     * @return The year.
-     */
-    public int getAnnee() {
-        return annee;
-    }
-
-    /**
-     * Sets the year.
-     * Note: This only checks if the year is greater than or equal to 1.
-     * @param annee The new year. Must be greater than or equal to 1.
-     * @throws IllegalArgumentException if annee is less than 1.
-     */
-    public void setAnnee(int annee) {
-        if (annee < MIN_ANNEE) {
-            throw new IllegalArgumentException("Annee (year) must be greater than or equal to " + MIN_ANNEE + ". Received: " + annee);
-        }
-        this.annee = annee;
+        this.date = date;
     }
 
     @Override
@@ -111,22 +57,18 @@ public class Journee {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         Journee journee = (Journee) o;
-        return jour == journee.jour &&
-               mois == journee.mois &&
-               annee == journee.annee;
+        return Objects.equals(date, journee.date);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(jour, mois, annee);
+        return Objects.hash(date);
     }
 
     @Override
     public String toString() {
         return "Journee{" +
-               "jour=" + jour +
-               ", mois=" + mois +
-               ", annee=" + annee +
+               "date=" + date +
                '}';
     }
 }

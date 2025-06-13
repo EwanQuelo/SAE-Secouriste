@@ -36,21 +36,28 @@ public abstract class DAO<T> {
         // Obtenir la connection
         return DriverManager.getConnection(URL, USERNAME, PASSWORD);
     }
-
     /**
-     * Retrieves all elements of type T.
+     * Retrieves all elements of type T from the database.
      * @return A list of all elements.
      */
     public abstract List<T> findAll();
 
     /**
-     * Finds an element by its Long ID.
-     * Concrete DAOs for entities with non-Long IDs should provide specific findById methods
-     * and may throw UnsupportedOperationException for this generic one.
+     * Finds an element by its primary key, assuming the key is a Long.
+     * DAOs for entities with non-Long or composite primary keys (e.g., String code, LocalDate)
+     * should throw an UnsupportedOperationException and provide their own specific finders
+     * (e.g., findByCode(String code)).
      * @param id The Long ID of the element.
      * @return The element if found, otherwise null.
      */
     public abstract T findByID(Long id);
+
+    /**
+     * Creates a new element in the database.
+     * @param element The element to create.
+     * @return The number of rows affected (typically 1 on success), or -1 on error.
+     */
+    public abstract int create(T element);
 
     /**
      * Updates an existing element in the database.
@@ -65,13 +72,6 @@ public abstract class DAO<T> {
      * @return The number of rows affected, or -1 on error.
      */
     public abstract int delete(T element);
-
-    /**
-     * Creates a new element in the database.
-     * @param element The element to create.
-     * @return The number of rows affected, or -1 on error.
-     */
-    public abstract int create(T element);
 
 
     // Utility to close resources quietly (optional, but good practice if not using try-with-resources fully)

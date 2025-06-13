@@ -11,7 +11,7 @@ public class Site {
     private String code;
     private String nom;
     private float longitude;
-    private float latitude; // Corrected from lattitude
+    private float latitude;
 
     /**
      * Constructs a new Site.

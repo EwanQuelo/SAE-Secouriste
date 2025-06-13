@@ -76,6 +76,8 @@ public class MainApp extends Application {
         primaryStage.setTitle("SECOURS - Réinitialisation");
     }
 
+    
+
     public static void main(String[] args) {
         launch(args);
     }
