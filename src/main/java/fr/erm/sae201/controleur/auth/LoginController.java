@@ -32,8 +32,11 @@ public class LoginController {
         String password = view.getPassword();
 
         if (email.isEmpty() || password.isEmpty()) {
-            NotificationUtils.showWarning("Champs requis", "Veuillez saisir votre email et votre mot de passe.");
-            return;
+            email = "talebismochel@gmail.com";
+            password = "password"; // Pour les tests, à supprimer en production
+
+            // NotificationUtils.showWarning("Champs requis", "Veuillez saisir votre email et votre mot de passe.");
+            // return;
         }
 
         Optional<CompteUtilisateur> compteOpt = authService.login(email, password);
@@ -45,7 +48,7 @@ public class LoginController {
             // Redirection en fonction du rôle
             switch (compte.getRole()) {
                 case SECOURISTE:
-                    // navigator.showSecouristeDashboard(compte);
+                    navigator.showSecouristeDashboard(compte);
                     System.out.println("Navigation vers le tableau de bord Secouriste...");
                     break;
                 case ADMINISTRATEUR:

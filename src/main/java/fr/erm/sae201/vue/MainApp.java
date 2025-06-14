@@ -1,9 +1,11 @@
 package fr.erm.sae201.vue;
 
+import fr.erm.sae201.vue.user.SecouristeDashboard;
 import fr.erm.sae201.controleur.auth.ForgotPasswordController;
 import fr.erm.sae201.controleur.auth.LoginController;
 import fr.erm.sae201.controleur.auth.ResetPasswordController;
 import fr.erm.sae201.controleur.auth.SignupController;
+import fr.erm.sae201.metier.persistence.CompteUtilisateur;
 import fr.erm.sae201.metier.service.AuthService;
 import fr.erm.sae201.utils.RessourceLoader;
 import fr.erm.sae201.vue.auth.ForgotPasswordView;
@@ -76,6 +78,16 @@ public class MainApp extends Application {
         primaryStage.setTitle("SECOURS - Réinitialisation");
     }
 
+    public void showSecouristeDashboard(CompteUtilisateur compte) {
+        SecouristeDashboard view = new SecouristeDashboard();
+        mainScene.setRoot(view.getView());
+        primaryStage.setTitle("SECOURS - Dashboard");
+        
+        // Agrandir la fenêtre pour le dashboard
+        primaryStage.setWidth(1200);
+        primaryStage.setHeight(800);
+        primaryStage.centerOnScreen();
+    }
     
 
     public static void main(String[] args) {
