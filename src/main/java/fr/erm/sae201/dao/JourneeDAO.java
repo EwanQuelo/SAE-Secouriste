@@ -6,8 +6,23 @@ import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * Data Access Object (DAO) for managing {@link Journee} entities.
+ * A {@link Journee} (Day) represents a specific date, which serves as its primary key.
+ * This class handles CRUD operations for Journee records.
+ *
+ * @author Ewan QUELO, Raphael MILLE, Matheo BIET
+ * @version 1.0
+ */
 public class JourneeDAO extends DAO<Journee> {
 
+    /**
+     * Retrieves all {@link Journee} records from the database.
+     * Each Journee is identified by a unique date.
+     *
+     * @return A {@link List} of all {@link Journee} objects found.
+     *         The list may be empty if no Journee records exist or if an error occurs.
+     */
     @Override
     public List<Journee> findAll() {
         String sql = "SELECT jour FROM Journee";
@@ -24,6 +39,14 @@ public class JourneeDAO extends DAO<Journee> {
         return journees;
     }
 
+    /**
+     * Finds a specific {@link Journee} by its date.
+     * The date acts as the primary key for a Journee.
+     *
+     * @param date The {@link LocalDate} to search for. Can be 'null'.
+     * @return The {@link Journee} object if found; 'null' if no Journee with the given date
+     *         exists, if the provided 'date' is 'null', or if an error occurs.
+     */
     public Journee findByDate(LocalDate date) {
         if (date == null) return null;
         String sql = "SELECT jour FROM Journee WHERE jour = ?";
@@ -41,6 +64,18 @@ public class JourneeDAO extends DAO<Journee> {
         return null;
     }
 
+
+    /**
+     * Creates a new {@link Journee} record in the database.
+     * The date of the Journee serves as its primary key.
+     *
+     * @param journee The {@link Journee} object to persist. Its date must be set.
+     *                Must not be 'null'.
+     * @return The number of rows affected (typically 1 on success). Returns -1 if an
+     *         {@link SQLException} occurs (e.g., if the date already exists due to
+     *         primary key constraint) or if 'journee' is 'null'.
+     * @throws IllegalArgumentException if 'journee' is 'null'.
+     */
     @Override
     public int create(Journee journee) {
         if (journee == null) throw new IllegalArgumentException("Journee to create cannot be null.");
@@ -56,6 +91,15 @@ public class JourneeDAO extends DAO<Journee> {
         }
     }
 
+    /**
+     * Deletes a {@link Journee} record from the database based on its date
+     *
+     * @param journee The {@link Journee} object to delete. Its date must be set.
+     *                Must not be 'null'.
+     * @return The number of rows affected (1 if successful, 0 if no record with the date was found).
+     *         Returns -1 if an {@link SQLException} occurs or if 'journee' is 'null'.
+     * @throws IllegalArgumentException if 'journee' is 'null'.
+     */
     @Override
     public int delete(Journee journee) {
         if (journee == null) throw new IllegalArgumentException("Journee to delete cannot be null.");

@@ -8,12 +8,27 @@ import fr.erm.sae201.vue.auth.LoginView;
 
 import java.util.Optional;
 
+/**
+ * Controller for the Login view.
+ * This class handles user authentication by validating credentials through the {@link AuthService}.
+ * It also provides navigation to the signup and forgot password screens.
+ *
+ * @author Ewan QUELO, Raphael MILLE, Matheo BIET
+ * @version 1.0
+ */
 public class LoginController {
 
     private final LoginView view;
     private final MainApp navigator;
     private final AuthService authService;
 
+    /**
+     * Constructs a new LoginController
+     *
+     * @param view The {@link LoginView} instance this controller manages
+     * @param navigator The {@link MainApp} instance used for navigating between different application screens
+     * @param authService The {@link AuthService} instance used for user authentication
+     */
     public LoginController(LoginView view, MainApp navigator, AuthService authService) {
         this.view = view;
         this.navigator = navigator;
@@ -21,12 +36,24 @@ public class LoginController {
         initializeListeners();
     }
 
+    /**
+     * Initializes event listeners for UI components in the {@link LoginView}.
+     * Sets up actions for the login button, signup button, and forgot password link.
+     */
     private void initializeListeners() {
         view.getLoginButton().setOnAction(e -> handleLogin());
         view.getSignupButton().setOnAction(e -> handleSignup());
         view.getForgotPasswordLink().setOnAction(e -> handleForgotPassword());
     }
 
+     /**
+     * Handles the login attempt.
+     * Retrieves email and password from the {@link LoginView}, validates them,
+     * and attempts to authenticate the user via the {@link AuthService}.
+     * If authentication is successful, it navigates to the appropriate dashboard
+     * based on the user's role ({@link fr.erm.sae201.metier.persistence.CompteUtilisateur.Role}).
+     * Displays notifications for missing fields, or login success/failure.
+     */
     private void handleLogin() {
         String email = view.getEmail();
         String password = view.getPassword();
@@ -61,10 +88,18 @@ public class LoginController {
         }
     }
 
+    /**
+     * Handles the navigation to the signup screen.
+     * Uses the {@link MainApp} navigator to display the signup view.
+     */
     private void handleSignup() {
         navigator.showSignupScreen();
     }
 
+    /**
+     * Handles the navigation to the forgot password screen.
+     * Uses the {@link MainApp} navigator to display the forgot password view.
+     */
     private void handleForgotPassword() {
         navigator.showForgotPasswordScreen();
     }
