@@ -1,6 +1,5 @@
 package fr.erm.sae201.vue;
 
-import fr.erm.sae201.vue.user.SecouristeDashboard;
 import fr.erm.sae201.controleur.auth.ForgotPasswordController;
 import fr.erm.sae201.controleur.auth.LoginController;
 import fr.erm.sae201.controleur.auth.ResetPasswordController;
@@ -8,10 +7,12 @@ import fr.erm.sae201.controleur.auth.SignupController;
 import fr.erm.sae201.metier.persistence.CompteUtilisateur;
 import fr.erm.sae201.metier.service.AuthService;
 import fr.erm.sae201.utils.RessourceLoader;
+import fr.erm.sae201.vue.admin.*;
 import fr.erm.sae201.vue.auth.ForgotPasswordView;
 import fr.erm.sae201.vue.auth.LoginView;
 import fr.erm.sae201.vue.auth.ResetPasswordView;
 import fr.erm.sae201.vue.auth.SignupView;
+import fr.erm.sae201.vue.user.*;
 import javafx.application.Application;
 import javafx.scene.Scene;
 import javafx.scene.layout.StackPane;
@@ -30,20 +31,26 @@ public class MainApp extends Application {
 
         this.authService = new AuthService();
 
-        this.mainScene = new Scene(new StackPane(), 1024, 768);
+        this.mainScene = new Scene(new StackPane(), 1280, 800);
         applyCommonStyles();
         primaryStage.setScene(mainScene);
         
         showLoginScreen();
         
+        // add logo to the stage
+        primaryStage.getIcons().add(RessourceLoader.loadImage("logo.png"));
+
         primaryStage.show();
+        primaryStage.centerOnScreen();
     }
 
     private void applyCommonStyles() {
         mainScene.getStylesheets().add(RessourceLoader.loadCSS("notifications.css"));
         mainScene.getStylesheets().add(RessourceLoader.loadCSS("login.css"));
+        mainScene.getStylesheets().add(RessourceLoader.loadCSS("application.css"));
     }
 
+    // --- Vues d'authentification ---
     public void showLoginScreen() {
         LoginView view = new LoginView();
         new LoginController(view, this, authService);
@@ -65,28 +72,62 @@ public class MainApp extends Application {
         primaryStage.setTitle("SECOURS - Mot de passe oublié");
     }
 
-    /**
-     * Affiche la vue de réinitialisation de mot de passe pour un email spécifique.
-     * @param email L'email du compte à réinitialiser.
-     */
-    public void showResetPasswordScreen(String email) { // MODIFIÉ : Accepte l'email
+    public void showResetPasswordScreen(String email) {
         ResetPasswordView view = new ResetPasswordView();
-        // MODIFIÉ : On passe l'email et le service au contrôleur
         new ResetPasswordController(view, this, authService, email); 
-        
         mainScene.setRoot(view.getView());
         primaryStage.setTitle("SECOURS - Réinitialisation");
     }
 
-    public void showSecouristeDashboard(CompteUtilisateur compte) {
-        SecouristeDashboard view = new SecouristeDashboard();
+    // --- Vues Administrateur ---
+    public void showAdminDashboard(CompteUtilisateur compte) {
+        AdminDashboard view = new AdminDashboard(this, compte);
         mainScene.setRoot(view.getView());
-        primaryStage.setTitle("SECOURS - Dashboard");
-        
-        // Agrandir la fenêtre pour le dashboard
-        primaryStage.setWidth(1200);
-        primaryStage.setHeight(800);
-        primaryStage.centerOnScreen();
+        primaryStage.setTitle("SECOURS - Tableau de Bord Admin");
+    }
+
+    public void showAdminDispositifView(CompteUtilisateur compte) {
+        AdminDispositifView view = new AdminDispositifView(this, compte);
+        mainScene.setRoot(view.getView());
+        primaryStage.setTitle("SECOURS - Gestion des Dispositifs");
+    }
+
+    public void showAdminUtilisateursView(CompteUtilisateur compte) {
+        AdminUtilisateursView view = new AdminUtilisateursView(this, compte);
+        mainScene.setRoot(view.getView());
+        primaryStage.setTitle("SECOURS - Gestion des Utilisateurs");
+    }
+
+    public void showAdminAffectationsView(CompteUtilisateur compte) {
+        AdminAffectationsView view = new AdminAffectationsView(this, compte);
+        mainScene.setRoot(view.getView());
+        primaryStage.setTitle("SECOURS - Gestion des Affectations");
+    }
+
+
+    // --- Vues Secouriste ---
+    public void showSecouristeDashboard(CompteUtilisateur compte) {
+        SecouristeDashboard view = new SecouristeDashboard(this, compte);
+        mainScene.setRoot(view.getView());
+        primaryStage.setTitle("SECOURS - Accueil Secouriste");
+    }
+
+    public void showUserCalendrierView(CompteUtilisateur compte) {
+        UserCalendrierView view = new UserCalendrierView(this, compte);
+        mainScene.setRoot(view.getView());
+        primaryStage.setTitle("SECOURS - Calendrier");
+    }
+
+    public void showUserCarteView(CompteUtilisateur compte) {
+        UserCarteView view = new UserCarteView(this, compte);
+        mainScene.setRoot(view.getView());
+        primaryStage.setTitle("SECOURS - Carte");
+    }
+
+    public void showUserCompetencesView(CompteUtilisateur compte) {
+        UserCompetencesView view = new UserCompetencesView(this, compte);
+        mainScene.setRoot(view.getView());
+        primaryStage.setTitle("SECOURS - Mes Compétences");
     }
     
 

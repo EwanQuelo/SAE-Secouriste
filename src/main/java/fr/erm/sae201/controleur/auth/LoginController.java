@@ -79,7 +79,7 @@ public class LoginController {
                     System.out.println("Navigation vers le tableau de bord Secouriste...");
                     break;
                 case ADMINISTRATEUR:
-                    // navigator.showAdminDashboard(compte);
+                    navigator.showAdminDashboard(compte);
                     System.out.println("Navigation vers le tableau de bord Administrateur...");
                     break;
             }

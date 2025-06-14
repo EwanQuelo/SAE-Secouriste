@@ -22,6 +22,21 @@ public class RessourceLoader {
     }
 
     /**
+     * Loads an image from a Base64 encoded string.
+     * @param base64Image the Base64 encoded string representing the image
+     * @return the loaded Image object, or a default image if the Base64 string is invalid
+     */
+    public static Image loadImageFromBase64(String base64Image) {
+        try {
+            byte[] imageBytes = java.util.Base64.getDecoder().decode(base64Image);
+            return new Image(new java.io.ByteArrayInputStream(imageBytes));
+        } catch (Exception e) {
+            System.err.println("Error loading image from Base64: " + e.getMessage());
+            return new Image(RessourceLoader.class.getResourceAsStream("/images/404.png"));
+        }
+    }
+
+    /**
      * Loads a CSS file from the resources directory.
      *
      * @param cssPath the path to the CSS file relative to the resources directory
