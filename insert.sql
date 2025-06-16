@@ -1,11 +1,14 @@
--- Sélection de la base de données
+-- ==========================================================================
+-- SCRIPT DE REMPLISSAGE FINAL
+-- Version la plus robuste : laisse AUTO_INCREMENT gérer les IDs.
+-- ==========================================================================
+
 USE secours2030;
 
--- --------------------------------------------------------
---            VIDAGE DES DONNÉES EXISTANTES
--- On supprime dans l'ordre inverse des dépendances pour éviter les erreurs
--- --------------------------------------------------------
-SET FOREIGN_KEY_CHECKS = 0; -- Désactive temporairement la vérification des clés étrangères
+-- --------------------------------------------------------------------------
+-- ÉTAPE 1 : VIDAGE DES TABLES EXISTANTES
+-- --------------------------------------------------------------------------
+SET FOREIGN_KEY_CHECKS = 0;
 TRUNCATE TABLE Affectation;
 TRUNCATE TABLE ABesoin;
 TRUNCATE TABLE EstDisponible;
@@ -18,115 +21,45 @@ TRUNCATE TABLE Competence;
 TRUNCATE TABLE Journee;
 TRUNCATE TABLE Site;
 TRUNCATE TABLE Sport;
-SET FOREIGN_KEY_CHECKS = 1; -- Réactive la vérification
+SET FOREIGN_KEY_CHECKS = 1;
 
--- --------------------------------------------------------
---          INSERTION DANS LES TABLES DE RÉFÉRENCE
--- --------------------------------------------------------
+-- --------------------------------------------------------------------------
+-- ÉTAPE 2 : REMPLISSAGE DES DONNÉES
+-- --------------------------------------------------------------------------
 
--- Table: Site
-INSERT INTO `Site` (`code`, `nom`, `longitude`, `latitude`) VALUES
-('STA', 'Stade de France', 2.3601, 48.9244),
-('BER', 'Bercy Arena', 2.3787, 48.8384),
-('DEF', 'Paris La Défense Arena', 2.2283, 48.8925),
-('CHA', 'Champs de Mars Arena', 2.2987, 48.8545);
+-- 2.1 Données de base
+INSERT INTO Competence (intitule) VALUES ('CO'), ('CP'), ('CE'), ('PBC'), ('PBF'), ('PSE1'), ('PSE2'), ('SSA'), ('VPSP');
+INSERT INTO Necessite (intituleCompetence, competenceRequise) VALUES ('CO', 'CP'), ('CP', 'CE'), ('CE', 'PSE2'), ('PSE2', 'PSE1'), ('SSA', 'PSE1'), ('VPSP', 'PSE2'), ('PBF', 'PBC');
+INSERT INTO Site (code, nom, longitude, latitude) VALUES ('CRCHV', 'Courchevel - Le Praz', 6.6335, 45.4153), ('MRBL', 'Méribel - Chaudanne', 6.5665, 45.3967), ('VALDI', 'Val d''Isère - La Daille', 6.9800, 45.4481), ('LPLGN', 'La Plagne - Piste de Bobsleigh', 6.6742, 45.5065);
+INSERT INTO Sport (code, nom) VALUES ('SKI-ALP-DH', 'Ski Alpin - Descente'), ('SKI-ALP-SL', 'Ski Alpin - Slalom Géant'), ('SAUT-SKI', 'Saut à Ski - Grand Tremplin'), ('BOBSLEIGH', 'Bobsleigh à 4');
+INSERT INTO Journee (jour) VALUES ('2030-02-10'), ('2030-02-11'), ('2030-02-12'), ('2030-02-13'), ('2030-02-14');
 
--- Table: Sport
-INSERT INTO `Sport` (`code`, `nom`) VALUES
-('ATH', 'Athlétisme'),
-('BSK', 'Basketball'),
-('NAT', 'Natation'),
-('JUD', 'Judo'),
-('VOL', 'Volleyball');
+-- 2.2 Secouristes et Comptes Utilisateurs
+-- CORRECTION : On ne fournit plus les IDs manuellement. On laisse AUTO_INCREMENT faire son travail.
+INSERT INTO Secouriste (nom, prenom, dateNaissance, email, tel, adresse) VALUES
+('Jean', 'Patrick', '1995-05-20', 'test@mail.com', '0612345678', '1 Rue de la Montagne, 73000 Chambéry'),
+('Martin', 'Marie', '1998-11-12', 'marie.martin@secours.fr', '0687654321', '15 Avenue des Alpes, 38000 Grenoble'),
+('Petit', 'Luc', '2001-02-28', 'luc.petit@secours.fr', '0611223344', '8 Boulevard de la Neige, 74000 Annecy'),
+('Durand', 'Sophie', '1992-07-15', 'sophie.durand@secours.fr', '0655667788', '22 Place du Forum, 73200 Albertville');
 
--- Table: Journee (CORRIGÉE)
-INSERT INTO `Journee` (`jour`) VALUES
-('2024-07-28'),
-('2024-07-29'),
-('2024-07-30');
+-- Les idSecouriste 1, 2, 3, 4 correspondent bien aux secouristes insérés juste avant.
+INSERT INTO CompteUtilisateur (login, motDePasseHash, role, idSecouriste) VALUES
+('test@mail.com', '$2a$10$Nm84K.ob81kQjIr.1nPGH.mQBSqTKve55c3F8wvn2E0Pl.2avlbpi', 'SECOURISTE', 1),
+('marie.martin@secours.fr', '$2a$12$D4TTPa3qLz8o4UsoBUC8A.m2d7B/obL5x1e1o/2GZpI1xG/2uC.XC', 'SECOURISTE', 2),
+('luc.petit@secours.fr', '$2a$12$D4TTPa3qLz8o4UsoBUC8A.m2d7B/obL5x1e1o/2GZpI1xG/2uC.XC', 'SECOURISTE', 3),
+('sophie.durand@secours.fr', '$2a$12$D4TTPa3qLz8o4UsoBUC8A.m2d7B/obL5x1e1o/2GZpI1xG/2uC.XC', 'SECOURISTE', 4),
+('admin@jo2030.fr', '$2a$12$D4TTPa3qLz8o4UsoBUC8A.m2d7B/obL5x1e1o/2GZpI1xG/2uC.XC', 'ADMINISTRATEUR', NULL);
 
--- Table: Competence
-INSERT INTO `Competence` (`intitule`) VALUES
-('PSE1'),
-('PSE2'),
-('Chef de Poste'),
-('Conducteur VPSP'),
-('SST');
+-- 2.3 Compétences et Disponibilités des Secouristes
+INSERT INTO Possede (idSecouriste, intituleCompetence) VALUES (1, 'CE'), (1, 'VPSP'), (2, 'PSE2'), (3, 'PSE1'), (4, 'CP');
+INSERT INTO EstDisponible (idSecouriste, jour) VALUES (1, '2030-02-10'), (1, '2030-02-11'), (1, '2030-02-12'), (2, '2030-02-10'), (2, '2030-02-13'), (3, '2030-02-12'), (4, '2030-02-10'), (4, '2030-02-11');
 
--- --------------------------------------------------------
---          INSERTION DANS LES TABLES AVEC DÉPENDANCES (NIVEAU 1)
--- --------------------------------------------------------
+-- 2.4 Événements (DPS) et Leurs Besoins
+INSERT INTO DPS (id, horaire_depart, horaire_fin, lieu, sport, jour) VALUES (1, 8, 17, 'CRCHV', 'SKI-ALP-DH', '2030-02-10'), (2, 9, 12, 'LPLGN', 'BOBSLEIGH', '2030-02-11'), (3, 10, 16, 'VALDI', 'SKI-ALP-SL', '2030-02-12');
+INSERT INTO ABesoin (idDPS, intituleCompetence, nombre) VALUES (1, 'CP', 1), (1, 'CE', 1), (1, 'PSE2', 2), (2, 'VPSP', 1), (2, 'PSE2', 1), (3, 'CE', 1), (3, 'PSE1', 1);
 
--- Table: Necessite
-INSERT INTO `Necessite` (`intituleCompetence`, `competenceRequise`) VALUES
-('PSE2', 'PSE1'),
-('Chef de Poste', 'PSE2'),
-('Conducteur VPSP', 'PSE2');
+-- 2.5 Affectations Finales
+INSERT INTO Affectation (idSecouriste, intituleCompetence, idDPS) VALUES (4, 'CP', 1), (1, 'CE', 1), (2, 'PSE2', 1), (4, 'PSE2', 1), (1, 'VPSP', 2), (4, 'PSE2', 2), (1, 'CE', 3), (3, 'PSE1', 3);
 
--- Table: Secouriste
-INSERT INTO `Secouriste` (`id`, `nom`, `prenom`, `dateNaissance`, `email`, `tel`, `adresse`) VALUES
-(1, 'Dubois', 'Alice', '1990-05-15', 'alice.dubois@email.com', '0601020304', '1 rue de Paris'),
-(2, 'Lambert', 'Bruno', '1995-09-20', 'bruno.lambert@email.com', '0611223344', '2 avenue de Lyon'),
-(3, 'Martin', 'Chloé', '1998-02-10', 'chloe.martin@email.com', '0655667788', '3 boulevard de Marseille'),
-(4, 'Petit', 'David', '2002-11-30', 'david.petit@email.com', '0699887766', '4 place de Lille'),
-(5, 'Royer', 'Eva', '1985-06-25', 'eva.royer@email.com', '0700112233', '5 rue de Bordeaux');
 
--- Table: CompteUtilisateur
-INSERT INTO `CompteUtilisateur` (`login`, `motDePasseHash`, `role`, `idSecouriste`) VALUES
-('alice.dubois@email.com', '$2a$10$47eyYuELzUi96Nh6g/a.3.Xpe4EiPMbbuLl9cKwzpw5GQJSistpCC', 'SECOURISTE', 1),
-('bruno.lambert@email.com', '$2a$10$47eyYuELzUi96Nh6g/a.3.Xpe4EiPMbbuLl9cKwzpw5GQJSistpCC', 'SECOURISTE', 2),
-('chloe.martin@email.com', '$2a$10$47eyYuELzUi96Nh6g/a.3.Xpe4EiPMbbuLl9cKwzpw5GQJSistpCC', 'SECOURISTE', 3),
-('david.petit@email.com', '$2a$10$47eyYuELzUi96Nh6g/a.3.Xpe4EiPMbbuLl9cKwzpw5GQJSistpCC', 'SECOURISTE', 4),
-('eva.royer@email.com', '$2a$10$47eyYuELzUi96Nh6g/a.3.Xpe4EiPMbbuLl9cKwzpw5GQJSistpCC', 'ADMINISTRATEUR', 5),
-('admin@secours.fr', '$2a$10$47eyYuELzUi96Nh6g/a.3.Xpe4EiPMbbuLl9cKwzpw5GQJSistpCC', 'ADMINISTRATEUR', NULL);
-
--- Table: Possede
-INSERT INTO `Possede` (`idSecouriste`, `intituleCompetence`) VALUES
-(1, 'PSE1'), (1, 'PSE2'), (1, 'Chef de Poste'), (1, 'Conducteur VPSP'),
-(2, 'PSE1'), (2, 'PSE2'),
-(3, 'PSE1'), (3, 'PSE2'), (3, 'Conducteur VPSP'),
-(4, 'PSE1'),
-(5, 'SST');
-
--- Table: EstDisponible
-INSERT INTO `EstDisponible` (`idSecouriste`, `jour`) VALUES
-(1, '2024-07-28'), (1, '2024-07-29'), (1, '2024-07-30'),
-(2, '2024-07-28'), (2, '2024-07-29'),
-(3, '2024-07-29'), (3, '2024-07-30'),
-(4, '2024-07-28');
-
--- --------------------------------------------------------
---          INSERTION DANS LES TABLES D'ÉVÉNEMENTS
--- --------------------------------------------------------
-
--- Table: DPS
-INSERT INTO `DPS` (`id`, `horaire_depart`, `horaire_fin`, `lieu`, `sport`, `jour`) VALUES
-(1, 800, 2200, 'STA', 'ATH', '2024-07-28'),
-(2, 1400, 2300, 'BER', 'BSK', '2024-07-29'),
-(3, 930, 1830, 'DEF', 'NAT', '2024-07-29'),
-(4, 1800, 2100, 'CHA', 'JUD', '2024-07-30');
-
--- --------------------------------------------------------
---          INSERTION DANS LES TABLES DE JOINTURE FINALES
--- --------------------------------------------------------
-
--- Table: ABesoin
-INSERT INTO `ABesoin` (`idDPS`, `intituleCompetence`, `nombre`) VALUES
-(1, 'Chef de Poste', 1),
-(1, 'Conducteur VPSP', 1),
-(1, 'PSE2', 4),
-(2, 'Chef de Poste', 1),
-(2, 'PSE2', 2),
-(3, 'Chef de Poste', 1),
-(3, 'PSE2', 3),
-(4, 'PSE1', 2);
-
--- Table: Affectation
-INSERT INTO `Affectation` (`idSecouriste`, `intituleCompetence`, `idDPS`) VALUES
-(1, 'Chef de Poste', 1),
-(2, 'PSE2', 1),
-(1, 'Chef de Poste', 2),
-(3, 'PSE2', 2),
-(2, 'PSE2', 3),
-(3, 'PSE2', 3),
-(3, 'PSE1', 4);
+SELECT 'Script de remplissage terminé avec succès.' AS message;
