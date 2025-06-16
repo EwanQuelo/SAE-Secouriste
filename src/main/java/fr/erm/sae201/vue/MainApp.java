@@ -1,5 +1,6 @@
 package fr.erm.sae201.vue;
 
+import fr.erm.sae201.controleur.UserCarteController;
 import fr.erm.sae201.controleur.auth.ForgotPasswordController;
 import fr.erm.sae201.controleur.auth.LoginController;
 import fr.erm.sae201.controleur.auth.ResetPasswordController;
@@ -48,6 +49,7 @@ public class MainApp extends Application {
         mainScene.getStylesheets().add(RessourceLoader.loadCSS("notifications.css"));
         mainScene.getStylesheets().add(RessourceLoader.loadCSS("login.css"));
         mainScene.getStylesheets().add(RessourceLoader.loadCSS("application.css"));
+        mainScene.getStylesheets().add(RessourceLoader.loadCSS("carte.css"));
     }
 
     // --- Vues d'authentification ---
@@ -119,7 +121,10 @@ public class MainApp extends Application {
     }
 
     public void showUserCarteView(CompteUtilisateur compte) {
+        // This now follows the logic from your example:
+        // create view, create controller, and link them.
         UserCarteView view = new UserCarteView(this, compte);
+        new UserCarteController(view, compte); // The controller will set itself on the view.
         mainScene.setRoot(view.getView());
         primaryStage.setTitle("SECOURS - Carte");
     }

@@ -1,0 +1,119 @@
+/* --- STYLES SPÉCIFIQUES À LA VUE CARTE (INSPIRED) --- */
+
+.affectations-list-panel {
+    -fx-background-color: transparent; /* The panel itself is transparent */
+}
+
+.affectations-title {
+    -fx-font-size: 18px;
+    -fx-font-weight: bold;
+    -fx-text-fill: white;
+    -fx-padding: 0 0 10px 5px;
+    -fx-border-color: rgba(255, 255, 255, 0.3);
+    -fx-border-width: 0 0 1px 0;
+}
+
+.affectation-items-container {
+    -fx-padding: 5px 5px 5px 0; /* Add padding to the right for the scrollbar */
+}
+
+.affectation-item {
+    -fx-background-color: rgba(40, 40, 40, 0.7);
+    -fx-padding: 12px;
+    -fx-background-radius: 6px;
+    -fx-border-color: rgba(255, 255, 255, 0.1);
+    -fx-border-width: 1px;
+    -fx-border-radius: 6px;
+    -fx-cursor: hand;
+    -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.4), 5, 0, 1, 2);
+}
+
+.affectation-item:hover {
+    -fx-background-color: rgba(60, 60, 60, 0.8);
+    -fx-border-color: #64B5F6;
+}
+
+.affectation-marker-icon-circle {
+    -fx-min-width: 24px;
+    -fx-pref-width: 24px;
+    -fx-max-width: 24px;
+    -fx-min-height: 24px;
+    -fx-pref-height: 24px;
+    -fx-max-height: 24px;
+    -fx-background-radius: 12px;
+    -fx-alignment: center;
+    -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.5), 3, 0, 0, 1);
+}
+
+.affectation-marker-icon-text {
+    -fx-fill: white;
+    -fx-font-weight: bold;
+    -fx-font-size: 12px;
+}
+
+.affectation-item-title {
+    -fx-font-size: 14px;
+    -fx-font-weight: bold;
+    -fx-text-fill: white;
+}
+
+.affectation-item-address {
+    -fx-font-size: 12px;
+    -fx-text-fill: #E0E0E0;
+}
+
+.affectation-item-info-title {
+    -fx-font-size: 11px;
+    -fx-font-weight: bold;
+    -fx-text-fill: #B0BEC5;
+    -fx-padding-top: 8px;
+}
+
+.affectation-item-info {
+    -fx-font-size: 12px;
+    -fx-text-fill: #CFD8DC;
+}
+
+.map-panel-container {
+    -fx-background-color: #333; /* Fallback while map loads */
+    -fx-background-radius: 8px;
+    -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.2), 10, 0, 2, 3);
+}
+
+.map-panel-container .web-view {
+    -fx-background-radius: 8px;
+}
+
+.placeholder-text {
+    -fx-font-style: italic;
+    -fx-text-fill: #BDBDBD;
+    -fx-padding: 20px;
+    -fx-alignment: center;
+}
+
+/* --- ScrollBar customisation for dark theme --- */
+.content-scroll-pane {
+    -fx-background-color: transparent;
+}
+.content-scroll-pane .viewport {
+    -fx-background-color: transparent;
+}
+.scroll-bar:vertical, .scroll-bar:horizontal {
+    -fx-background-color:transparent;
+}
+.scroll-bar .thumb {
+    -fx-background-color: #707070;
+    -fx-background-insets: 0;
+    -fx-background-radius: 4px;
+}
+.scroll-bar .track {
+    -fx-background-color: rgba(50,50,50,0.5);
+    -fx-border-color:transparent;
+    -fx-background-radius:5px;
+    -fx-border-radius:5px;
+}
+.scroll-bar .increment-button ,
+.scroll-bar .decrement-button {
+    -fx-background-color:transparent;
+    -fx-padding:0 0 5 0;
+}
