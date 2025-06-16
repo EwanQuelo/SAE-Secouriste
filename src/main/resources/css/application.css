@@ -87,3 +87,99 @@
     -fx-border-color: #a6c5f7;
 }
 
+
+/* ==========================================================================
+   Styles pour la Page Paramètres - Version Finale Cohérente
+   ========================================================================== */
+
+/* Conteneur principal : inspiré de .login-box et .navbar */
+.form-container {
+    -fx-background-color: rgba(45, 52, 54, 0.90); /* Comme la navbar */
+    -fx-padding: 30px 40px;
+    -fx-background-radius: 12px; /* Comme la navbar */
+    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.5), 10, 0, 0, 5); /* Comme la navbar */
+    -fx-max-width: 550px;
+}
+
+/* Titre principal "Paramètres du compte" : inspiré de .title-label */
+.form-title {
+    -fx-font-size: 28px;
+    -fx-font-weight: bold;
+    -fx-fill: white; /* C'est cette ligne qui met le texte en blanc */
+    -fx-padding-bottom: 20px; /* Ajoute un peu d'espace en dessous */
+}
+
+/* Titre de chaque section : texte de la navbar */
+.settings-section .section-title {
+    -fx-font-size: 18px;
+    -fx-font-weight: bold;
+    -fx-text-fill: #dfe6e9; /* Couleur texte principal navbar */
+}
+
+/* Texte d'information principal (l'adresse email) */
+.settings-section .info-text-main {
+    -fx-font-size: 14px;
+    -fx-text-fill: white;
+}
+
+/* Texte d'information secondaire ("ne peut pas être modifiée") */
+.settings-section .info-text-secondary {
+    -fx-font-size: 12px;
+    -fx-text-fill: #b2bec3; /* Couleur texte secondaire navbar */
+}
+
+/* Sépare visuellement les sections de paramètres */
+.settings-section {
+    -fx-border-color: transparent transparent rgba(255, 255, 255, 0.15) transparent;
+    -fx-border-width: 1px;
+    -fx-padding: 15px 0;
+    -fx-spacing: 10px;
+    -fx-max-width: 400px;
+}
+
+/* Champs de saisie : inspiré de .login-input */
+.settings-input {
+    -fx-background-color: #A9A9A9; /* Fond gris clair du login */
+    -fx-text-fill: #333333; /* Texte foncé du login */
+    -fx-prompt-text-fill: #666666; /* Placeholder du login */
+    -fx-font-size: 14px;
+    -fx-background-radius: 8px; /* Arrondi cohérent */
+    -fx-border-radius: 8px;
+    -fx-pref-height: 40px;
+    -fx-border-width: 0;
+}
+
+.settings-input:focused {
+    -fx-border-color: white;
+    -fx-border-width: 1.5px;
+}
+
+/* Bouton principal pour enregistrer : inspiré de .login-button */
+.save-button {
+    -fx-background-color: #5A5A5A; /* Couleur du login-button */
+    -fx-text-fill: white;
+    -fx-font-size: 15px;
+    -fx-font-weight: bold;
+    -fx-background-radius: 8px;
+    -fx-pref-height: 40px;
+    -fx-padding: 0 25px;
+    -fx-cursor: hand;
+}
+
+.save-button:hover {
+    -fx-background-color: #6B6B6B; /* Couleur hover du login-button */
+}
+
+/* Bouton de déconnexion : inspiré de .forgot-password-link */
+.logout-button {
+    -fx-background-color: transparent;
+    -fx-text-fill: #b2bec3; /* Texte secondaire navbar */
+    -fx-font-size: 14px;
+    -fx-underline: false;
+    -fx-cursor: hand;
+}
+
+.logout-button:hover {
+    -fx-underline: true;
+    -fx-text-fill: white;
+}

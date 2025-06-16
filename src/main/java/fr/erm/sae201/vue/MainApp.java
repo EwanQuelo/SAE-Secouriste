@@ -134,6 +134,12 @@ public class MainApp extends Application {
         mainScene.setRoot(view.getView());
         primaryStage.setTitle("SECOURS - Mes Compétences");
     }
+
+    public void showUserParametreView(CompteUtilisateur compte) {
+    UserParametresView view = new UserParametresView(this, compte, this.authService);
+    mainScene.setRoot(view.getView());
+    primaryStage.setTitle("SECOURS - Paramètres");
+	}
     
 
     public static void main(String[] args) {
