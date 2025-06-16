@@ -25,7 +25,6 @@ public abstract class DAO<T> {
     private static final String URL = "jdbc:mysql://localhost:3306/secours2030?useSSL=false&serverTimezone=UTC&allowPublicKeyRetrieval=true";
     private static final String USERNAME = "root";
     private static final String PASSWORD = "snowad1234";
-
     /**
      * Establishes and returns a connection to the database.
      * This method first attempts to load the JDBC driver specified by

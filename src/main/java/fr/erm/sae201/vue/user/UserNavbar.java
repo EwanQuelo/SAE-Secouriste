@@ -28,7 +28,8 @@ public class UserNavbar extends HBox {
         Region spacer = new Region();
         HBox.setHgrow(spacer, Priority.ALWAYS);
 
-        HBox userInfo = createUserInfo(compte);
+        HBox userInfo = createUserInfo(navigator, compte);
+
 
         this.getChildren().addAll(navLinks, spacer, userInfo);
     }
@@ -53,7 +54,7 @@ public class UserNavbar extends HBox {
         // Compétences
         Button competencesBtn = createNavButton("Compétences", "Compétences".equals(activeViewName));
         competencesBtn.setOnAction(e -> navigator.showUserCompetencesView(compte));
-        
+
         navLinks.getChildren().addAll(accueilBtn, calendrierBtn, carteBtn, competencesBtn);
         return navLinks;
     }
@@ -68,7 +69,7 @@ public class UserNavbar extends HBox {
     }
 
     // La méthode createUserInfo reste inchangée
-    private HBox createUserInfo(CompteUtilisateur compte) {
+    private HBox createUserInfo(MainApp navigator, CompteUtilisateur compte) {
         HBox userInfo = new HBox(15);
         userInfo.setAlignment(Pos.CENTER_RIGHT);
 
@@ -100,6 +101,8 @@ public class UserNavbar extends HBox {
         settingsIcon.setFitWidth(24);
         settingsButton.setGraphic(settingsIcon);
         settingsButton.getStyleClass().add("settings-button");
+        
+        settingsButton.setOnAction(e -> navigator.showUserParametreView(compte));
 
         userInfo.getChildren().addAll(settingsButton, textInfo, profilePic);
         return userInfo;
