@@ -3,6 +3,7 @@ package fr.erm.sae201.vue.auth;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.control.*;
+import javafx.scene.effect.GaussianBlur;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.StackPane;
@@ -36,6 +37,11 @@ public class LoginView {
         backgroundImageView.fitHeightProperty().bind(rootPane.heightProperty());
         rootPane.getChildren().add(backgroundImageView);
         // --- Fin du Fond Commun ---
+        
+
+        GaussianBlur blurEffect = new GaussianBlur(10);
+        backgroundImageView.setEffect(blurEffect);
+        backgroundImageView.setSmooth(true);
 
         VBox loginBox = new VBox(20);
         loginBox.getStyleClass().add("login-box");

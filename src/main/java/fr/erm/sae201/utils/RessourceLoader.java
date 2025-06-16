@@ -17,7 +17,7 @@ public class RessourceLoader {
             return new Image(RessourceLoader.class.getResourceAsStream("/images/" + imagePath));
         } catch (Exception e) {
             System.err.println("Error loading image: " + e.getMessage());
-            return new Image(RessourceLoader.class.getResourceAsStream("/images/404.png"));
+            return new Image(RessourceLoader.class.getResourceAsStream("/images/profile-uniforme.png"));
         }
     }
 
@@ -32,7 +32,7 @@ public class RessourceLoader {
             return new Image(new java.io.ByteArrayInputStream(imageBytes));
         } catch (Exception e) {
             System.err.println("Error loading image from Base64: " + e.getMessage());
-            return new Image(RessourceLoader.class.getResourceAsStream("/images/404.png"));
+            return new Image(RessourceLoader.class.getResourceAsStream("/images/profile-uniforme.png"));
         }
     }
 

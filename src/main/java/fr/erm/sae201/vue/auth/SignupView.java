@@ -2,6 +2,7 @@ package fr.erm.sae201.vue.auth;
 
 import javafx.geometry.Pos;
 import javafx.scene.control.*;
+import javafx.scene.effect.GaussianBlur;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Priority;
@@ -42,6 +43,10 @@ public class SignupView {
         backgroundImageView.fitHeightProperty().bind(rootPane.heightProperty());
         rootPane.getChildren().add(backgroundImageView);
 
+        GaussianBlur blurEffect = new GaussianBlur(10);
+        backgroundImageView.setEffect(blurEffect);
+        backgroundImageView.setSmooth(true);
+        
         VBox formBox = new VBox(15);
         formBox.getStyleClass().add("login-box");
         formBox.setAlignment(Pos.CENTER);

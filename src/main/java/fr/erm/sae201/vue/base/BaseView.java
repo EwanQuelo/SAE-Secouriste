@@ -12,6 +12,7 @@ import javafx.scene.image.ImageView;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.StackPane;
+import javafx.scene.effect.GaussianBlur;
 
 /**
  * Classe de base abstraite pour toutes les vues de l'application post-connexion.
@@ -44,6 +45,11 @@ public abstract class BaseView {
         backgroundImageView.setPreserveRatio(false);
         backgroundImageView.fitWidthProperty().bind(rootPane.widthProperty());
         backgroundImageView.fitHeightProperty().bind(rootPane.heightProperty());
+
+        // pour le flou
+        GaussianBlur blurEffect = new GaussianBlur(10);
+        backgroundImageView.setEffect(blurEffect);
+        backgroundImageView.setSmooth(true);
         
         // 2. Création de la barre de navigation en fonction du rôle
         HBox navbar = createNavbar(navigator, compte, activeViewName);

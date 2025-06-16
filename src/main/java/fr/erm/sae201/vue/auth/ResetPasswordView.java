@@ -5,6 +5,7 @@ import javafx.scene.control.Button;
 import javafx.scene.control.Hyperlink;
 import javafx.scene.control.Label;
 import javafx.scene.control.PasswordField;
+import javafx.scene.effect.GaussianBlur;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.StackPane;
@@ -33,6 +34,10 @@ public class ResetPasswordView {
         backgroundImageView.fitWidthProperty().bind(rootPane.widthProperty());
         backgroundImageView.fitHeightProperty().bind(rootPane.heightProperty());
         rootPane.getChildren().add(backgroundImageView);
+
+        GaussianBlur blurEffect = new GaussianBlur(10);
+        backgroundImageView.setEffect(blurEffect);
+        backgroundImageView.setSmooth(true);
 
         VBox formBox = new VBox(20);
         formBox.getStyleClass().add("login-box");
