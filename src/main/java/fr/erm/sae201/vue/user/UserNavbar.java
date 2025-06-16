@@ -104,7 +104,7 @@ public class UserNavbar extends HBox {
         
         settingsButton.setOnAction(e -> navigator.showUserParametreView(compte));
 
-        userInfo.getChildren().addAll(settingsButton, textInfo, profilePic);
+        userInfo.getChildren().addAll(textInfo, profilePic, settingsButton);
         return userInfo;
     }
 }

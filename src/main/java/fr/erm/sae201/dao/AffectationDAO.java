@@ -5,12 +5,15 @@ import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.time.LocalDate;
 
 /**
  * Data Access Object (DAO) for managing {@link Affectation} entities.
  * An {@link Affectation} represents the assignment of a {@link Secouriste}
- * with a specific {@link Competence} to a {@link DPS} (Dispositif Prévisionnel de Secours).
- * This class handles database operations such as creating, retrieving, and deleting affectations.
+ * with a specific {@link Competence} to a {@link DPS} (Dispositif Prévisionnel
+ * de Secours).
+ * This class handles database operations such as creating, retrieving, and
+ * deleting affectations.
  *
  * @author Ewan QUELO, Raphael MILLE, Matheo BIET
  * @version 1.0
@@ -28,7 +31,8 @@ public class AffectationDAO extends DAO<Affectation> {
      * If any related entity cannot be found for a given record, that affectation
      * will not be included in the returned list.
      *
-     * @return A {@link List} of all {@link Affectation} objects. The list may be empty
+     * @return A {@link List} of all {@link Affectation} objects. The list may be
+     *         empty
      *         if no affectations are found or if an error occurs during retrieval.
      */
     @Override
@@ -36,8 +40,8 @@ public class AffectationDAO extends DAO<Affectation> {
         String sql = "SELECT idDPS, idSecouriste, intituleCompetence FROM Affectation";
         List<Affectation> affectations = new ArrayList<>();
         try (Connection conn = getConnection();
-             Statement stmt = conn.createStatement();
-             ResultSet rs = stmt.executeQuery(sql)) {
+                Statement stmt = conn.createStatement();
+                ResultSet rs = stmt.executeQuery(sql)) {
             while (rs.next()) {
                 DPS dps = dpsDAO.findByID(rs.getLong("idDPS"));
                 Secouriste secouriste = secouristeDAO.findByID(rs.getLong("idSecouriste"));
@@ -51,19 +55,20 @@ public class AffectationDAO extends DAO<Affectation> {
         }
         return affectations;
     }
-    
+
     /**
      * Finds all {@link Affectation} records associated with a specific {@link DPS}.
      *
      * @param dpsId The ID of the {@link DPS} for which to find affectations.
      * @return A {@link List} of {@link Affectation} objects for the given DPS ID.
-     *         The list may be empty if no affectations are found for this DPS or if an error occurs.
+     *         The list may be empty if no affectations are found for this DPS or if
+     *         an error occurs.
      */
     public List<Affectation> findAffectationsByDpsId(long dpsId) {
         List<Affectation> affectations = new ArrayList<>();
         String sql = "SELECT idDPS, idSecouriste, intituleCompetence FROM Affectation WHERE idDPS = ?";
         try (Connection conn = getConnection();
-             PreparedStatement pstmt = conn.prepareStatement(sql)) {
+                PreparedStatement pstmt = conn.prepareStatement(sql)) {
             pstmt.setLong(1, dpsId);
             try (ResultSet rs = pstmt.executeQuery()) {
                 while (rs.next()) {
@@ -77,17 +82,21 @@ public class AffectationDAO extends DAO<Affectation> {
     }
 
     /**
-     * Finds all {@link Affectation} records associated with a specific {@link Secouriste}.
+     * Finds all {@link Affectation} records associated with a specific
+     * {@link Secouriste}.
      *
-     * @param secouristeId The ID of the {@link Secouriste} for which to find affectations.
-     * @return A {@link List} of {@link Affectation} objects for the given Secouriste ID.
-     *         The list may be empty if no affectations are found for this secouriste or if an error occurs.
+     * @param secouristeId The ID of the {@link Secouriste} for which to find
+     *                     affectations.
+     * @return A {@link List} of {@link Affectation} objects for the given
+     *         Secouriste ID.
+     *         The list may be empty if no affectations are found for this
+     *         secouriste or if an error occurs.
      */
     public List<Affectation> findAffectationsBySecouristeId(long secouristeId) {
         List<Affectation> affectations = new ArrayList<>();
         String sql = "SELECT idDPS, idSecouriste, intituleCompetence FROM Affectation WHERE idSecouriste = ?";
         try (Connection conn = getConnection();
-             PreparedStatement pstmt = conn.prepareStatement(sql)) {
+                PreparedStatement pstmt = conn.prepareStatement(sql)) {
             pstmt.setLong(1, secouristeId);
             try (ResultSet rs = pstmt.executeQuery()) {
                 while (rs.next()) {
@@ -99,17 +108,20 @@ public class AffectationDAO extends DAO<Affectation> {
         }
         return affectations;
     }
-    
-    
+
     /**
-     * Helper method to map a row from a {@link ResultSet} to an {@link Affectation} object.
+     * Helper method to map a row from a {@link ResultSet} to an {@link Affectation}
+     * object.
      * It retrieves IDs and intitule from the current row, then uses {@link DPSDAO},
-     * {@link SecouristeDAO}, and {@link CompetenceDAO} to fetch the full related objects.
+     * {@link SecouristeDAO}, and {@link CompetenceDAO} to fetch the full related
+     * objects.
      *
      * @param rs The {@link ResultSet} positioned at the row to map.
-     * @return An {@link Optional} containing the mapped {@link Affectation} if all related
+     * @return An {@link Optional} containing the mapped {@link Affectation} if all
+     *         related
      *         entities are found and valid; otherwise, an empty {@link Optional}.
-     * @throws SQLException If an error occurs while accessing the {@link ResultSet}.
+     * @throws SQLException If an error occurs while accessing the
+     *                      {@link ResultSet}.
      */
     private java.util.Optional<Affectation> mapResultSetToAffectation(ResultSet rs) throws SQLException {
         DPS dps = dpsDAO.findByID(rs.getLong("idDPS"));
@@ -126,16 +138,20 @@ public class AffectationDAO extends DAO<Affectation> {
      * The {@link Affectation} object must have its {@link DPS}, {@link Secouriste},
      * and {@link Competence} fields properly set with valid entities.
      *
-     * @param affectation The {@link Affectation} object to persist. Must not be 'null'.
-     * @return The number of rows affected (typically 1 on success, or -1 if an SQLException occurs).
-     * @throws IllegalArgumentException if 'affectation' is 'null' or its internal components are not set.
+     * @param affectation The {@link Affectation} object to persist. Must not be
+     *                    'null'.
+     * @return The number of rows affected (typically 1 on success, or -1 if an
+     *         SQLException occurs).
+     * @throws IllegalArgumentException if 'affectation' is 'null' or its internal
+     *                                  components are not set.
      */
     @Override
     public int create(Affectation affectation) {
-        if (affectation == null) throw new IllegalArgumentException("Affectation cannot be null.");
+        if (affectation == null)
+            throw new IllegalArgumentException("Affectation cannot be null.");
         String sql = "INSERT INTO Affectation (idDPS, idSecouriste, intituleCompetence) VALUES (?, ?, ?)";
         try (Connection conn = getConnection();
-             PreparedStatement pstmt = conn.prepareStatement(sql)) {
+                PreparedStatement pstmt = conn.prepareStatement(sql)) {
             pstmt.setLong(1, affectation.getDps().getId());
             pstmt.setLong(2, affectation.getSecouriste().getId());
             pstmt.setString(3, affectation.getCompetence().getIntitule());
@@ -148,20 +164,25 @@ public class AffectationDAO extends DAO<Affectation> {
 
     /**
      * Deletes an existing {@link Affectation} record from the database.
-     * The deletion is based on the composite key (DPS ID, Secouriste ID, Competence intitule)
+     * The deletion is based on the composite key (DPS ID, Secouriste ID, Competence
+     * intitule)
      * derived from the provided {@link Affectation} object.
      *
-     * @param affectation The {@link Affectation} object to delete. Must not be 'null'.
-     * @return The number of rows affected (typically 1 on success, 0 if no matching record was found,
+     * @param affectation The {@link Affectation} object to delete. Must not be
+     *                    'null'.
+     * @return The number of rows affected (typically 1 on success, 0 if no matching
+     *         record was found,
      *         or -1 if an SQLException occurs).
-     * @throws IllegalArgumentException if 'affectation' is 'null' or its internal components are not set.
+     * @throws IllegalArgumentException if 'affectation' is 'null' or its internal
+     *                                  components are not set.
      */
     @Override
     public int delete(Affectation affectation) {
-        if (affectation == null) throw new IllegalArgumentException("Affectation cannot be null.");
+        if (affectation == null)
+            throw new IllegalArgumentException("Affectation cannot be null.");
         String sql = "DELETE FROM Affectation WHERE idDPS = ? AND idSecouriste = ? AND intituleCompetence = ?";
         try (Connection conn = getConnection();
-             PreparedStatement pstmt = conn.prepareStatement(sql)) {
+                PreparedStatement pstmt = conn.prepareStatement(sql)) {
             pstmt.setLong(1, affectation.getDps().getId());
             pstmt.setLong(2, affectation.getSecouriste().getId());
             pstmt.setString(3, affectation.getCompetence().getIntitule());
@@ -172,8 +193,68 @@ public class AffectationDAO extends DAO<Affectation> {
         }
     }
 
-    
-    
+    /**
+     * Récupère toutes les affectations pour un secouriste donné entre deux dates.
+     * C'est une version optimisée qui ne fait qu'une seule requête complexe.
+     *
+     * @param secouristeId L'ID du secouriste.
+     * @param startDate    La date de début de la période.
+     * @param endDate      La date de fin de la période.
+     * @return Une liste d'objets Affectation.
+     */
+    public List<Affectation> findAffectationsForSecouristeBetweenDates(long secouristeId, LocalDate startDate,
+            LocalDate endDate) {
+        List<Affectation> affectations = new ArrayList<>();
+        String sql = "SELECT " +
+                "  a.idSecouriste, a.intituleCompetence, a.idDPS, " +
+                "  d.horaire_depart, d.horaire_fin, d.jour AS dps_jour, " +
+                "  s.nom AS secouriste_nom, s.prenom, s.dateNaissance, s.email, s.tel, s.adresse, " +
+                "  si.code AS site_code, si.nom AS site_nom, si.longitude, si.latitude, " +
+                "  sp.code AS sport_code, sp.nom AS sport_nom " +
+                "FROM " +
+                "  Affectation a " +
+                "JOIN Secouriste s ON a.idSecouriste = s.id " +
+                "JOIN DPS d ON a.idDPS = d.id " +
+                "JOIN Site si ON d.lieu = si.code " +
+                "JOIN Sport sp ON d.sport = sp.code " +
+                "WHERE a.idSecouriste = ? AND d.jour BETWEEN ? AND ?";
+
+        try (Connection conn = getConnection();
+                PreparedStatement pstmt = conn.prepareStatement(sql)) {
+
+            pstmt.setLong(1, secouristeId);
+            pstmt.setDate(2, java.sql.Date.valueOf(startDate));
+            pstmt.setDate(3, java.sql.Date.valueOf(endDate));
+
+            try (ResultSet rs = pstmt.executeQuery()) {
+                while (rs.next()) {
+                    Secouriste secouriste = new Secouriste(rs.getLong("idSecouriste"), rs.getString("secouriste_nom"),
+                            rs.getString("prenom"), rs.getDate("dateNaissance"), rs.getString("email"),
+                            rs.getString("tel"), rs.getString("adresse"));
+                    Site site = new Site(rs.getString("site_code"), rs.getString("site_nom"), rs.getFloat("longitude"),
+                            rs.getFloat("latitude"));
+                    Sport sport = new Sport(rs.getString("sport_code"), rs.getString("sport_nom"));
+                    Competence competence = new Competence(rs.getString("intituleCompetence"));
+
+                    // CORRECTION : On utilise le constructeur de Journee avec la date extraite de
+                    // la BDD
+                    Journee journee = new Journee(rs.getDate("dps_jour").toLocalDate());
+
+                    int[] horaireDepart = { rs.getInt("horaire_depart"), 0 };
+                    int[] horaireFin = { rs.getInt("horaire_fin"), 0 };
+
+                    DPS dps = new DPS(rs.getLong("idDPS"), horaireDepart, horaireFin, site, journee, sport);
+
+                    affectations.add(new Affectation(dps, secouriste, competence));
+                }
+            }
+        } catch (SQLException e) {
+            System.err.println("Erreur lors de la récupération des affectations pour le secouriste " + secouristeId);
+            e.printStackTrace();
+        }
+        return affectations;
+    }
+
     @Override
     public Affectation findByID(Long id) {
         throw new UnsupportedOperationException("Affectation has a composite PK. Use findByCompositeKey().");
@@ -181,6 +262,7 @@ public class AffectationDAO extends DAO<Affectation> {
 
     @Override
     public int update(Affectation element) {
-        throw new UnsupportedOperationException("Updating an Affectation (join table record) is typically done by deleting and creating a new one.");
+        throw new UnsupportedOperationException(
+                "Updating an Affectation (join table record) is typically done by deleting and creating a new one.");
     }
 }

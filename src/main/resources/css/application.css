@@ -1,6 +1,6 @@
 /* --- Barre de Navigation --- */
 .navbar {
-    -fx-background-color: rgba(45, 52, 54, 0.85); /* Noir/gris très sombre et semi-transparent */
+    -fx-background-color: rgba(45, 52, 54, 1); /* Noir/gris très sombre et semi-transparent */
     -fx-background-radius: 12;
     -fx-padding: 8px 20px; /* Augmentation du padding horizontal */
     -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.5), 10, 0, 0, 5);
@@ -94,11 +94,12 @@
 
 /* Conteneur principal : inspiré de .login-box et .navbar */
 .form-container {
-    -fx-background-color: rgba(45, 52, 54, 0.90); /* Comme la navbar */
+    -fx-background-color: rgba(45, 52, 54, 1); 
     -fx-padding: 30px 40px;
     -fx-background-radius: 12px; /* Comme la navbar */
     -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.5), 10, 0, 0, 5); /* Comme la navbar */
     -fx-max-width: 550px;
+    
 }
 
 /* Titre principal "Paramètres du compte" : inspiré de .title-label */
@@ -182,4 +183,167 @@
 .logout-button:hover {
     -fx-underline: true;
     -fx-text-fill: white;
+}
+
+/* ==========================================================================
+   Styles pour la Vue Calendrier (Version finale)
+   ========================================================================== */
+
+/* Conteneur principal avec le fond sombre */
+.calendar-container {
+    -fx-background-color: rgba(45, 52, 54, 1);
+    -fx-padding: 15px;
+    -fx-background-radius: 12px;
+}
+
+/* Barre de navigation de la semaine */
+.week-nav-bar {
+    -fx-alignment: center;
+    -fx-padding: 0 0 15px 0; /* Espace sous la barre de nav */
+}
+
+.week-nav-button {
+    -fx-background-color: transparent;
+    -fx-padding: 4px 8px;
+    -fx-background-radius: 50%; /* Rend le fond circulaire au survol */
+    -fx-cursor: hand;
+    
+    /* CORRECTION : On force la couleur du texte en blanc */
+    -fx-text-fill: white;
+    -fx-font-size: 28px; /* Augmente la taille pour une meilleure visibilité */
+    -fx-font-weight: bold; /* Rend le caractère plus épais */
+}
+
+.week-nav-button:hover {
+    -fx-background-color: #404249; /* Fond gris au survol */
+    -fx-text-fill: #007AFF; /* Le texte de la flèche devient bleu au survol */
+}
+
+.week-nav-button:pressed {
+    -fx-background-color: #585a61; /* Léger effet au clic */
+}
+
+/* Conteneur pour les boutons des jours */
+.day-headers {
+    -fx-alignment: center;
+}
+
+/* Style de base pour les boutons de jour */
+.day-header-button {
+    -fx-background-color: transparent;
+    -fx-text-fill: #80848E; /* Gris terne pour les jours non sélectionnés */
+    -fx-font-size: 14px;
+    -fx-font-weight: bold;
+    -fx-background-radius: 8px;
+    -fx-text-alignment: center;
+    -fx-line-spacing: 2px;
+    -fx-padding: 8px 12px;
+    -fx-min-width: 100px;
+    -fx-pref-width: 150px;
+    -fx-min-height: 50px;
+}
+
+/* Style pour le bouton du jour sélectionné (aujourd'hui) */
+.day-header-button.today-header-button {
+    -fx-background-color: #007AFF; /* Bleu vif */
+    -fx-text-fill: white;
+}
+
+.day-header-button:hover {
+    -fx-background-color: #404249; /* Léger fond gris au survol */
+}
+.day-header-button.today-header-button:hover {
+    -fx-background-color: #0056b3; /* Bleu plus foncé au survol */
+}
+
+/* Grille du calendrier */
+.calendar-grid {
+    -fx-hgap: 3px;
+    -fx-vgap: 3px;
+    -fx-padding: 10px 0;
+    -fx-border-color: #404249; /* Couleur de la grille */
+     -fx-border-width: 0;
+}
+
+/* Labels des heures sur la gauche */
+.time-label {
+    -fx-text-fill: #80848E;
+    -fx-font-size: 13px;
+    -fx-padding: 0 10px 0 0;
+}
+
+/* Cellules de fond de la grille - C'est la clé pour les lignes visibles */
+.grid-cell {
+    -fx-background-color: rgba(45, 52, 54, 0.5); /* Même couleur que le fond pour "cacher" la cellule */
+    -fx-border-color: #404249; /* Bordure pour créer l'effet de ligne */
+    -fx-border-width: 1px 0 0 1px;
+    -fx-min-height: 40px; /* Hauteur minimale pour chaque créneau horaire */
+}
+
+/* Boîte représentant un événement/affectation */
+.event-box {
+    -fx-background-color: #5865F2; /* Un bleu-violet moderne */
+    -fx-background-radius: 6px;
+    -fx-padding: 8px;
+    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.3), 5, 0, 1, 1);
+}
+.event-title {
+    -fx-text-fill: white;
+    -fx-font-weight: bold;
+    -fx-font-size: 13px;
+}
+.event-subtitle, .event-time {
+    -fx-text-fill: #E0E0E0;
+    -fx-font-size: 11px;
+}
+
+/* Style pour le label "Mois Année" */
+.month-year-label {
+    -fx-font-size: 18px;
+    -fx-font-weight: bold;
+    -fx-text-fill: white;
+    -fx-padding: 0 0 10px 0; /* Ajoute un peu d'espace en dessous, avant les jours */
+}
+
+.week-nav-grid {
+    -fx-alignment: center;
+    -fx-padding: 0 0 0 0; /* Espace sous la barre de nav */
+    -fx-vgap: 5px; /* Espace vertical entre le mois et les jours */
+}
+
+.calendar-scroll-pane {
+    -fx-background-color: transparent; /* Fond transparent pour voir le fond du conteneur */
+    -fx-border-color: transparent;
+}
+
+/* Style pour le contenu à l'intérieur du ScrollPane */
+.calendar-scroll-pane .viewport {
+    -fx-background-color: transparent;
+}
+
+/* Style de la barre de défilement verticale */
+.calendar-scroll-pane .scroll-bar:vertical {
+    -fx-background-color: #2c2c2e; /* Couleur de fond de la piste */
+    -fx-pref-width: 10px; /* Épaisseur de la barre */
+}
+
+/* Le "pouce" de la barre de défilement (la partie qu'on tire) */
+.calendar-scroll-pane .scroll-bar:vertical .thumb {
+    -fx-background-color: #80848E; /* Gris clair */
+    -fx-background-radius: 5px;
+}
+.calendar-scroll-pane .scroll-bar:vertical .thumb:hover {
+    -fx-background-color: #A0A4AE; /* Un peu plus clair au survol */
+}
+
+/* Les flèches en haut et en bas de la barre de défilement (on les cache) */
+.calendar-scroll-pane .scroll-bar .increment-button,
+.calendar-scroll-pane .scroll-bar .decrement-button {
+    -fx-background-color: transparent;
+    -fx-padding: 0;
+}
+.calendar-scroll-pane .scroll-bar .increment-arrow,
+.calendar-scroll-pane .scroll-bar .decrement-arrow {
+    -fx-shape: " "; /* Cache les flèches en leur donnant une forme vide */
+    -fx-padding: 0;
 }
