@@ -245,7 +245,7 @@ public class UserCalendrierView extends BaseView {
     private Node createEventNode(Affectation affectation) {
         VBox eventBox = new VBox(2);
         eventBox.getStyleClass().add("event-box");
-        eventBox.setPadding(new Insets(5));
+        eventBox.setPadding(new Insets(2));
 
         Label title = new Label(affectation.getDps().getSport().getNom());
         title.getStyleClass().add("event-title");

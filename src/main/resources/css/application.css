@@ -232,7 +232,7 @@
     -fx-background-radius: 8px;
     -fx-text-alignment: center;
     -fx-line-spacing: 2px;
-    -fx-padding: 8px 12px;
+    -fx-padding: 1px 12px;
     -fx-pref-width: 150px;
     -fx-min-height: 50px;
 }
@@ -623,3 +623,4 @@ Styles pour les Vues Administrateur
     -fx-background-color: #0078D7; /* Fond bleu plus foncé pour la sélection */
     -fx-text-fill: white;
 }
+
