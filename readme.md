@@ -1,6 +1,7 @@
 # Application de gestion de secouriste
 
-Brève description de votre projet ici (1-2 phrases).
+Notre projet consiste à développer une application permettant de gérer et d’optimiser le déploiement des secouristes pour les Jeux Olympiques d’hiver de 2030.
+Elle vise à assurer une répartition efficace des compétences sur les différents sites d’intervention.
 
 ## Prérequis
 
