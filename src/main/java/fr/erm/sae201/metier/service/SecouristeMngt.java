@@ -19,6 +19,48 @@ public class SecouristeMngt {
         return secouristeDAO.findAll();
     }
 
+    public int getTotalSecouristesCount() {
+        return secouristeDAO.countAll();
+    }
+
+    public List<Secouriste> getSecouristesByPage(int pageNumber, int pageSize) {
+        int offset = (pageNumber - 1) * pageSize;
+        return secouristeDAO.findPaginated(offset, pageSize);
+    }
+
+    public int getTotalSecouristesCount(String query) {
+        return secouristeDAO.countFiltered(query);
+    }
+
+    public List<Secouriste> getSecouristesByPage(String query, int pageNumber, int pageSize) {
+        int offset = (pageNumber - 1) * pageSize;
+        return secouristeDAO.findFilteredAndPaginated(query, offset, pageSize);
+    }
+
+    /**
+     * Supprime un secouriste de la base de données.
+     * Le compte utilisateur associé est également supprimé grâce à ON DELETE CASCADE.
+     *
+     * @param secouristeId L'ID du secouriste à supprimer.
+     * @return true si la suppression a réussi, false sinon.
+     */
+    public boolean deleteSecouriste(long secouristeId) {
+        Optional<Secouriste> secouristeOpt = getSecouriste(secouristeId);
+        if (secouristeOpt.isPresent()) {
+            return secouristeDAO.delete(secouristeOpt.get()) > 0;
+        }
+        return false;
+    }
+
+    /**
+     * Met à jour les informations d'un secouriste dans la base de données.
+     * @param secouriste Le secouriste avec les informations mises à jour.
+     * @return true si la mise à jour a réussi, false sinon.
+     */
+    public boolean update(Secouriste secouriste) {
+        return secouristeDAO.update(secouriste) > 0;
+    }
+
     public boolean addCompetenceToSecouriste(long secouristeId, String intituleCompetence) {
         return secouristeDAO.addCompetenceToSecouriste(secouristeId, intituleCompetence) > 0;
     }

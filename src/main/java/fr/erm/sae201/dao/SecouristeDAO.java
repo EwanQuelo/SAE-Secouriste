@@ -29,6 +29,113 @@ public class SecouristeDAO extends DAO<Secouriste> {
     private final CompetenceDAO competenceDAO = new CompetenceDAO();
     private final JourneeDAO journeeDAO = new JourneeDAO();
 
+
+        /**
+     * Compte le nombre total de secouristes dans la base de données.
+     * @return Le nombre total de secouristes.
+     */
+    public int countAll() {
+        String sql = "SELECT COUNT(*) FROM Secouriste";
+        try (Connection conn = getConnection();
+             Statement stmt = conn.createStatement();
+             ResultSet rs = stmt.executeQuery(sql)) {
+            if (rs.next()) {
+                return rs.getInt(1);
+            }
+        } catch (SQLException e) {
+            System.err.println("Error counting secouristes: " + e.getMessage());
+        }
+        return 0;
+    }
+
+        /**
+     * Compte le nombre total de secouristes correspondant à une recherche.
+     * Si la recherche est vide, compte tous les secouristes.
+     * @param query Le terme de recherche.
+     * @return Le nombre de secouristes correspondants.
+     */
+    public int countFiltered(String query) {
+        // Si la query est vide ou null, on compte tout
+        if (query == null || query.trim().isEmpty()) {
+            return countAll(); // Réutilise la méthode existante
+        }
+        
+        String sql = "SELECT COUNT(*) FROM Secouriste WHERE CONCAT(nom, ' ', prenom, email) LIKE ?";
+        try (Connection conn = getConnection();
+             PreparedStatement pstmt = conn.prepareStatement(sql)) {
+            pstmt.setString(1, "%" + query + "%");
+            try (ResultSet rs = pstmt.executeQuery()) {
+                if (rs.next()) {
+                    return rs.getInt(1);
+                }
+            }
+        } catch (SQLException e) {
+            System.err.println("Error counting filtered secouristes: " + e.getMessage());
+        }
+        return 0;
+    }
+
+    /**
+     * Récupère une "page" de secouristes filtrés par un terme de recherche.
+     * @param query Le terme de recherche.
+     * @param offset Le point de départ.
+     * @param limit Le nombre d'éléments à récupérer.
+     * @return Une liste de secouristes filtrés et paginés.
+     */
+    public List<Secouriste> findFilteredAndPaginated(String query, int offset, int limit) {
+        // Si la query est vide ou null, on utilise la méthode non filtrée
+        if (query == null || query.trim().isEmpty()) {
+            return findPaginated(offset, limit); // Réutilise la méthode existante
+        }
+
+        List<Secouriste> secouristes = new ArrayList<>();
+        String sql = "SELECT id, nom, prenom, dateNaissance, email, tel, adresse FROM Secouriste " +
+                     "WHERE CONCAT(nom, ' ', prenom, email) LIKE ? " +
+                     "ORDER BY id LIMIT ? OFFSET ?";
+        try (Connection conn = getConnection();
+             PreparedStatement pstmt = conn.prepareStatement(sql)) {
+            
+            pstmt.setString(1, "%" + query + "%");
+            pstmt.setInt(2, limit);
+            pstmt.setInt(3, offset);
+
+            try (ResultSet rs = pstmt.executeQuery()) {
+                while (rs.next()) {
+                    secouristes.add(mapResultSetToSecouriste(rs, true));
+                }
+            }
+        } catch (SQLException e) {
+            System.err.println("Error finding filtered and paginated Secouristes: " + e.getMessage());
+        }
+        return secouristes;
+    }
+
+    /**
+     * Récupère une "page" de secouristes depuis la base de données.
+     * @param offset Le point de départ (combien d'éléments sauter).
+     * @param limit Le nombre maximum d'éléments à récupérer.
+     * @return Une liste de secouristes pour la page demandée.
+     */
+    public List<Secouriste> findPaginated(int offset, int limit) {
+        List<Secouriste> secouristes = new ArrayList<>();
+        // L'ordre par ID garantit une pagination stable
+        String sql = "SELECT id, nom, prenom, dateNaissance, email, tel, adresse FROM Secouriste ORDER BY id LIMIT ? OFFSET ?";
+        try (Connection conn = getConnection();
+             PreparedStatement pstmt = conn.prepareStatement(sql)) {
+            pstmt.setInt(1, limit);
+            pstmt.setInt(2, offset);
+            try (ResultSet rs = pstmt.executeQuery()) {
+                while (rs.next()) {
+                    // On hydrate avec les relations (compétences, etc.)
+                    secouristes.add(mapResultSetToSecouriste(rs, true));
+                }
+            }
+        } catch (SQLException e) {
+            System.err.println("Error finding paginated Secouristes: " + e.getMessage());
+        }
+        return secouristes;
+    }
+
     /**
      * Finds a specific {@link Secouriste} by their unique ID.
      * The retrieved Secouriste object is "hydrated" with its associated

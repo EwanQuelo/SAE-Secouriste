@@ -5,10 +5,12 @@ Chose pas terribe a modif un jour:
 - Les photo de profil pour l'instant ça utilise placeholder mais faut le mettre dans la base de donnée
 - DAO utiliser directement par la vue, c'est qu'une ligne mais ptet faut le mettre dans un service
 - BaseView qui oblige createCenter et on doit faire une boite vide pour eviter un NullPointerException
+- Dispositif admin a plus lar barre blanche dans la navbar
 
 TODO:
 - Ajoute les vrai champs pour secouriste modification compte : ajouter email et tt
 - Support des minutes pour le calendrier
+- Trouver pk le champ email est bugger
 
 Changer par rapport a la maquette :
 - Ajout d'un champ pour choisir datedenaissance lors de l'inscription

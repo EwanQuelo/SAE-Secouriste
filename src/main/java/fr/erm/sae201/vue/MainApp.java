@@ -6,6 +6,7 @@ import fr.erm.sae201.controleur.auth.LoginController;
 import fr.erm.sae201.controleur.auth.ResetPasswordController;
 import fr.erm.sae201.controleur.auth.SignupController;
 import fr.erm.sae201.metier.persistence.CompteUtilisateur;
+import fr.erm.sae201.metier.persistence.Secouriste; // AJOUT
 import fr.erm.sae201.metier.service.AuthService;
 import fr.erm.sae201.utils.RessourceLoader;
 import fr.erm.sae201.vue.admin.*;
@@ -38,7 +39,6 @@ public class MainApp extends Application {
 
         showLoginScreen();
 
-        // add logo to the stage
         primaryStage.getIcons().add(RessourceLoader.loadImage("logo.png"));
 
         primaryStage.show();
@@ -99,6 +99,17 @@ public class MainApp extends Application {
         mainScene.setRoot(view.getView());
         primaryStage.setTitle("SECOURS - Gestion des Utilisateurs");
     }
+    
+    /**
+     * AJOUT : Affiche la vue d'édition pour un utilisateur spécifique.
+     * @param adminCompte Le compte de l'administrateur qui effectue l'action.
+     * @param secouristeToEdit Le secouriste à modifier.
+     */
+    public void showAdminEditUserView(CompteUtilisateur adminCompte, Secouriste secouristeToEdit) {
+        AdminEditUserView view = new AdminEditUserView(this, adminCompte, secouristeToEdit);
+        mainScene.setRoot(view.getView());
+        primaryStage.setTitle("SECOURS - Modifier Utilisateur");
+    }
 
     public void showAdminAffectationsView(CompteUtilisateur compte) {
         AdminAffectationsView view = new AdminAffectationsView(this, compte);
@@ -120,10 +131,8 @@ public class MainApp extends Application {
     }
 
     public void showUserCarteView(CompteUtilisateur compte) {
-        // This now follows the logic from your example:
-        // create view, create controller, and link them.
         UserCarteView view = new UserCarteView(this, compte);
-        new UserCarteController(view, compte); // The controller will set itself on the view.
+        new UserCarteController(view, compte);
         mainScene.setRoot(view.getView());
         primaryStage.setTitle("SECOURS - Carte");
     }
@@ -142,16 +151,13 @@ public class MainApp extends Application {
 
     public void showUserDispoView(CompteUtilisateur compte) {
         UserDispoView view = new UserDispoView(this, compte);
-        mainScene.setRoot(view.getView()); // Assurez-vous que vos vues ont une méthode getView()
+        mainScene.setRoot(view.getView());
         primaryStage.setTitle("SECOURS - Mes Disponibilités");
     }
 
     public void showCreateDpsView(CompteUtilisateur compte) {
-        // On crée une instance de la nouvelle vue
         AdminCreateDpsView view = new AdminCreateDpsView(this, compte);
-
-        // On l'affiche dans la scène principale
-        mainScene.setRoot(view.getView()); // En supposant que vos vues ont une méthode getView()
+        mainScene.setRoot(view.getView());
         primaryStage.setTitle("SECOURS - Création de Dispositif");
     }
 
