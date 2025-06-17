@@ -204,16 +204,32 @@ public class SecouristeDAO extends DAO<Secouriste> {
      *         constraint).
      */
     public int addAvailability(long secouristeId, LocalDate date) {
-        String sql = "INSERT INTO EstDisponible (idSecouriste, jour) VALUES (?, ?)";
-        try (Connection conn = getConnection(); PreparedStatement pstmt = conn.prepareStatement(sql)) {
-            pstmt.setLong(1, secouristeId);
-            pstmt.setDate(2, Date.valueOf(date));
-            return pstmt.executeUpdate();
-        } catch (SQLException e) {
-            System.err.println("Error adding availability: " + e.getMessage());
-            return -1;
-        }
+    // Étape 1 : S'assurer que la journée existe dans la table Journee.
+    // "INSERT IGNORE" va tenter d'insérer la journée. Si elle existe déjà (clé primaire dupliquée),
+    // il ne fera rien et ne lèvera pas d'erreur. C'est parfait pour notre cas.
+    String sqlEnsureJournee = "INSERT IGNORE INTO Journee (jour) VALUES (?)";
+    try (Connection conn = getConnection();
+         PreparedStatement pstmtEnsure = conn.prepareStatement(sqlEnsureJournee)) {
+        pstmtEnsure.setDate(1, java.sql.Date.valueOf(date));
+        pstmtEnsure.executeUpdate();
+    } catch (SQLException e) {
+        System.err.println("Error ensuring Journee exists for date " + date + ": " + e.getMessage());
+        return -1; // On ne continue pas si cette étape échoue.
     }
+
+    // Étape 2 : Maintenant que la journée existe, on peut insérer la disponibilité sans risque.
+    String sqlInsertDispo = "INSERT INTO EstDisponible (idSecouriste, jour) VALUES (?, ?)";
+    try (Connection conn = getConnection();
+         PreparedStatement pstmtDispo = conn.prepareStatement(sqlInsertDispo)) {
+        pstmtDispo.setLong(1, secouristeId);
+        pstmtDispo.setDate(2, java.sql.Date.valueOf(date));
+        return pstmtDispo.executeUpdate();
+    } catch (SQLException e) {
+        // On ne devrait plus avoir l'erreur de clé étrangère, mais on garde la gestion d'erreur.
+        System.err.println("Error adding availability: " + e.getMessage());
+        return -1;
+    }
+}
 
     /**
      * Removes an availability (a specific {@link Journee}) for a {@link Secouriste}

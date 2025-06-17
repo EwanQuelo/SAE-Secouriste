@@ -48,7 +48,7 @@ INSERT INTO CompteUtilisateur (login, motDePasseHash, role, idSecouriste) VALUES
 ('marie.martin@secours.fr', '$2a$12$D4TTPa3qLz8o4UsoBUC8A.m2d7B/obL5x1e1o/2GZpI1xG/2uC.XC', 'SECOURISTE', 2),
 ('luc.petit@secours.fr', '$2a$12$D4TTPa3qLz8o4UsoBUC8A.m2d7B/obL5x1e1o/2GZpI1xG/2uC.XC', 'SECOURISTE', 3),
 ('sophie.durand@secours.fr', '$2a$12$D4TTPa3qLz8o4UsoBUC8A.m2d7B/obL5x1e1o/2GZpI1xG/2uC.XC', 'SECOURISTE', 4),
-('admin@jo2030.fr', '$2a$12$D4TTPa3qLz8o4UsoBUC8A.m2d7B/obL5x1e1o/2GZpI1xG/2uC.XC', 'ADMINISTRATEUR', NULL);
+('admin@jo2030.fr', '$2a$12$D4TTPa3qLz8o4UsoBUC8A.m2d7B/obL5x1e1o/2GZpI1xG/2uC.XC', 'ADMINISTRATEUR', 5);
 
 -- 2.3 Compétences et Disponibilités des Secouristes
 INSERT INTO Possede (idSecouriste, intituleCompetence) VALUES (1, 'CE'), (1, 'VPSP'), (2, 'PSE2'), (3, 'PSE1'), (4, 'CP');

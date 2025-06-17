@@ -4,54 +4,54 @@ import fr.erm.sae201.dao.SecouristeDAO;
 import fr.erm.sae201.metier.persistence.CompteUtilisateur;
 import fr.erm.sae201.metier.persistence.Secouriste;
 import fr.erm.sae201.utils.RessourceLoader;
-import fr.erm.sae201.vue.MainApp; // Import du navigator
+import fr.erm.sae201.vue.MainApp;
 import javafx.geometry.Pos;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.*;
 import javafx.scene.shape.Circle;
+import javafx.scene.shape.SVGPath;
 
 public class UserNavbar extends HBox {
 
     private final SecouristeDAO secouristeDAO = new SecouristeDAO();
 
-    // MODIFIÉ : Le constructeur accepte le MainApp pour la navigation
     public UserNavbar(MainApp navigator, CompteUtilisateur compte, String activeViewName) {
         super(20);
         this.getStyleClass().add("navbar");
         this.setAlignment(Pos.CENTER_LEFT);
 
-        // MODIFIÉ : On passe les dépendances pour la navigation
         HBox navLinks = createNavLinks(navigator, compte, activeViewName);
 
+        // pour le crayon modifier les disponibilités
+        if ("Calendrier".equals(activeViewName)) {
+            Button dispoButton = createDispoButton(navigator, compte);
+            navLinks.getChildren().add(dispoButton);
+            HBox.setMargin(dispoButton, new javafx.geometry.Insets(0, 0, 0, 20)); 
+        }
+        
         Region spacer = new Region();
         HBox.setHgrow(spacer, Priority.ALWAYS);
 
         HBox userInfo = createUserInfo(navigator, compte);
 
-
         this.getChildren().addAll(navLinks, spacer, userInfo);
     }
 
-    // MODIFIÉ : La méthode crée maintenant des boutons fonctionnels
     private HBox createNavLinks(MainApp navigator, CompteUtilisateur compte, String activeViewName) {
         HBox navLinks = new HBox(15);
         navLinks.setAlignment(Pos.CENTER_LEFT);
 
-        // Accueil
         Button accueilBtn = createNavButton("Accueil", "Accueil".equals(activeViewName));
         accueilBtn.setOnAction(e -> navigator.showSecouristeDashboard(compte));
         
-        // Calendrier
         Button calendrierBtn = createNavButton("Calendrier", "Calendrier".equals(activeViewName));
         calendrierBtn.setOnAction(e -> navigator.showUserCalendrierView(compte));
 
-        // Carte
         Button carteBtn = createNavButton("Carte", "Carte".equals(activeViewName));
         carteBtn.setOnAction(e -> navigator.showUserCarteView(compte));
 
-        // Compétences
         Button competencesBtn = createNavButton("Compétences", "Compétences".equals(activeViewName));
         competencesBtn.setOnAction(e -> navigator.showUserCompetencesView(compte));
 
@@ -68,7 +68,21 @@ public class UserNavbar extends HBox {
         return navButton;
     }
 
-    // La méthode createUserInfo reste inchangée
+    private Button createDispoButton(MainApp navigator, CompteUtilisateur compte) {
+    Button dispoButton = new Button();
+
+    // On dessine le crayon directement en code, pas besoin de fichier image.
+    SVGPath pencilIcon = new SVGPath();
+    pencilIcon.setContent("M16.862 4.487l1.687-1.688a1.875 1.875 0 112.652 2.652L10.582 16.07a4.5 4.5 0 01-1.897 1.13l-2.685.8.8-2.685a4.5 4.5 0 011.13-1.897l8.932-8.931zm0 0L19.5 7.125M18 14v4.75A2.25 2.25 0 0115.75 21H5.25A2.25 2.25 0 013 18.75V8.25A2.25 2.25 0 015.25 6H10");
+    pencilIcon.getStyleClass().add("pencil-icon");
+    dispoButton.setGraphic(pencilIcon);
+    dispoButton.getStyleClass().add("dispo-button");
+    
+    dispoButton.setOnAction(e -> navigator.showUserDispoView(compte));
+    
+    return dispoButton;
+}
+
     private HBox createUserInfo(MainApp navigator, CompteUtilisateur compte) {
         HBox userInfo = new HBox(15);
         userInfo.setAlignment(Pos.CENTER_RIGHT);
@@ -104,7 +118,8 @@ public class UserNavbar extends HBox {
         
         settingsButton.setOnAction(e -> navigator.showUserParametreView(compte));
 
-        userInfo.getChildren().addAll(textInfo, profilePic, settingsButton);
+        // J'ai réorganisé l'ordre pour correspondre à votre screenshot
+        userInfo.getChildren().addAll( textInfo, profilePic, settingsButton);
         return userInfo;
     }
 }

@@ -140,6 +140,12 @@ public class MainApp extends Application {
     mainScene.setRoot(view.getView());
     primaryStage.setTitle("SECOURS - Paramètres");
 	}
+
+    public void showUserDispoView(CompteUtilisateur compte) {
+    UserDispoView view = new UserDispoView(this, compte); 
+    mainScene.setRoot(view.getView()); // Assurez-vous que vos vues ont une méthode getView()
+    primaryStage.setTitle("SECOURS - Mes Disponibilités");
+}
     
 
     public static void main(String[] args) {

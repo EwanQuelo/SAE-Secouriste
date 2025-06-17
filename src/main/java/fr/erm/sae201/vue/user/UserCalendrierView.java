@@ -15,7 +15,6 @@ import javafx.scene.layout.*;
 import java.time.DayOfWeek;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
-import java.time.format.TextStyle;
 import java.util.List;
 import java.util.Locale;
 
@@ -26,8 +25,7 @@ public class UserCalendrierView extends BaseView {
     private LocalDate currentWeekStart;
     private VBox mainContainer;
     
-    // MODIFIÉ : Le conteneur de navigation est maintenant un GridPane
-    private GridPane weekNavigationBar; 
+
 
     private static final int START_HOUR = 8;
     private static final int END_HOUR = 24;
@@ -82,12 +80,8 @@ public class UserCalendrierView extends BaseView {
     // 4. On ajoute le ScrollPane (qui contient maintenant la grille) au conteneur principal.
     mainContainer.getChildren().addAll(weekNavigationBar, scrollPane);
 
-    // --- FIN DE LA MODIFICATION ---
 }
 
-    // =================================================================================
-    // MÉTHODE ENTIÈREMENT MODIFIÉE POUR UTILISER UN GRIDPANE
-    // =================================================================================
     private GridPane createWeekNavigationBar() {
         GridPane navGrid = new GridPane();
         navGrid.getStyleClass().add("week-nav-grid"); // Nouvelle classe CSS pour le style
