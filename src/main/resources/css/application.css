@@ -232,7 +232,7 @@
     -fx-background-radius: 8px;
     -fx-text-alignment: center;
     -fx-line-spacing: 2px;
-    -fx-padding: 1px 12px;
+    -fx-padding: 8px 12px;
     -fx-pref-width: 150px;
     -fx-min-height: 50px;
 }
@@ -434,7 +434,7 @@ Styles pour les Vues Administrateur
 
 /* Styles pour les Vues Administrateur */
 .admin-content-container {
-    -fx-background-color: #363434;
+    -fx-background-color: transparent;
     -fx-padding: 25px;
     -fx-background-radius: 12px;
 }
@@ -623,8 +623,40 @@ Styles pour les Vues Administrateur
     -fx-background-color: #0078D7; /* Fond bleu plus foncé pour la sélection */
     -fx-text-fill: white;
 }
+.delete-button {
+    -fx-background-color: transparent; /* Fond du bouton rendu transparent */
+    -fx-padding: 5px; /* Un peu de padding pour agrandir la zone de clic */
+    -fx-cursor: hand;
+}
 
+.delete-icon {
+    -fx-stroke: #80848E;       /* Couleur du trait de l'icône (gris neutre) */
+    -fx-stroke-width: 1.5;     /* Épaisseur du trait */
+    -fx-fill: transparent;     /* On s'assure qu'il n'y a pas de remplissage */
+}
 
+/* Au survol du bouton, l'icône change de couleur */
+.delete-button:hover .delete-icon {
+    -fx-stroke: #D32F2F; /* Le trait de l'icône devient rouge vif */
+}
+
+.edit-button {
+    -fx-background-color: transparent;
+    -fx-padding: 5px;
+    -fx-cursor: hand;
+}
+
+/* Icône de crayon */
+.edit-icon {
+    -fx-stroke: #80848E; /* Gris neutre par défaut */
+    -fx-stroke-width: 1.5;
+    -fx-fill: transparent;
+}
+
+/* Au survol du bouton, l'icône devient bleue */
+.edit-button:hover .edit-icon {
+    -fx-stroke: #007AFF;
+}
 
 
 

@@ -7,6 +7,7 @@ import fr.erm.sae201.controleur.auth.ResetPasswordController;
 import fr.erm.sae201.controleur.auth.SignupController;
 import fr.erm.sae201.metier.persistence.CompteUtilisateur;
 import fr.erm.sae201.metier.persistence.Secouriste; // AJOUT
+import fr.erm.sae201.metier.persistence.DPS;
 import fr.erm.sae201.metier.service.AuthService;
 import fr.erm.sae201.utils.RessourceLoader;
 import fr.erm.sae201.vue.admin.*;
@@ -117,6 +118,12 @@ public class MainApp extends Application {
         primaryStage.setTitle("SECOURS - Gestion des Affectations");
     }
 
+    public void showAdminParametresView(CompteUtilisateur compte) {
+        AdminParametresView view = new AdminParametresView(this, compte);
+        mainScene.setRoot(view.getView());
+        primaryStage.setTitle("SECOURS - Gestion des Affectations");
+    }
+
     // --- Vues Secouriste ---
     public void showSecouristeDashboard(CompteUtilisateur compte) {
         SecouristeDashboard view = new SecouristeDashboard(this, compte);
@@ -156,9 +163,18 @@ public class MainApp extends Application {
     }
 
     public void showCreateDpsView(CompteUtilisateur compte) {
-        AdminCreateDpsView view = new AdminCreateDpsView(this, compte);
+
+        AdminEditDpsView view = new AdminEditDpsView(this, compte, null);
         mainScene.setRoot(view.getView());
         primaryStage.setTitle("SECOURS - Création de Dispositif");
+    }
+
+
+    public void showEditDpsView(CompteUtilisateur compte, DPS dps) {
+
+        AdminEditDpsView view = new AdminEditDpsView(this, compte, dps);
+        mainScene.setRoot(view.getView());
+        primaryStage.setTitle("SECOURS - Modification de Dispositif");
     }
 
     public static void main(String[] args) {

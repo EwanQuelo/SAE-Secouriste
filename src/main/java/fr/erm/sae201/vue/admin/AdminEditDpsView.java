@@ -1,7 +1,8 @@
 package fr.erm.sae201.vue.admin;
 
-import fr.erm.sae201.controleur.admin.AdminCreateDpsController;
+import fr.erm.sae201.controleur.admin.AdminEditDpsController;
 import fr.erm.sae201.metier.persistence.CompteUtilisateur;
+import fr.erm.sae201.metier.persistence.DPS;
 import fr.erm.sae201.metier.persistence.Site;
 import fr.erm.sae201.metier.persistence.Sport;
 import fr.erm.sae201.vue.MainApp;
@@ -17,7 +18,7 @@ import javafx.scene.layout.*;
 import java.time.LocalDate;
 import java.util.List;
 
-public class AdminCreateDpsView extends BaseView {
+public class AdminEditDpsView extends BaseView {
 
     private final CompteUtilisateur compte;
     private ComboBox<Site> siteComboBox;
@@ -26,11 +27,27 @@ public class AdminCreateDpsView extends BaseView {
     private TextField startHourField, startMinuteField;
     private TextField endHourField, endMinuteField;
     private Button saveButton, cancelButton;
+    private Label titleLabel;
 
-    public AdminCreateDpsView(MainApp navigator, CompteUtilisateur compte) {
+    public AdminEditDpsView(MainApp navigator, CompteUtilisateur compte, DPS dpsToEdit) {
         super(navigator, compte, "Dispositifs");
         this.compte = compte;
-        new AdminCreateDpsController(this, navigator);
+        new AdminEditDpsController(this, navigator, dpsToEdit);
+    }
+
+    public void setDateFieldsEditable(boolean editable) {
+        datePicker.setDisable(!editable);
+        startHourField.setDisable(!editable);
+        startMinuteField.setDisable(!editable);
+        endHourField.setDisable(!editable);
+        endMinuteField.setDisable(!editable);
+        
+        // On peut aussi changer légèrement le style pour indiquer qu'ils sont non modifiables
+        if (!editable) {
+            datePicker.setStyle("-fx-opacity: 0.7;");
+            startHourField.getParent().setStyle("-fx-opacity: 0.7;");
+            endHourField.getParent().setStyle("-fx-opacity: 0.7;");
+        }
     }
 
     public CompteUtilisateur getCompte() {
@@ -43,8 +60,8 @@ public class AdminCreateDpsView extends BaseView {
         formContainer.setPadding(new Insets(25));
         formContainer.getStyleClass().add("admin-form-container");
 
-        Label title = new Label("Créer un nouveau Dispositif");
-        title.getStyleClass().add("admin-title");
+        titleLabel = new Label(); // Le titre sera défini par le contrôleur
+        titleLabel.getStyleClass().add("admin-title");
 
         GridPane formGrid = new GridPane();
         formGrid.setHgap(10);
@@ -94,7 +111,7 @@ public class AdminCreateDpsView extends BaseView {
         buttonBar.getChildren().addAll(cancelButton, saveButton);
         formGrid.add(buttonBar, 1, 5);
 
-        formContainer.getChildren().addAll(title, formGrid);
+        formContainer.getChildren().addAll(titleLabel, formGrid);
         return formContainer;
     }
 
@@ -150,6 +167,21 @@ public class AdminCreateDpsView extends BaseView {
                 }
             }
         });
+    }
+
+    public void setFormTitle(String title) {
+        titleLabel.setText(title);
+    }
+
+    // Pré-remplit le formulaire avec les données d'un DPS existant
+    public void setDpsData(DPS dps) {
+        siteComboBox.setValue(dps.getSite());
+        sportComboBox.setValue(dps.getSport());
+        datePicker.setValue(dps.getJournee().getDate());
+        startHourField.setText(String.valueOf(dps.getHoraireDepart()[0]));
+        startMinuteField.setText(String.valueOf(dps.getHoraireDepart()[1]));
+        endHourField.setText(String.valueOf(dps.getHoraireFin()[0]));
+        endMinuteField.setText(String.valueOf(dps.getHoraireFin()[1]));
     }
 
     public Site getSelectedSite() {
