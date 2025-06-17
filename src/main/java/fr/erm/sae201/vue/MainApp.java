@@ -6,6 +6,7 @@ import fr.erm.sae201.controleur.auth.LoginController;
 import fr.erm.sae201.controleur.auth.ResetPasswordController;
 import fr.erm.sae201.controleur.auth.SignupController;
 import fr.erm.sae201.metier.persistence.CompteUtilisateur;
+import fr.erm.sae201.metier.persistence.DPS;
 import fr.erm.sae201.metier.service.AuthService;
 import fr.erm.sae201.utils.RessourceLoader;
 import fr.erm.sae201.vue.admin.*;
@@ -147,12 +148,18 @@ public class MainApp extends Application {
     }
 
     public void showCreateDpsView(CompteUtilisateur compte) {
-        // On crée une instance de la nouvelle vue
-        AdminCreateDpsView view = new AdminCreateDpsView(this, compte);
 
-        // On l'affiche dans la scène principale
-        mainScene.setRoot(view.getView()); // En supposant que vos vues ont une méthode getView()
+        AdminEditDpsView view = new AdminEditDpsView(this, compte, null);
+        mainScene.setRoot(view.getView());
         primaryStage.setTitle("SECOURS - Création de Dispositif");
+    }
+
+
+    public void showEditDpsView(CompteUtilisateur compte, DPS dps) {
+
+        AdminEditDpsView view = new AdminEditDpsView(this, compte, dps);
+        mainScene.setRoot(view.getView());
+        primaryStage.setTitle("SECOURS - Modification de Dispositif");
     }
 
     public static void main(String[] args) {
