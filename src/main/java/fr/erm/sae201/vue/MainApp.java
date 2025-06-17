@@ -35,9 +35,9 @@ public class MainApp extends Application {
         this.mainScene = new Scene(new StackPane(), 1280, 800);
         applyCommonStyles();
         primaryStage.setScene(mainScene);
-        
+
         showLoginScreen();
-        
+
         // add logo to the stage
         primaryStage.getIcons().add(RessourceLoader.loadImage("logo.png"));
 
@@ -66,7 +66,7 @@ public class MainApp extends Application {
         mainScene.setRoot(view.getView());
         primaryStage.setTitle("SECOURS - Inscription");
     }
-    
+
     public void showForgotPasswordScreen() {
         ForgotPasswordView view = new ForgotPasswordView();
         new ForgotPasswordController(view, this, authService);
@@ -76,7 +76,7 @@ public class MainApp extends Application {
 
     public void showResetPasswordScreen(String email) {
         ResetPasswordView view = new ResetPasswordView();
-        new ResetPasswordController(view, this, authService, email); 
+        new ResetPasswordController(view, this, authService, email);
         mainScene.setRoot(view.getView());
         primaryStage.setTitle("SECOURS - Réinitialisation");
     }
@@ -105,7 +105,6 @@ public class MainApp extends Application {
         mainScene.setRoot(view.getView());
         primaryStage.setTitle("SECOURS - Gestion des Affectations");
     }
-
 
     // --- Vues Secouriste ---
     public void showSecouristeDashboard(CompteUtilisateur compte) {
@@ -136,17 +135,25 @@ public class MainApp extends Application {
     }
 
     public void showUserParametreView(CompteUtilisateur compte) {
-    UserParametresView view = new UserParametresView(this, compte, this.authService);
-    mainScene.setRoot(view.getView());
-    primaryStage.setTitle("SECOURS - Paramètres");
-	}
+        UserParametresView view = new UserParametresView(this, compte, this.authService);
+        mainScene.setRoot(view.getView());
+        primaryStage.setTitle("SECOURS - Paramètres");
+    }
 
     public void showUserDispoView(CompteUtilisateur compte) {
-    UserDispoView view = new UserDispoView(this, compte); 
-    mainScene.setRoot(view.getView()); // Assurez-vous que vos vues ont une méthode getView()
-    primaryStage.setTitle("SECOURS - Mes Disponibilités");
-}
-    
+        UserDispoView view = new UserDispoView(this, compte);
+        mainScene.setRoot(view.getView()); // Assurez-vous que vos vues ont une méthode getView()
+        primaryStage.setTitle("SECOURS - Mes Disponibilités");
+    }
+
+    public void showCreateDpsView(CompteUtilisateur compte) {
+        // On crée une instance de la nouvelle vue
+        AdminCreateDpsView view = new AdminCreateDpsView(this, compte);
+
+        // On l'affiche dans la scène principale
+        mainScene.setRoot(view.getView()); // En supposant que vos vues ont une méthode getView()
+        primaryStage.setTitle("SECOURS - Création de Dispositif");
+    }
 
     public static void main(String[] args) {
         launch(args);

@@ -425,3 +425,169 @@
 .empty-day-button:hover {
     -fx-border-color: transparent; /* S'assure qu'il n'y a pas d'effet de survol */
 }
+
+/* ==========================================================================
+Styles pour les Vues Administrateur
+========================================================================== */
+/* PARTIE DPS */
+/* DANS VOTRE FICHIER application.css */
+
+/* Styles pour les Vues Administrateur */
+.admin-content-container {
+    -fx-background-color: #363434;
+    -fx-padding: 25px;
+    -fx-background-radius: 12px;
+}
+.admin-title {
+    -fx-font-size: 24px;
+    -fx-font-weight: bold;
+    -fx-text-fill: white;
+}
+.add-button {
+    -fx-background-color: #2E7D32;
+    -fx-text-fill: white;
+    -fx-font-size: 24px;
+    -fx-font-weight: bold;
+    -fx-background-radius: 50%;
+    -fx-min-width: 40px;
+    -fx-min-height: 40px;
+    -fx-cursor: hand;
+}
+.add-button:hover {
+    -fx-background-color: #388E3C;
+}
+.admin-scroll-pane, .admin-scroll-pane .viewport {
+    -fx-background-color: transparent;
+}
+.dps-list-container {
+    -fx-padding: 10px;
+}
+.dps-card {
+    -fx-background-color: #4a4747;
+    -fx-padding: 15px;
+    -fx-background-radius: 8px;
+    -fx-border-color: rgba(255,255,255,0.1);
+    -fx-border-width: 0 0 1px 0;
+}
+.dps-card:hover {
+    -fx-background-color: #5e5b5b;
+}
+.dps-card-title {
+    -fx-font-size: 18px;
+    -fx-font-weight: bold;
+    -fx-text-fill: white;
+}
+.dps-card-subtitle {
+    -fx-font-size: 14px;
+    -fx-text-fill: #E0E0E0;
+}
+.dps-card-info {
+    -fx-font-size: 12px;
+    -fx-text-fill: #b2bec3;
+}
+.empty-list-label {
+    -fx-font-size: 16px;
+    -fx-text-fill: #80848E;
+}
+
+/*DPS MODIFIER */
+/* Styles pour le formulaire de création admin */
+/* ==========================================================================
+   Styles pour le Formulaire de Création Admin (Inspiré de l'image)
+   ========================================================================== */
+
+/* Conteneur principal du formulaire.
+   On retire le fond sombre pour le laisser transparent sur le background. */
+.admin-form-container {
+    -fx-max-width: 750px;
+    -fx-padding: 20px;
+    -fx-background-color: rgba(45, 52, 54, 0.85); /* Fond sombre et semi-transparent */
+    -fx-background-radius: 12px;
+    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.5), 10, 0, 0, 5);
+}
+
+/* Titre "Créer un nouveau Dispositif" */
+.admin-title {
+    -fx-font-size: 24px;
+    -fx-font-weight: bold;
+    -fx-text-fill: white;
+    -fx-padding: 0 0 15px 0;
+}
+
+/* Labels à côté des champs (ex: "Site :") */
+.admin-form-container .label {
+    -fx-font-size: 16px;
+    -fx-text-fill: #E0E0E0; /* Blanc cassé */
+    -fx-font-weight: bold;
+    -fx-padding: 0 10px 0 0;
+}
+
+/* Style commun pour les ComboBox, DatePicker et TextField */
+.admin-form-container .combo-box,
+.admin-form-container .date-picker,
+.admin-form-container .text-field {
+    -fx-background-color: #6E6E6E; /* Gris moyen */
+    -fx-text-fill: white;
+    -fx-prompt-text-fill: #d3d3d3; /* Placeholder gris clair */
+    -fx-font-size: 14px;
+    -fx-background-radius: 10px;
+    -fx-border-radius: 10px;
+    -fx-pref-height: 40px;
+    -fx-border-color: transparent;
+}
+
+/* Style spécifique pour la flèche des ComboBox */
+.admin-form-container .combo-box .arrow {
+    -fx-background-color: white;
+}
+
+/* Style du bouton du DatePicker */
+.admin-form-container .date-picker .arrow-button {
+    -fx-background-color: #6E6E6E;
+    -fx-background-radius: 0 10px 10px 0;
+}
+.admin-form-container .date-picker .arrow-button .arrow {
+    -fx-background-color: white;
+}
+
+/* Mise en surbrillance au focus */
+.admin-form-container .combo-box:focused,
+.admin-form-container .date-picker:focused,
+.admin-form-container .text-field:focused {
+    -fx-border-color: #007AFF;
+    -fx-border-width: 2px;
+}
+
+/* Champ texte spécifique pour les heures et minutes */
+.admin-form-container .text-field {
+    -fx-pref-width: 70px;
+    -fx-alignment: center;
+}
+
+/* Bouton "Enregistrer" (vert) */
+.save-button {
+    -fx-background-color: #2E7D32; /* Vert vif */
+    -fx-text-fill: white;
+    -fx-font-weight: bold;
+    -fx-font-size: 16px;
+    -fx-padding: 10px 25px;
+    -fx-background-radius: 8px;
+    -fx-cursor: hand;
+}
+.save-button:hover {
+    -fx-background-color: #388E3C;
+}
+
+/* Bouton "Annuler" (gris) */
+.cancel-button {
+    -fx-background-color: #6E6E6E;
+    -fx-text-fill: white;
+    -fx-font-weight: bold;
+    -fx-font-size: 16px;
+    -fx-padding: 10px 25px;
+    -fx-background-radius: 8px;
+    -fx-cursor: hand;
+}
+.cancel-button:hover {
+    -fx-background-color: #5A5A5A;
+}
