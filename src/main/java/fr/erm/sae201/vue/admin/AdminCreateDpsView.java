@@ -52,10 +52,15 @@ public class AdminCreateDpsView extends BaseView {
 
         formGrid.add(new Label("Site de l'épreuve :"), 0, 0);
         siteComboBox = new ComboBox<>();
+        siteComboBox.setPrefWidth(350); // Donner une largeur fixe
+        siteComboBox.getStyleClass().add("admin-combo-box");
         formGrid.add(siteComboBox, 1, 0);
 
+        // Ligne 2: Choix du sport
         formGrid.add(new Label("Sport concerné :"), 0, 1);
         sportComboBox = new ComboBox<>();
+        sportComboBox.setPrefWidth(350); // Donner une largeur fixe
+        sportComboBox.getStyleClass().add("admin-combo-box");
         formGrid.add(sportComboBox, 1, 1);
 
         formGrid.add(new Label("Date :"), 0, 2);

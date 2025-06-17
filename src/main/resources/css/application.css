@@ -489,73 +489,72 @@ Styles pour les Vues Administrateur
     -fx-font-size: 16px;
     -fx-text-fill: #80848E;
 }
-
 /*DPS MODIFIER */
-/* Styles pour le formulaire de création admin */
 /* ==========================================================================
-   Styles pour le Formulaire de Création Admin (Inspiré de l'image)
+   Styles pour le Formulaire de Création Admin (Version Finale)
    ========================================================================== */
 
-/* Conteneur principal du formulaire.
-   On retire le fond sombre pour le laisser transparent sur le background. */
+/* Conteneur principal du formulaire */
 .admin-form-container {
-    -fx-max-width: 750px;
-    -fx-padding: 20px;
-    -fx-background-color: rgba(45, 52, 54, 0.85); /* Fond sombre et semi-transparent */
+    -fx-max-width: 750px; /* Votre nouvelle largeur */
+    -fx-background-color: rgba(45, 52, 54, 0.95); /* Fond sombre, presque opaque */
+    -fx-padding: 30px;
     -fx-background-radius: 12px;
-    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.5), 10, 0, 0, 5);
+    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.4), 15, 0, 0, 5);
 }
 
 /* Titre "Créer un nouveau Dispositif" */
 .admin-title {
-    -fx-font-size: 24px;
+    -fx-font-size: 22px;
     -fx-font-weight: bold;
     -fx-text-fill: white;
-    -fx-padding: 0 0 15px 0;
+    -fx-padding: 0 0 20px 0;
 }
 
-/* Labels à côté des champs (ex: "Site :") */
+/* Labels à côté des champs (ex: "Site de l'épreuve :") */
 .admin-form-container .label {
     -fx-font-size: 16px;
-    -fx-text-fill: #E0E0E0; /* Blanc cassé */
-    -fx-font-weight: bold;
-    -fx-padding: 0 10px 0 0;
+    -fx-text-fill: #E0E0E0;
+    -fx-font-weight: normal;
 }
 
-/* Style commun pour les ComboBox, DatePicker et TextField */
-.admin-form-container .combo-box,
-.admin-form-container .date-picker,
-.admin-form-container .text-field {
-    -fx-background-color: #6E6E6E; /* Gris moyen */
-    -fx-text-fill: white;
-    -fx-prompt-text-fill: #d3d3d3; /* Placeholder gris clair */
-    -fx-font-size: 14px;
-    -fx-background-radius: 10px;
-    -fx-border-radius: 10px;
+/* --- Style commun pour les champs de saisie --- */
+.admin-combo-box, .admin-date-picker, .admin-form-container .text-field {
+    -fx-background-color: #5A5A5A; /* Gris foncé pour les champs */
+    -fx-background-radius: 8px;
+    -fx-border-radius: 8px;
     -fx-pref-height: 40px;
     -fx-border-color: transparent;
+    -fx-font-size: 14px;
 }
 
-/* Style spécifique pour la flèche des ComboBox */
-.admin-form-container .combo-box .arrow {
+/* Texte à l'intérieur des champs */
+.admin-combo-box .list-cell, .admin-date-picker .text-field, .admin-form-container .text-field {
+    -fx-text-fill: white;
+}
+.admin-form-container .text-field {
+    -fx-prompt-text-fill: #b2bec3;
+}
+
+/* Flèche des ComboBox */
+.admin-combo-box .arrow {
     -fx-background-color: white;
 }
-
-/* Style du bouton du DatePicker */
-.admin-form-container .date-picker .arrow-button {
-    -fx-background-color: #6E6E6E;
-    -fx-background-radius: 0 10px 10px 0;
+/* Bouton du DatePicker */
+.admin-date-picker .arrow-button {
+    -fx-background-color: #5A5A5A;
+    -fx-background-radius: 0 8px 8px 0;
 }
-.admin-form-container .date-picker .arrow-button .arrow {
+.admin-date-picker .arrow-button .arrow {
     -fx-background-color: white;
 }
 
 /* Mise en surbrillance au focus */
-.admin-form-container .combo-box:focused,
-.admin-form-container .date-picker:focused,
+.admin-combo-box:focused,
+.admin-date-picker:focused,
 .admin-form-container .text-field:focused {
-    -fx-border-color: #007AFF;
-    -fx-border-width: 2px;
+    -fx-border-color: #00A3FF;
+    -fx-border-width: 1.5px;
 }
 
 /* Champ texte spécifique pour les heures et minutes */
@@ -564,9 +563,10 @@ Styles pour les Vues Administrateur
     -fx-alignment: center;
 }
 
-/* Bouton "Enregistrer" (vert) */
+/* --- Boutons d'action --- */
+
 .save-button {
-    -fx-background-color: #2E7D32; /* Vert vif */
+    -fx-background-color: #525252; /* Vert foncé */
     -fx-text-fill: white;
     -fx-font-weight: bold;
     -fx-font-size: 16px;
@@ -575,13 +575,12 @@ Styles pour les Vues Administrateur
     -fx-cursor: hand;
 }
 .save-button:hover {
-    -fx-background-color: #388E3C;
+    -fx-background-color: #808080;
 }
 
-/* Bouton "Annuler" (gris) */
 .cancel-button {
-    -fx-background-color: #6E6E6E;
-    -fx-text-fill: white;
+    -fx-background-color: #5A5A5A; /* Gris foncé, comme les champs */
+    -fx-text-fill: #E0E0E0;
     -fx-font-weight: bold;
     -fx-font-size: 16px;
     -fx-padding: 10px 25px;
@@ -589,5 +588,38 @@ Styles pour les Vues Administrateur
     -fx-cursor: hand;
 }
 .cancel-button:hover {
-    -fx-background-color: #5A5A5A;
+    -fx-background-color: #6E6E6E;
+}
+
+/* --- Styles spécifiques et corrigés pour ComboBox --- */
+
+/* Style du bouton du ComboBox (la partie visible quand il est fermé) */
+.admin-combo-box > .list-cell {
+    -fx-background-color: transparent; /* Fond transparent */
+    -fx-text-fill: white; /* Texte blanc pour l'élément sélectionné */
+}
+
+/* Style de la liste déroulante qui apparaît */
+.admin-combo-box .combo-box-popup .list-view {
+    -fx-background-color: white; /* Fond blanc pour la liste */
+    -fx-border-color: #00A3FF; /* Bordure bleue */
+    -fx-border-width: 1px;
+}
+
+/* Style de chaque cellule dans la liste déroulante */
+.admin-combo-box .combo-box-popup .list-cell {
+    -fx-text-fill: #333333; /* Texte foncé sur fond blanc */
+    -fx-background-color: white; /* Fond blanc */
+}
+
+/* Style d'une cellule survolée par la souris */
+.admin-combo-box .combo-box-popup .list-cell:hover {
+    -fx-background-color: #00A3FF; /* Fond bleu au survol */
+    -fx-text-fill: white; /* Texte blanc au survol */
+}
+
+/* Style d'une cellule qui est sélectionnée */
+.admin-combo-box .combo-box-popup .list-cell:selected {
+    -fx-background-color: #0078D7; /* Fond bleu plus foncé pour la sélection */
+    -fx-text-fill: white;
 }
