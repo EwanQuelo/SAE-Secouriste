@@ -3,14 +3,25 @@ Chose pas terribe a modif un jour:
 - Le dao oblige renvoie de nombre de ligne affecter mais je l'utilise pour recup l'id crée par auto increment 
 - L'utilisation de Optional dans le DAO devrait plutot etre des Exception
 - Les photo de profil pour l'instant ça utilise placeholder mais faut le mettre dans la base de donnée
+- DAO utiliser directement par la vue, c'est qu'une ligne mais ptet faut le mettre dans un service
+- BaseView qui oblige createCenter et on doit faire une boite vide pour eviter un NullPointerException
+
+TODO:
+- Ajoute les vrai champs pour secouriste modification compte : ajouter email et tt
+- Support des minutes pour le calendrier
 
 Changer par rapport a la maquette :
 - Ajout d'un champ pour choisir datedenaissance lors de l'inscription
 
 
 Commande utile :
-cat $(find . -name "*.java") > out.txt
+cat secours2030.sql > out.txt && cat $(find . -name "*.java") >> out.txt
 
+Ajouter :
+- Ne pas utiliser de Optional ou de gestion des erreurs avancé, utilise des exceptions (ou des -1 si vraiment nécessaire)
+- Pas de programmation un peu fonctionelle : pas de stream, pas de map, pas de filter, pas de flatmap, etc.
+
+Modifie aussi DPS pour que la base de donnée utilise horaire_depart_heure horaire_depart_minute, horaire_fin_heure  horaire_fin_minute
 
 
 Schéma UML base de donnée :
