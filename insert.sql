@@ -1,6 +1,7 @@
 -- ==========================================================================
 -- SCRIPT DE REMPLISSAGE FINAL
 -- Version la plus robuste : laisse AUTO_INCREMENT gérer les IDs.
+-- ADAPTATION : Les dates ont été modifiées pour la semaine du 16 au 20 Juin 2025.
 -- ==========================================================================
 
 USE secours2030;
@@ -32,10 +33,11 @@ INSERT INTO Competence (intitule) VALUES ('CO'), ('CP'), ('CE'), ('PBC'), ('PBF'
 INSERT INTO Necessite (intituleCompetence, competenceRequise) VALUES ('CO', 'CP'), ('CP', 'CE'), ('CE', 'PSE2'), ('PSE2', 'PSE1'), ('SSA', 'PSE1'), ('VPSP', 'PSE2'), ('PBF', 'PBC');
 INSERT INTO Site (code, nom, longitude, latitude) VALUES ('CRCHV', 'Courchevel - Le Praz', 6.6335, 45.4153), ('MRBL', 'Méribel - Chaudanne', 6.5665, 45.3967), ('VALDI', 'Val d''Isère - La Daille', 6.9800, 45.4481), ('LPLGN', 'La Plagne - Piste de Bobsleigh', 6.6742, 45.5065);
 INSERT INTO Sport (code, nom) VALUES ('SKI-ALP-DH', 'Ski Alpin - Descente'), ('SKI-ALP-SL', 'Ski Alpin - Slalom Géant'), ('SAUT-SKI', 'Saut à Ski - Grand Tremplin'), ('BOBSLEIGH', 'Bobsleigh à 4');
-INSERT INTO Journee (jour) VALUES ('2030-02-10'), ('2030-02-11'), ('2030-02-12'), ('2030-02-13'), ('2030-02-14');
+
+-- MODIFIÉ : Les journées sont maintenant en Juin 2025
+INSERT INTO Journee (jour) VALUES ('2025-06-16'), ('2025-06-17'), ('2025-06-18'), ('2025-06-19'), ('2025-06-20');
 
 -- 2.2 Secouristes et Comptes Utilisateurs
--- CORRECTION : On ne fournit plus les IDs manuellement. On laisse AUTO_INCREMENT faire son travail.
 INSERT INTO Secouriste (nom, prenom, dateNaissance, email, tel, adresse) VALUES
 ('Jean', 'Patrick', '1995-05-20', 'test@mail.com', '0612345678', '1 Rue de la Montagne, 73000 Chambéry'),
 ('Martin', 'Marie', '1998-11-12', 'marie.martin@secours.fr', '0687654321', '15 Avenue des Alpes, 38000 Grenoble'),
@@ -52,14 +54,24 @@ INSERT INTO CompteUtilisateur (login, motDePasseHash, role, idSecouriste) VALUES
 
 -- 2.3 Compétences et Disponibilités des Secouristes
 INSERT INTO Possede (idSecouriste, intituleCompetence) VALUES (1, 'CE'), (1, 'VPSP'), (2, 'PSE2'), (3, 'PSE1'), (4, 'CP');
-INSERT INTO EstDisponible (idSecouriste, jour) VALUES (1, '2030-02-10'), (1, '2030-02-11'), (1, '2030-02-12'), (2, '2030-02-10'), (2, '2030-02-13'), (3, '2030-02-12'), (4, '2030-02-10'), (4, '2030-02-11');
+
+-- MODIFIÉ : Les disponibilités sont mappées aux nouvelles dates de Juin 2025
+INSERT INTO EstDisponible (idSecouriste, jour) VALUES 
+(1, '2025-06-16'), (1, '2025-06-17'), (1, '2025-06-18'), 
+(2, '2025-06-16'), (2, '2025-06-19'), 
+(3, '2025-06-18'), 
+(4, '2025-06-16'), (4, '2025-06-17');
 
 -- 2.4 Événements (DPS) et Leurs Besoins
-INSERT INTO DPS (id, horaire_depart, horaire_fin, lieu, sport, jour) VALUES (1, 8, 17, 'CRCHV', 'SKI-ALP-DH', '2030-02-10'), (2, 9, 12, 'LPLGN', 'BOBSLEIGH', '2030-02-11'), (3, 10, 16, 'VALDI', 'SKI-ALP-SL', '2030-02-12');
+INSERT INTO DPS (id, horaire_depart_heure, horaire_depart_minute, horaire_fin_heure, horaire_fin_minute, lieu, sport, jour) VALUES 
+(1, 8, 30, 17, 0, 'CRCHV', 'SKI-ALP-DH', '2025-06-16'), -- Lundi
+(2, 9, 0, 12, 15, 'LPLGN', 'BOBSLEIGH', '2025-06-17'),  -- Mardi
+(3, 10, 45, 16, 30, 'VALDI', 'SKI-ALP-SL', '2025-06-18'); -- Mercredi
+
 INSERT INTO ABesoin (idDPS, intituleCompetence, nombre) VALUES (1, 'CP', 1), (1, 'CE', 1), (1, 'PSE2', 2), (2, 'VPSP', 1), (2, 'PSE2', 1), (3, 'CE', 1), (3, 'PSE1', 1);
 
--- 2.5 Affectations Finales
+-- 2.5 Affectations Finales (Aucun changement nécessaire car basé sur les IDs)
 INSERT INTO Affectation (idSecouriste, intituleCompetence, idDPS) VALUES (4, 'CP', 1), (1, 'CE', 1), (2, 'PSE2', 1), (4, 'PSE2', 1), (1, 'VPSP', 2), (4, 'PSE2', 2), (1, 'CE', 3), (3, 'PSE1', 3);
 
 
-SELECT 'Script de remplissage terminé avec succès.' AS message;
+SELECT 'Script de remplissage terminé avec succès pour Juin 2025.' AS message;

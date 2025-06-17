@@ -20,7 +20,7 @@ import java.util.Objects;
  * through the 'ABesoin' join table.
  *
  * @author Ewan QUELO, Raphael MILLE, Matheo BIET
- * @version 1.0
+ * @version 1.1
  */
 public class DPSDAO extends DAO<DPS> {
 
@@ -43,7 +43,7 @@ public class DPSDAO extends DAO<DPS> {
      */
     @Override
     public List<DPS> findAll() {
-        String sql = "SELECT id, horaire_depart, horaire_fin, lieu, sport, jour FROM DPS";
+        String sql = "SELECT id, horaire_depart_heure, horaire_depart_minute, horaire_fin_heure, horaire_fin_minute, lieu, sport, jour FROM DPS";
         List<DPS> dpsList = new ArrayList<>();
         try (Connection conn = getConnection();
                 Statement stmt = conn.createStatement();
@@ -70,7 +70,7 @@ public class DPSDAO extends DAO<DPS> {
     public DPS findByID(Long id) {
         if (id == null)
             return null;
-        String sql = "SELECT id, horaire_depart, horaire_fin, lieu, sport, jour FROM DPS WHERE id = ?";
+        String sql = "SELECT id, horaire_depart_heure, horaire_depart_minute, horaire_fin_heure, horaire_fin_minute, lieu, sport, jour FROM DPS WHERE id = ?";
         try (Connection conn = getConnection();
                 PreparedStatement pstmt = conn.prepareStatement(sql)) {
             pstmt.setLong(1, id);
@@ -87,9 +87,7 @@ public class DPSDAO extends DAO<DPS> {
 
     /**
      * Creates a new {@link DPS} record in the database.
-     * The start and end times (horaires) are converted from an 'int[] {HH, MM}'
-     * format
-     * to an integer 'HHMM' for database storage.
+     * The start and end times are taken directly from the 'int[] {HH, MM}' format.
      * After successful insertion, the generated ID from the database is set
      * back into the provided {@link DPS} object.
      *
@@ -105,15 +103,17 @@ public class DPSDAO extends DAO<DPS> {
     public int create(DPS dps) {
         if (dps == null)
             throw new IllegalArgumentException("DPS cannot be null.");
-        String sql = "INSERT INTO DPS (horaire_depart, horaire_fin, lieu, sport, jour) VALUES (?, ?, ?, ?, ?)";
+        String sql = "INSERT INTO DPS (horaire_depart_heure, horaire_depart_minute, horaire_fin_heure, horaire_fin_minute, lieu, sport, jour) VALUES (?, ?, ?, ?, ?, ?, ?)";
         try (Connection conn = getConnection();
                 PreparedStatement pstmt = conn.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
 
-            pstmt.setInt(1, timeArrayToInt(dps.getHoraireDepart()));
-            pstmt.setInt(2, timeArrayToInt(dps.getHoraireFin()));
-            pstmt.setString(3, dps.getSite().getCode());
-            pstmt.setString(4, dps.getSport().getCode());
-            pstmt.setDate(5, Date.valueOf(dps.getJournee().getDate()));
+            pstmt.setInt(1, dps.getHoraireDepart()[0]);
+            pstmt.setInt(2, dps.getHoraireDepart()[1]);
+            pstmt.setInt(3, dps.getHoraireFin()[0]);
+            pstmt.setInt(4, dps.getHoraireFin()[1]);
+            pstmt.setString(5, dps.getSite().getCode());
+            pstmt.setString(6, dps.getSport().getCode());
+            pstmt.setDate(7, Date.valueOf(dps.getJournee().getDate()));
 
             int affectedRows = pstmt.executeUpdate();
             if (affectedRows > 0) {
@@ -132,9 +132,7 @@ public class DPSDAO extends DAO<DPS> {
 
     /**
      * Updates an existing {@link DPS} record in the database.
-     * The start and end times (horaires) are converted from an 'int[] {HH, MM}'
-     * format
-     * to an integer 'HHMM' for database storage.
+     * The start and end times are taken directly from the 'int[] {HH, MM}' format.
      *
      * @param dps The {@link DPS} object with updated information. Its ID must be
      *            set
@@ -148,15 +146,17 @@ public class DPSDAO extends DAO<DPS> {
     public int update(DPS dps) {
         if (dps == null)
             throw new IllegalArgumentException("DPS to update cannot be null.");
-        String sql = "UPDATE DPS SET horaire_depart = ?, horaire_fin = ?, lieu = ?, sport = ?, jour = ? WHERE id = ?";
+        String sql = "UPDATE DPS SET horaire_depart_heure = ?, horaire_depart_minute = ?, horaire_fin_heure = ?, horaire_fin_minute = ?, lieu = ?, sport = ?, jour = ? WHERE id = ?";
         try (Connection conn = getConnection();
                 PreparedStatement pstmt = conn.prepareStatement(sql)) {
-            pstmt.setInt(1, timeArrayToInt(dps.getHoraireDepart()));
-            pstmt.setInt(2, timeArrayToInt(dps.getHoraireFin()));
-            pstmt.setString(3, dps.getSite().getCode());
-            pstmt.setString(4, dps.getSport().getCode());
-            pstmt.setDate(5, Date.valueOf(dps.getJournee().getDate()));
-            pstmt.setLong(6, dps.getId());
+            pstmt.setInt(1, dps.getHoraireDepart()[0]);
+            pstmt.setInt(2, dps.getHoraireDepart()[1]);
+            pstmt.setInt(3, dps.getHoraireFin()[0]);
+            pstmt.setInt(4, dps.getHoraireFin()[1]);
+            pstmt.setString(5, dps.getSite().getCode());
+            pstmt.setString(6, dps.getSport().getCode());
+            pstmt.setDate(7, Date.valueOf(dps.getJournee().getDate()));
+            pstmt.setLong(8, dps.getId());
             return pstmt.executeUpdate();
         } catch (SQLException e) {
             System.err.println("Error updating DPS " + dps.getId() + ": " + e.getMessage());
@@ -194,7 +194,7 @@ public class DPSDAO extends DAO<DPS> {
      * This method retrieves related {@link Site}, {@link Sport}, and
      * {@link Journee} objects
      * using their respective DAOs based on codes/dates found in the result set.
-     * It also converts stored integer times back to 'int[] {HH, MM}' format.
+     * It also reconstructs the 'int[] {HH, MM}' format from separate DB columns.
      * If any critical related entity (Site, Sport, Journee) is not found, this
      * method
      * prints an error and returns 'null', indicating the DPS object could not be
@@ -220,8 +220,8 @@ public class DPSDAO extends DAO<DPS> {
 
         return new DPS(
                 rs.getLong("id"),
-                intToTimeArray(rs.getInt("horaire_depart")),
-                intToTimeArray(rs.getInt("horaire_fin")),
+                new int[]{rs.getInt("horaire_depart_heure"), rs.getInt("horaire_depart_minute")},
+                new int[]{rs.getInt("horaire_fin_heure"), rs.getInt("horaire_fin_minute")},
                 site,
                 journee,
                 sport);
@@ -336,38 +336,12 @@ public class DPSDAO extends DAO<DPS> {
         Sport sport = sportDAO.findByCode(rs.getString("sport"));
         Journee journee = journeeDAO.findByDate(rs.getDate("jour").toLocalDate());
 
-        DPS dps = new DPS(rs.getLong("id"), intToTimeArray(rs.getInt("horaire_depart")),
-                intToTimeArray(rs.getInt("horaire_fin")), site, journee, sport);
+        DPS dps = new DPS(rs.getLong("id"), new int[]{rs.getInt("horaire_depart_heure"), rs.getInt("horaire_depart_minute")},
+                new int[]{rs.getInt("horaire_fin_heure"), rs.getInt("horaire_fin_minute")}, site, journee, sport);
 
         if (fetchRelations) {
             dps.setCompetencesRequises(findRequiredCompetencesForDps(dps.getId()));
         }
         return dps;
-    }
-
-    // --- Time Conversion Helpers ---
-
-    /**
-     * Converts a time represented as an array 'int[]{hours, minutes}'
-     * to a single integer format 'HHMM'.
-     * For example, '{8, 30}' (8:30 AM) becomes '830'.
-     *
-     * @param timeArray An array of two integers: '{hours, minutes}'.
-     * @return The time as a single integer 'HHMM'.
-     */
-    private int timeArrayToInt(int[] timeArray) {
-        return timeArray[0] * 100 + timeArray[1];
-    }
-
-    /**
-     * Converts a time represented as a single integer 'HHMM'
-     * back to an array 'int[]{hours, minutes}'.
-     * For example, '830' becomes '{8, 30}'.
-     *
-     * @param timeInt The time as a single integer 'HHMM'.
-     * @return An array of two integers: '{hours, minutes}'.
-     */
-    private int[] intToTimeArray(int timeInt) {
-        return new int[] { timeInt / 100, timeInt % 100 };
     }
 }

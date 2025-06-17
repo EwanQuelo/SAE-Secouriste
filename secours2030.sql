@@ -86,8 +86,10 @@ CREATE TABLE Sport (
  */
 CREATE TABLE DPS (
 	id BIGINT AUTO_INCREMENT,
-    horaire_depart INTEGER NOT NULL,
-    horaire_fin INTEGER NOT NULL,
+    horaire_depart_heure INTEGER NOT NULL,
+    horaire_depart_minute INTEGER NOT NULL,
+    horaire_fin_heure INTEGER NOT NULL,
+    horaire_fin_minute INTEGER NOT NULL,
     lieu VARCHAR(20),
     sport VARCHAR(20),
     jour DATE NOT NULL,

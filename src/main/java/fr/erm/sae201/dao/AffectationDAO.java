@@ -207,7 +207,7 @@ public class AffectationDAO extends DAO<Affectation> {
         List<Affectation> affectations = new ArrayList<>();
         String sql = "SELECT " +
                 "  a.idSecouriste, a.intituleCompetence, a.idDPS, " +
-                "  d.horaire_depart, d.horaire_fin, d.jour AS dps_jour, " +
+                "  d.horaire_depart_heure, d.horaire_depart_minute, d.horaire_fin_heure, d.horaire_fin_minute, d.jour AS dps_jour, " +
                 "  s.nom AS secouriste_nom, s.prenom, s.dateNaissance, s.email, s.tel, s.adresse, " +
                 "  si.code AS site_code, si.nom AS site_nom, si.longitude, si.latitude, " +
                 "  sp.code AS sport_code, sp.nom AS sport_nom " +
@@ -240,8 +240,8 @@ public class AffectationDAO extends DAO<Affectation> {
                     // la BDD
                     Journee journee = new Journee(rs.getDate("dps_jour").toLocalDate());
 
-                    int[] horaireDepart = { rs.getInt("horaire_depart"), 0 };
-                    int[] horaireFin = { rs.getInt("horaire_fin"), 0 };
+                    int[] horaireDepart = { rs.getInt("horaire_depart_heure"), rs.getInt("horaire_depart_minute") };
+                    int[] horaireFin = { rs.getInt("horaire_fin_heure"), rs.getInt("horaire_fin_minute") };
 
                     DPS dps = new DPS(rs.getLong("idDPS"), horaireDepart, horaireFin, site, journee, sport);
 
