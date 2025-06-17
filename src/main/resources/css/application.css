@@ -434,7 +434,7 @@ Styles pour les Vues Administrateur
 
 /* Styles pour les Vues Administrateur */
 .admin-content-container {
-    -fx-background-color: #363434;
+    -fx-background-color: transparent;
     -fx-padding: 25px;
     -fx-background-radius: 12px;
 }
