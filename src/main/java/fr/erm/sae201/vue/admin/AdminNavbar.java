@@ -24,7 +24,7 @@ public class AdminNavbar extends HBox {
         HBox navLinks = createNavLinks(navigator, compte, activeViewName);
         Region spacer = new Region();
         HBox.setHgrow(spacer, Priority.ALWAYS);
-        HBox userInfo = createUserInfo(compte);
+        HBox userInfo = createUserInfo(navigator, compte);
 
         this.getChildren().addAll(navLinks, spacer, userInfo);
     }
@@ -58,7 +58,7 @@ public class AdminNavbar extends HBox {
         return navButton;
     }
 
-    private HBox createUserInfo(CompteUtilisateur compte) {
+    private HBox createUserInfo(MainApp navigator, CompteUtilisateur compte) {
         HBox userInfo = new HBox(15);
         userInfo.setAlignment(Pos.CENTER_RIGHT);
 
@@ -68,6 +68,8 @@ public class AdminNavbar extends HBox {
         settingsIcon.setFitWidth(24);
         settingsButton.setGraphic(settingsIcon);
         settingsButton.getStyleClass().add("settings-button");
+        
+        settingsButton.setOnAction(e -> navigator.showUserParametreView(compte));
         
         Secouriste secouriste = null;
         if (compte.getIdSecouriste() != null) {
@@ -91,7 +93,7 @@ public class AdminNavbar extends HBox {
         Circle clip = new Circle(20, 20, 20);
         profilePic.setClip(clip);
         
-        userInfo.getChildren().addAll(settingsButton, textInfo, profilePic);
+        userInfo.getChildren().addAll(textInfo, profilePic, settingsButton);
         return userInfo;
     }
 }

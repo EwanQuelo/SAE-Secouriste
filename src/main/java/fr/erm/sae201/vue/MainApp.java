@@ -107,6 +107,12 @@ public class MainApp extends Application {
         primaryStage.setTitle("SECOURS - Gestion des Affectations");
     }
 
+    public void showAdminParametresView(CompteUtilisateur compte) {
+        AdminParametresView view = new AdminParametresView(this, compte);
+        mainScene.setRoot(view.getView());
+        primaryStage.setTitle("SECOURS - Gestion des Affectations");
+    }
+
     // --- Vues Secouriste ---
     public void showSecouristeDashboard(CompteUtilisateur compte) {
         SecouristeDashboard view = new SecouristeDashboard(this, compte);
