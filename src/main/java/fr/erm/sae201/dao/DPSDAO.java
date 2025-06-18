@@ -105,7 +105,7 @@ public class DPSDAO extends DAO<DPS> {
             throw new IllegalArgumentException("DPS cannot be null.");
         String sql = "INSERT INTO DPS (horaire_depart_heure, horaire_depart_minute, horaire_fin_heure, horaire_fin_minute, lieu, sport, jour) VALUES (?, ?, ?, ?, ?, ?, ?)";
         try (Connection conn = getConnection();
-                PreparedStatement pstmt = conn.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
+            PreparedStatement pstmt = conn.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
 
             pstmt.setInt(1, dps.getHoraireDepart()[0]);
             pstmt.setInt(2, dps.getHoraireDepart()[1]);

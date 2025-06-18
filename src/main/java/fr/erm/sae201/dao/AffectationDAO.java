@@ -206,18 +206,19 @@ public class AffectationDAO extends DAO<Affectation> {
             LocalDate endDate) {
         List<Affectation> affectations = new ArrayList<>();
         String sql = "SELECT " +
-                "  a.idSecouriste, a.intituleCompetence, a.idDPS, " +
-                "  d.horaire_depart_heure, d.horaire_depart_minute, d.horaire_fin_heure, d.horaire_fin_minute, d.jour AS dps_jour, " +
-                "  s.nom AS secouriste_nom, s.prenom, s.dateNaissance, s.email, s.tel, s.adresse, " +
-                "  si.code AS site_code, si.nom AS site_nom, si.longitude, si.latitude, " +
-                "  sp.code AS sport_code, sp.nom AS sport_nom " +
-                "FROM " +
-                "  Affectation a " +
-                "JOIN Secouriste s ON a.idSecouriste = s.id " +
-                "JOIN DPS d ON a.idDPS = d.id " +
-                "JOIN Site si ON d.lieu = si.code " +
-                "JOIN Sport sp ON d.sport = sp.code " +
-                "WHERE a.idSecouriste = ? AND d.jour BETWEEN ? AND ?";
+            "  Affectation.idSecouriste, Affectation.intituleCompetence, Affectation.idDPS, " +
+            "  DPS.horaire_depart_heure, DPS.horaire_depart_minute, DPS.horaire_fin_heure, DPS.horaire_fin_minute, DPS.jour, " +
+            "  Secouriste.nom, Secouriste.prenom, Secouriste.dateNaissance, Secouriste.email, Secouriste.tel, Secouriste.adresse, " +
+            "  Site.code, Site.nom, Site.longitude, Site.latitude, " +
+            "  Sport.code, Sport.nom " +
+            "FROM " +
+            "  Affectation " +
+            "JOIN Secouriste ON Affectation.idSecouriste = Secouriste.id " +
+            "JOIN DPS ON Affectation.idDPS = DPS.id " +
+            "JOIN Site ON DPS.lieu = Site.code " +
+            "JOIN Sport ON DPS.sport = Sport.code " +
+            "WHERE Affectation.idSecouriste = ? AND DPS.jour BETWEEN ? AND ?";
+
 
         try (Connection conn = getConnection();
                 PreparedStatement pstmt = conn.prepareStatement(sql)) {
@@ -236,8 +237,6 @@ public class AffectationDAO extends DAO<Affectation> {
                     Sport sport = new Sport(rs.getString("sport_code"), rs.getString("sport_nom"));
                     Competence competence = new Competence(rs.getString("intituleCompetence"));
 
-                    // CORRECTION : On utilise le constructeur de Journee avec la date extraite de
-                    // la BDD
                     Journee journee = new Journee(rs.getDate("dps_jour").toLocalDate());
 
                     int[] horaireDepart = { rs.getInt("horaire_depart_heure"), rs.getInt("horaire_depart_minute") };
