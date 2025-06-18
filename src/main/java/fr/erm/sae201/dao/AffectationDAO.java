@@ -196,7 +196,8 @@ public class AffectationDAO extends DAO<Affectation> {
     /**
      * Récupère toutes les affectations pour un secouriste donné entre deux dates.
      * C'est une version optimisée qui ne fait qu'une seule requête complexe.
-     * CORRIGÉ : Utilisation d'alias SQL (AS) pour éviter les conflits de noms de colonnes.
+     * CORRIGÉ : Utilisation d'alias SQL (AS) pour éviter les conflits de noms de
+     * colonnes.
      *
      * @param secouristeId L'ID du secouriste.
      * @param startDate    La date de début de la période.
@@ -208,19 +209,20 @@ public class AffectationDAO extends DAO<Affectation> {
         List<Affectation> affectations = new ArrayList<>();
         // CORRIGÉ : Ajout des alias (AS) pour les colonnes portant le même nom
         String sql = "SELECT " +
-            "  Affectation.idSecouriste, Affectation.intituleCompetence, Affectation.idDPS, " +
-            "  DPS.horaire_depart_heure, DPS.horaire_depart_minute, DPS.horaire_fin_heure, DPS.horaire_fin_minute, DPS.jour AS dps_jour, " +
-            "  Secouriste.nom AS secouriste_nom, Secouriste.prenom, Secouriste.dateNaissance, Secouriste.email, Secouriste.tel, Secouriste.adresse, " +
-            "  Site.code AS site_code, Site.nom AS site_nom, Site.longitude, Site.latitude, " +
-            "  Sport.code AS sport_code, Sport.nom AS sport_nom " +
-            "FROM " +
-            "  Affectation " +
-            "JOIN Secouriste ON Affectation.idSecouriste = Secouriste.id " +
-            "JOIN DPS ON Affectation.idDPS = DPS.id " +
-            "JOIN Site ON DPS.lieu = Site.code " +
-            "JOIN Sport ON DPS.sport = Sport.code " +
-            "WHERE Affectation.idSecouriste = ? AND DPS.jour BETWEEN ? AND ?";
-
+                "  Affectation.idSecouriste, Affectation.intituleCompetence, Affectation.idDPS, " +
+                "  DPS.horaire_depart_heure, DPS.horaire_depart_minute, DPS.horaire_fin_heure, DPS.horaire_fin_minute, DPS.jour AS dps_jour, "
+                +
+                "  Secouriste.nom AS secouriste_nom, Secouriste.prenom, Secouriste.dateNaissance, Secouriste.email, Secouriste.tel, Secouriste.adresse, "
+                +
+                "  Site.code AS site_code, Site.nom AS site_nom, Site.longitude, Site.latitude, " +
+                "  Sport.code AS sport_code, Sport.nom AS sport_nom " +
+                "FROM " +
+                "  Affectation " +
+                "JOIN Secouriste ON Affectation.idSecouriste = Secouriste.id " +
+                "JOIN DPS ON Affectation.idDPS = DPS.id " +
+                "JOIN Site ON DPS.lieu = Site.code " +
+                "JOIN Sport ON DPS.sport = Sport.code " +
+                "WHERE Affectation.idSecouriste = ? AND DPS.jour BETWEEN ? AND ?";
 
         try (Connection conn = getConnection();
                 PreparedStatement pstmt = conn.prepareStatement(sql)) {
@@ -235,12 +237,12 @@ public class AffectationDAO extends DAO<Affectation> {
                     Secouriste secouriste = new Secouriste(rs.getLong("idSecouriste"), rs.getString("secouriste_nom"),
                             rs.getString("prenom"), rs.getDate("dateNaissance"), rs.getString("email"),
                             rs.getString("tel"), rs.getString("adresse"));
-                    
+
                     Site site = new Site(rs.getString("site_code"), rs.getString("site_nom"), rs.getFloat("longitude"),
                             rs.getFloat("latitude"));
 
                     Sport sport = new Sport(rs.getString("sport_code"), rs.getString("sport_nom"));
-                    
+
                     Competence competence = new Competence(rs.getString("intituleCompetence"));
 
                     Journee journee = new Journee(rs.getDate("dps_jour").toLocalDate());
@@ -258,6 +260,58 @@ public class AffectationDAO extends DAO<Affectation> {
             e.printStackTrace();
         }
         return affectations;
+    }
+
+    public boolean replaceAffectationsForDps(long dpsId, List<Affectation> nouvellesAffectations) {
+        Connection conn = null;
+        try {
+            conn = getConnection();
+            // Démarre une transaction
+            conn.setAutoCommit(false);
+
+            // 1. Supprimer les anciennes affectations pour ce DPS
+            String deleteSql = "DELETE FROM Affectation WHERE idDPS = ?";
+            try (PreparedStatement pstmtDelete = conn.prepareStatement(deleteSql)) {
+                pstmtDelete.setLong(1, dpsId);
+                pstmtDelete.executeUpdate();
+            }
+
+            // 2. Insérer les nouvelles affectations
+            String insertSql = "INSERT INTO Affectation (idDPS, idSecouriste, intituleCompetence) VALUES (?, ?, ?)";
+            try (PreparedStatement pstmtInsert = conn.prepareStatement(insertSql)) {
+                for (Affectation affectation : nouvellesAffectations) {
+                    pstmtInsert.setLong(1, affectation.getDps().getId());
+                    pstmtInsert.setLong(2, affectation.getSecouriste().getId());
+                    pstmtInsert.setString(3, affectation.getCompetence().getIntitule());
+                    pstmtInsert.addBatch(); // Ajoute la commande au lot
+                }
+                pstmtInsert.executeBatch(); // Exécute toutes les commandes d'un coup
+            }
+
+            // 3. Valider la transaction si tout s'est bien passé
+            conn.commit();
+            return true;
+
+        } catch (SQLException e) {
+            System.err.println("Erreur transactionnelle lors du remplacement des affectations : " + e.getMessage());
+            if (conn != null) {
+                try {
+                    conn.rollback(); // Annule la transaction en cas d'erreur
+                } catch (SQLException ex) {
+                    ex.printStackTrace();
+                }
+            }
+            return false;
+        } finally {
+            if (conn != null) {
+                try {
+                    conn.setAutoCommit(true); // Rétablit le mode par défaut
+                    conn.close();
+                } catch (SQLException e) {
+                    e.printStackTrace();
+                }
+            }
+        }
     }
 
     @Override

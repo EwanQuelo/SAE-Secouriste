@@ -1490,3 +1490,10 @@ Styles pour les Vues Administrateur
     -fx-shape: " ";
     -fx-padding: 0;
 }
+
+.dps-details-card {
+    -fx-background-color: #4a4747;
+    -fx-padding: 15px;
+    -fx-background-radius: 8px;
+    -fx-alignment: center;
+}

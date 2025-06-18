@@ -36,8 +36,8 @@ public class LoginController {
         String password = view.getPassword();
 
         if (email.isEmpty() || password.isEmpty()) {
-            email = "test@mail.com"; // Secouriste
-            // email = "admin@jo2030.fr"; // Administrateur
+            //email = "test@mail.com"; // Secouriste
+            email = "admin@jo2030.fr"; // Administrateur
             password = "password"; // Pour les tests, à supprimer en production
 
             // NotificationUtils.showWarning("Champs requis", "Veuillez saisir votre email et votre mot de passe.");
