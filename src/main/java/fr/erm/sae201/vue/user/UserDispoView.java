@@ -1,10 +1,13 @@
 package fr.erm.sae201.vue.user;
 
+import fr.erm.sae201.controleur.user.UserDispoController;
 import fr.erm.sae201.dao.SecouristeDAO;
 import fr.erm.sae201.metier.persistence.CompteUtilisateur;
 import fr.erm.sae201.metier.persistence.Journee;
 import fr.erm.sae201.vue.MainApp;
 import fr.erm.sae201.vue.base.BaseView;
+import javafx.event.ActionEvent;
+import javafx.event.EventHandler;
 import javafx.geometry.HPos;
 import javafx.geometry.Pos;
 import javafx.scene.Node;
@@ -23,31 +26,68 @@ import java.util.stream.Collectors;
 public class UserDispoView extends BaseView {
 
     private final CompteUtilisateur compte;
-    private final SecouristeDAO secouristeDAO;
     private final MainApp navigator;
 
     private YearMonth currentMonth;
     private VBox mainContainer;
 
-    // Pour gérer l'état des disponibilités
     private Set<LocalDate> originalDisponibilites;
     private Set<LocalDate> addedDisponibilites = new HashSet<>();
     private Set<LocalDate> removedDisponibilites = new HashSet<>();
+    
+    private Button saveButton;
+    private Button cancelButton;
 
     public UserDispoView(MainApp navigator, CompteUtilisateur compte) {
         super(navigator, compte, "Disponibilités");
         this.compte = compte;
         this.navigator = navigator;
-        this.secouristeDAO = new SecouristeDAO();
         this.currentMonth = YearMonth.now();
 
-        // On récupère les disponibilités initiales une seule fois
+        // Cette logique est déplacée dans le contrôleur ou le service.
+        // On garde juste l'état initial pour l'affichage.
+        SecouristeDAO secouristeDAO = new SecouristeDAO();
         Set<Journee> journees = secouristeDAO.findAvailabilitiesForSecouriste(compte.getIdSecouriste());
         this.originalDisponibilites = journees.stream().map(Journee::getDate).collect(Collectors.toSet());
 
         populateView();
     }
+    
+    // NOUVEAU : Méthodes pour que le contrôleur se branche sur les boutons
+    public void setSaveAction(EventHandler<ActionEvent> handler) {
+        saveButton.setOnAction(handler);
+    }
+    
+    public void setCancelAction(EventHandler<ActionEvent> handler) {
+        cancelButton.setOnAction(handler);
+    }
+    
+    // NOUVEAU : Getters pour que le contrôleur récupère les changements
+    public Set<LocalDate> getAddedDisponibilites() {
+        return new HashSet<>(addedDisponibilites);
+    }
 
+    public Set<LocalDate> getRemovedDisponibilites() {
+        return new HashSet<>(removedDisponibilites);
+    }
+
+    // MODIFIÉ : Le code de création de la vue reste, mais la logique des actions est retirée.
+    private Node createActionButtons() {
+        HBox buttonBar = new HBox(20);
+        buttonBar.setAlignment(Pos.CENTER);
+        buttonBar.getStyleClass().add("action-button-bar");
+
+        saveButton = new Button("Enregistrer les modifications");
+        saveButton.getStyleClass().add("login-button");
+        // SUPPRIMÉ : setOnAction(e -> saveChanges());
+
+        cancelButton = new Button("Annuler");
+        cancelButton.getStyleClass().add("signup-button");
+        // SUPPRIMÉ : setOnAction(e -> cancelChanges());
+
+        buttonBar.getChildren().addAll(saveButton, cancelButton);
+        return buttonBar;
+    }
     @Override
     protected Node createCenterContent() {
         mainContainer = new VBox(10);
@@ -72,7 +112,6 @@ public class UserDispoView extends BaseView {
     }
 
     private Node createMonthNavigationBar() {
-        // ... (Code identique à la proposition précédente)
         HBox navBar = new HBox(20);
         navBar.setAlignment(Pos.CENTER);
         navBar.getStyleClass().add("month-nav-bar");
@@ -99,7 +138,6 @@ public class UserDispoView extends BaseView {
         GridPane grid = new GridPane();
         grid.getStyleClass().add("dispo-grid");
 
-        // En-têtes des jours (L, M, M, J, V, S, D)
         String[] daysOfWeek = { "Lundi", "Mardi", "Mercredi", "Jeudi", "Vendredi", "Samedi", "Dimanche" };
         for (int i = 0; i < 7; i++) {
             Label dayLabel = new Label(daysOfWeek[i]);
@@ -109,42 +147,29 @@ public class UserDispoView extends BaseView {
         }
 
         LocalDate firstDayOfMonth = currentMonth.atDay(1);
-        int dayOfWeekOffset = firstDayOfMonth.getDayOfWeek().getValue() - 1; // 0 pour Lundi
+        int dayOfWeekOffset = firstDayOfMonth.getDayOfWeek().getValue() - 1;
 
-        // --- DÉBUT DE LA MODIFICATION : On dessine TOUJOURS 6 semaines ---
-
-        // On boucle sur 42 cases (6 semaines * 7 jours)
         for (int i = 0; i < 42; i++) {
-            int row = i / 7 + 1; // +1 pour passer la ligne d'en-têtes
+            int row = i / 7 + 1;
             int col = i % 7;
-
             int dayOfMonth = i - dayOfWeekOffset + 1;
-
             Button dayButton = new Button();
             dayButton.getStyleClass().add("dispo-day-button");
-            dayButton.setFocusTraversable(false); // Empêche la navigation au clavier, plus propre
+            dayButton.setFocusTraversable(false);
 
-            // On vérifie si ce jour appartient bien au mois en cours
             if (dayOfMonth > 0 && dayOfMonth <= currentMonth.lengthOfMonth()) {
-                // C'est un vrai jour du mois
                 LocalDate date = currentMonth.atDay(dayOfMonth);
                 dayButton.setText(String.valueOf(dayOfMonth));
-                dayButton.setDisable(false); // Le bouton est cliquable
-
-                updateButtonStyle(date, dayButton); // Applique le style initial
+                dayButton.setDisable(false);
+                updateButtonStyle(date, dayButton);
                 dayButton.setOnAction(e -> handleDayClick(date, dayButton));
-
             } else {
-                // C'est une case vide (jour du mois précédent ou suivant)
                 dayButton.setText("");
-                dayButton.setDisable(true); // Le bouton est non cliquable
-                dayButton.getStyleClass().add("empty-day-button"); // Style pour le rendre "invisible"
+                dayButton.setDisable(true);
+                dayButton.getStyleClass().add("empty-day-button");
             }
-
             grid.add(dayButton, col, row);
         }
-        // --- FIN DE LA MODIFICATION ---
-
         return grid;
     }
 
@@ -154,18 +179,16 @@ public class UserDispoView extends BaseView {
                 && (originalDisponibilites.contains(date) || addedDisponibilites.contains(date));
 
         if (isCurrentlyAvailable) {
-            // Le rendre indisponible
             if (isOriginallyAvailable) {
-                removedDisponibilites.add(date); // Marquer pour suppression
+                removedDisponibilites.add(date);
             } else {
-                addedDisponibilites.remove(date); // Annuler un ajout
+                addedDisponibilites.remove(date);
             }
         } else {
-            // Le rendre disponible
             if (isOriginallyAvailable) {
-                removedDisponibilites.remove(date); // Annuler une suppression
+                removedDisponibilites.remove(date);
             } else {
-                addedDisponibilites.add(date); // Marquer pour ajout
+                addedDisponibilites.add(date);
             }
         }
         updateButtonStyle(date, dayButton);
@@ -173,59 +196,20 @@ public class UserDispoView extends BaseView {
 
     private void updateButtonStyle(LocalDate day, Button button) {
         button.getStyleClass().removeAll("dispo-available", "dispo-to-add", "dispo-to-remove");
-
         boolean isOriginallyAvailable = originalDisponibilites.contains(day);
         boolean isAdded = addedDisponibilites.contains(day);
         boolean isRemoved = removedDisponibilites.contains(day);
 
         if ((isOriginallyAvailable && !isRemoved) || isAdded) {
-            // Il est ou sera disponible
             if (isAdded) {
-                button.getStyleClass().add("dispo-to-add"); // Vert clair pour les ajouts
+                button.getStyleClass().add("dispo-to-add");
             } else {
-                button.getStyleClass().add("dispo-available"); // Vert pour les dispos existantes
+                button.getStyleClass().add("dispo-available");
             }
         } else {
-            // Il n'est pas ou ne sera plus disponible
             if (isRemoved) {
-                button.getStyleClass().add("dispo-to-remove"); // Rouge pour les suppressions
+                button.getStyleClass().add("dispo-to-remove");
             }
         }
-    }
-
-    private Node createActionButtons() {
-        HBox buttonBar = new HBox(20);
-        buttonBar.setAlignment(Pos.CENTER);
-        buttonBar.getStyleClass().add("action-button-bar");
-
-        Button saveButton = new Button("Enregistrer les modifications");
-        // On réutilise le style du bouton de connexion principal
-        saveButton.getStyleClass().add("login-button");
-        saveButton.setOnAction(e -> saveChanges());
-
-        Button cancelButton = new Button("Annuler");
-        // On réutilise le style du bouton d'inscription, plus sombre
-        cancelButton.getStyleClass().add("signup-button");
-        cancelButton.setOnAction(e -> cancelChanges());
-
-        buttonBar.getChildren().addAll(saveButton, cancelButton);
-        return buttonBar;
-    }
-
-    private void saveChanges() {
-        for (LocalDate date : addedDisponibilites) {
-            secouristeDAO.addAvailability(compte.getIdSecouriste(), date);
-        }
-        for (LocalDate date : removedDisponibilites) {
-            secouristeDAO.removeAvailability(compte.getIdSecouriste(), date);
-        }
-
-        // On utilise la variable navigator stockée dans la classe
-        navigator.showUserCalendrierView(compte);
-    }
-
-    private void cancelChanges() {
-        // On utilise la variable navigator stockée dans la classe
-        navigator.showUserCalendrierView(compte);
     }
 }

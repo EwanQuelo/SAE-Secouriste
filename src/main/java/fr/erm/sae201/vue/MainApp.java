@@ -6,6 +6,7 @@ import fr.erm.sae201.controleur.auth.LoginController;
 import fr.erm.sae201.controleur.auth.ResetPasswordController;
 import fr.erm.sae201.controleur.auth.SignupController;
 import fr.erm.sae201.controleur.user.UserCompetencesController;
+import fr.erm.sae201.controleur.user.UserDispoController;
 import fr.erm.sae201.metier.persistence.CompteUtilisateur;
 import fr.erm.sae201.metier.persistence.Secouriste; // AJOUT
 import fr.erm.sae201.metier.persistence.DPS;
@@ -170,6 +171,7 @@ public class MainApp extends Application {
 
     public void showUserDispoView(CompteUtilisateur compte) {
         UserDispoView view = new UserDispoView(this, compte);
+        new UserDispoController(view, this, compte);
         mainScene.setRoot(view.getView());
         primaryStage.setTitle("SECOURS - Mes Disponibilités");
     }
