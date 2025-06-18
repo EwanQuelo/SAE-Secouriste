@@ -113,18 +113,25 @@ public class MainApp extends Application {
         primaryStage.setTitle("SECOURS - Modifier Utilisateur");
     }
 
+    public void showAdminCompetencesView(CompteUtilisateur compte) {
+        AdminCompetencesView view = new AdminCompetencesView(this, compte);
+        mainScene.setRoot(view.getView());
+        primaryStage.setTitle("SECOURS - Gestion des Compétences");
+    }
+
+    // --- MODIFICATION DANS showAdminAffectationsView ---
     public void showAdminAffectationsView(CompteUtilisateur compte) {
         AdminAffectationsView view = new AdminAffectationsView(this, compte);
         mainScene.setRoot(view.getView());
         primaryStage.setTitle("SECOURS - Gestion des Affectations");
     }
 
-public void showAdminParametresView(CompteUtilisateur compte) {
-    // Appelle la VUE et le CONTROLEUR de l'admin
-    AdminParametresView view = new AdminParametresView(this, compte, this.authService);
-    mainScene.setRoot(view.getView());
-    primaryStage.setTitle("SECOURS - Paramètres Administrateur");
-}
+    public void showAdminParametresView(CompteUtilisateur compte) {
+        // Appelle la VUE et le CONTROLEUR de l'admin
+        AdminParametresView view = new AdminParametresView(this, compte, this.authService);
+        mainScene.setRoot(view.getView());
+        primaryStage.setTitle("SECOURS - Paramètres Administrateur");
+    }
 
     // La méthode pour l'utilisateur reste inchangée
     public void showUserParametreView(CompteUtilisateur compte) {
@@ -180,6 +187,16 @@ public void showAdminParametresView(CompteUtilisateur compte) {
         AdminEditDpsView view = new AdminEditDpsView(this, compte, dps);
         mainScene.setRoot(view.getView());
         primaryStage.setTitle("SECOURS - Modification de Dispositif");
+    }
+
+    /**
+     * Affiche la vue de création d'un nouvel utilisateur secouriste.
+     * @param adminCompte Le compte de l'administrateur qui effectue l'action.
+     */
+    public void showAdminCreateUserView(CompteUtilisateur adminCompte) {
+        AdminCreateUserView view = new AdminCreateUserView(this, adminCompte);
+        mainScene.setRoot(view.getView());
+        primaryStage.setTitle("SECOURS - Créer un Nouvel Utilisateur");
     }
 
     public static void main(String[] args) {

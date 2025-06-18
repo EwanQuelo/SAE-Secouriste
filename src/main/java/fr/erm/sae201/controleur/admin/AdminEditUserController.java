@@ -75,26 +75,24 @@ public class AdminEditUserController {
             NotificationUtils.showError("Données invalides", e.getMessage());
             return;
         }
-
-        // 2. Mettre à jour les compétences
-        Map<String, CheckBox> checkBoxes = view.getCompetenceCheckBoxes();
+      Map<Competence, CheckBox> checkBoxes = view.getCompetenceCheckBoxes();
         
-        for(Map.Entry<String, CheckBox> entry : checkBoxes.entrySet()) {
-            String intitule = entry.getKey();
+        for(Map.Entry<Competence, CheckBox> entry : checkBoxes.entrySet()) {
+            Competence competence = entry.getKey();
             boolean isSelected = entry.getValue().isSelected();
-            boolean wasSelected = initialCompetences.stream().anyMatch(c -> c.getIntitule().equals(intitule));
+            boolean wasSelected = initialCompetences.contains(competence);
 
             if (isSelected && !wasSelected) {
                 // La compétence a été ajoutée
-                secouristeMngt.addCompetenceToSecouriste(secouristeToEdit.getId(), intitule);
+                secouristeMngt.addCompetenceToSecouriste(secouristeToEdit.getId(), competence.getIntitule());
             } else if (!isSelected && wasSelected) {
                 // La compétence a été supprimée
-                secouristeMngt.removeCompetenceFromSecouriste(secouristeToEdit.getId(), intitule);
+                secouristeMngt.removeCompetenceFromSecouriste(secouristeToEdit.getId(), competence.getIntitule());
             }
         }
         
         NotificationUtils.showSuccess("Mise à jour réussie", "Les informations du secouriste ont été mises à jour.");
-        navigator.showAdminUtilisateursView(view.getCompte()); // Retour à la liste des utilisateurs
+        navigator.showAdminUtilisateursView(view.getCompte());
     }
     
     private void cancel() {

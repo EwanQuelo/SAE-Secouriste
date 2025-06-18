@@ -33,6 +33,8 @@ public class AdminUtilisateursController {
             search(newValue);
         });
 
+        this.view.setAddUserButtonAction(e -> navigator.showAdminCreateUserView(view.getCompte()));
+
         displayPage(1);
     }
 

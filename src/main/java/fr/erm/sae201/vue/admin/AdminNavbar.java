@@ -42,10 +42,15 @@ public class AdminNavbar extends HBox {
         Button utilisateursBtn = createNavButton("Utilisateurs", "Utilisateurs".equals(activeViewName));
         utilisateursBtn.setOnAction(e -> navigator.showAdminUtilisateursView(compte));
 
+        // --- NOUVEAU BOUTON ---
+        Button competencesBtn = createNavButton("Compétences", "Compétences".equals(activeViewName));
+        competencesBtn.setOnAction(e -> navigator.showAdminCompetencesView(compte));
+
         Button affectationsBtn = createNavButton("Affectations", "Affectations".equals(activeViewName));
         affectationsBtn.setOnAction(e -> navigator.showAdminAffectationsView(compte));
         
-        navLinks.getChildren().addAll(accueilBtn, dispositifBtn, utilisateursBtn, affectationsBtn);
+        // Ajout du nouveau bouton à la barre de navigation
+        navLinks.getChildren().addAll(accueilBtn, dispositifBtn, utilisateursBtn, competencesBtn, affectationsBtn);
         return navLinks;
     }
 

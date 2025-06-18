@@ -7,7 +7,9 @@ import com.mailjet.client.MailjetResponse;
 import com.mailjet.client.errors.MailjetException;
 import com.mailjet.client.resource.Emailv31;
 import fr.erm.sae201.dao.CompteUtilisateurDAO;
+import fr.erm.sae201.dao.CompetenceDAO;
 import fr.erm.sae201.dao.SecouristeDAO;
+import fr.erm.sae201.metier.persistence.Competence;
 import fr.erm.sae201.metier.persistence.CompteUtilisateur;
 import fr.erm.sae201.metier.persistence.Role;
 import fr.erm.sae201.metier.persistence.Secouriste;
@@ -16,6 +18,7 @@ import org.json.JSONObject;
 import org.mindrot.jbcrypt.BCrypt;
 
 import java.util.Date;
+import java.util.List;
 import java.util.Optional;
 import java.util.Random;
 
@@ -27,6 +30,7 @@ public class AuthService {
 
     private final CompteUtilisateurDAO compteDAO = new CompteUtilisateurDAO();
     private final SecouristeDAO secouristeDAO = new SecouristeDAO();
+    private final CompetenceDAO competenceDAO = new CompetenceDAO();
 
     /**
      * Attempts to log in a user with the given credentials.
@@ -46,31 +50,35 @@ public class AuthService {
         }
         return Optional.empty();
     }
-
-    /**
-     * Registers a new first aider (Secouriste).
-     *
-     * @param firstName   The user's first name.
-     * @param lastName    The user's last name.
-     * @param email       The user's email, which will be their login.
-     * @param password    The user's plain text password.
-     * @param dateOfBirth The user's date of birth.
-     * @return {@code true} if the registration was successful, {@code false} otherwise.
-     * @throws Exception if the email is already in use or if a critical database error occurs.
-     */
+    // Ancienne méthode registerSecouriste (ne change pas, utilisée par l'inscription publique)
     public boolean registerSecouriste(String firstName, String lastName, String email, String password, Date dateOfBirth) throws Exception {
+        return registerSecouriste(firstName, lastName, email, password, dateOfBirth, null);
+    }
+
+    // --- NOUVELLE MÉTHODE SURCHARGÉE ---
+    /**
+     * Enregistre un nouveau secouriste avec une liste optionnelle de compétences.
+     * @return {@code true} si l'enregistrement a réussi.
+     * @throws Exception si l'email existe déjà ou en cas d'erreur BDD.
+     */
+    public boolean registerSecouriste(String firstName, String lastName, String email, String password, Date dateOfBirth, List<Competence> competences) throws Exception {
         if (compteDAO.findByLogin(email).isPresent()) {
-            throw new Exception("This email is already used by another account.");
+            throw new Exception("Cet email est déjà utilisé par un autre compte.");
         }
 
         Secouriste nouveauSecouriste = new Secouriste(lastName, firstName, dateOfBirth, email, "", "");
         
-        // CHANGED: secouristeId is now a long
         long secouristeId = secouristeDAO.create(nouveauSecouriste);
         
-        // CHANGED: check against -1L
         if (secouristeId == -1L) {
-            throw new Exception("Critical error while creating the first aider profile.");
+            throw new Exception("Erreur critique lors de la création du profil secouriste.");
+        }
+        
+        // Ajout des compétences si la liste n'est pas nulle
+        if (competences != null) {
+            for (Competence comp : competences) {
+                secouristeDAO.addCompetenceToSecouriste(secouristeId, comp.getIntitule());
+            }
         }
 
         String hashedPassword = BCrypt.hashpw(password, BCrypt.gensalt());
@@ -78,6 +86,10 @@ public class AuthService {
         
         int result = compteDAO.create(nouveauCompte);
         return result > 0;
+    }
+
+    public List<Competence> getAllCompetences() {
+        return competenceDAO.findAll();
     }
 
 

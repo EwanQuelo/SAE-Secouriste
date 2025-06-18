@@ -6,6 +6,7 @@ import fr.erm.sae201.metier.persistence.CompteUtilisateur;
 import fr.erm.sae201.metier.persistence.Secouriste;
 import fr.erm.sae201.vue.MainApp;
 import fr.erm.sae201.vue.base.BaseView;
+import javafx.event.ActionEvent;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Node;
@@ -17,6 +18,8 @@ import javafx.scene.layout.*;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Circle;
 import javafx.scene.shape.SVGPath;
+import javafx.scene.input.MouseEvent;
+import javafx.event.EventHandler;
 
 import java.util.Arrays;
 import java.util.HashMap;
@@ -32,6 +35,7 @@ public class AdminUtilisateursView extends BaseView {
     private TextField searchField;
     private MainApp navigator; // AJOUT : Pour le passer au contrôleur
     private final CompteUtilisateur compte; // Stocke le compte utilisateur
+     private Button addUserButton;
 
     private final Map<String, Color> competenceColorMap = new HashMap<>();
     private final List<Color> colorPalette = Arrays.asList(
@@ -86,6 +90,12 @@ public class AdminUtilisateursView extends BaseView {
         titleLabel.getStyleClass().add("admin-user-title");
         userCountLabel = new Label("");
         userCountLabel.getStyleClass().add("user-count-badge");
+        
+        // --- NOUVEAU BOUTON AJOUTÉ ICI ---
+        addUserButton = new Button("+");
+        addUserButton.getStyleClass().add("add-button"); // Style du gros bouton vert
+        HBox.setMargin(addUserButton, new Insets(0, 0, 0, 10)); // Marge à gauche
+
         Region spacer = new Region();
         HBox.setHgrow(spacer, Priority.ALWAYS);
         searchField = new TextField();
@@ -93,8 +103,14 @@ public class AdminUtilisateursView extends BaseView {
         searchField.getStyleClass().add("search-bar");
         searchField.setPrefWidth(300);
 
-        header.getChildren().addAll(titleLabel, userCountLabel, spacer, searchField);
+        header.getChildren().addAll(titleLabel, userCountLabel, addUserButton, spacer, searchField);
         return header;
+    }
+
+    public void setAddUserButtonAction(EventHandler<ActionEvent> eventHandler) {
+        if (addUserButton != null) {
+            addUserButton.setOnAction(eventHandler);
+        }
     }
 
     private Node createFooter() {
