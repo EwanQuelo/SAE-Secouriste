@@ -5,6 +5,7 @@ import fr.erm.sae201.controleur.auth.ForgotPasswordController;
 import fr.erm.sae201.controleur.auth.LoginController;
 import fr.erm.sae201.controleur.auth.ResetPasswordController;
 import fr.erm.sae201.controleur.auth.SignupController;
+import fr.erm.sae201.controleur.user.UserCompetencesController;
 import fr.erm.sae201.metier.persistence.CompteUtilisateur;
 import fr.erm.sae201.metier.persistence.Secouriste; // AJOUT
 import fr.erm.sae201.metier.persistence.DPS;
@@ -154,6 +155,8 @@ public void showAdminParametresView(CompteUtilisateur compte) {
 
     public void showUserCompetencesView(CompteUtilisateur compte) {
         UserCompetencesView view = new UserCompetencesView(this, compte);
+        // On lie la vue à son nouveau contrôleur
+        new UserCompetencesController(view, compte); 
         mainScene.setRoot(view.getView());
         primaryStage.setTitle("SECOURS - Mes Compétences");
     }

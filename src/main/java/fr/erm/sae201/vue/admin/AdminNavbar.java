@@ -89,7 +89,7 @@ public class AdminNavbar extends HBox {
         VBox textInfo = new VBox(-2, nameLabel, roleLabel);
         textInfo.setAlignment(Pos.CENTER_LEFT);
 
-        ImageView profilePic = new ImageView(RessourceLoader.loadImage("admin_profile.png"));
+        ImageView profilePic = new ImageView(RessourceLoader.loadImage("profile-uniforme.png"));
         profilePic.setFitHeight(40);
         profilePic.setFitWidth(40);
         Circle clip = new Circle(20, 20, 20);

@@ -1074,6 +1074,7 @@ Styles pour les Vues Administrateur
 /* Scoped style for DatePicker specifically */
 .user-settings-view .date-picker.settings-input .text-field {
     -fx-background-color: transparent;
+    -fx-text-fill: white;
 }
 .user-settings-view .date-picker.settings-input .arrow-button {
     -fx-background-color: rgba(255, 255, 255, 0.1);
@@ -1081,4 +1082,126 @@ Styles pour les Vues Administrateur
 }
 .user-settings-view .date-picker.settings-input .arrow-button .arrow {
     -fx-background-color: white;
+}
+
+/* ========================================================================== */
+/* ==                 STYLES POUR LA VUE "MES COMPÉTENCES"                 == */
+/* ========================================================================== */
+
+.competences-view-container {
+    -fx-background-color: rgba(30, 41, 59, 0.9);
+    -fx-background-radius: 20px;
+    -fx-padding: 30px;
+}
+
+.competences-grid {
+    -fx-padding: 20px;
+}
+
+.competence-card {
+    -fx-background-color: rgba(255, 255, 255, 0.05);
+    -fx-background-radius: 12px;
+    -fx-border-color: rgba(255, 255, 255, 0.1);
+    -fx-border-radius: 12px;
+    -fx-border-width: 1px;
+    -fx-padding: 20px;
+    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.2), 10, 0, 0, 3);
+    -fx-transition: all 0.3s ease-in-out;
+}
+
+.competence-card:hover {
+    -fx-border-color: #3b82f6; /* Bordure bleue au survol */
+    -fx-background-color: rgba(59, 130, 246, 0.1); /* Fond bleu très léger */
+    -fx-effect: dropshadow(gaussian, rgba(59, 130, 246, 0.4), 15, 0, 0, 0);
+}
+
+.competence-icon {
+    -fx-stroke-width: 2;
+    -fx-stroke: #3b82f6; /* Trait de l'icône en bleu */
+    -fx-scale-x: 3.5; /* Agrandit l'icône */
+    -fx-scale-y: 3.5;
+}
+
+.competence-name {
+    -fx-font-size: 16px;
+    -fx-font-weight: bold;
+    -fx-text-fill: #e5e7eb; /* Gris très clair */
+}
+
+.empty-message-label {
+    -fx-font-size: 18px;
+    -fx-text-fill: #9ca3af; /* Gris clair */
+    -fx-padding: 50px;
+    -fx-alignment: center;
+}
+
+/* ========================================================================== */
+/* ==       STYLES POUR LA VUE "MES COMPÉTENCES" (Version Finale Corrigée) == */
+/* ========================================================================== */
+
+.competences-view-container {
+    -fx-background-color: #363434; 
+    -fx-background-radius: 20px;
+    -fx-padding: 30px;
+}
+
+/* TITRE AMÉLIORÉ : blanc, plus grand et avec une ombre pour le relief */
+.competences-view-container .form-title {
+    -fx-text-fill: white; /* LA CORRECTION */
+    -fx-font-weight: bold;
+    -fx-font-size: 32px;
+    -fx-padding: 0 0 25px 0;
+    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.5), 5, 0, 0, 2);
+}
+
+.competences-grid {
+    -fx-padding: 20px;
+}
+
+/* Le reste des styles ne change pas */
+.competence-card {
+    -fx-background-color: rgba(100, 116, 139, 0.2);
+    -fx-background-radius: 16px;
+    -fx-border-color: rgba(255, 255, 255, 0.15);
+    -fx-border-radius: 16px;
+    -fx-border-width: 1px;
+    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.2), 10, 0, 0, 3);
+    -fx-transition: all 0.2s ease-in-out;
+}
+
+.competence-card:hover {
+    -fx-border-color: rgba(255, 255, 255, 0.4);
+    -fx-background-color: rgba(100, 116, 139, 0.3);
+}
+
+.competence-icon-stack {
+    -fx-pref-width: 60px;
+    -fx-pref-height: 60px;
+    -fx-alignment: center;
+}
+
+.competence-icon-circle {
+    -fx-fill: black;
+}
+
+.competence-icon-checkmark {
+    -fx-stroke: #4c8bf5;
+    -fx-stroke-width: 5;
+    -fx-stroke-linecap: round;
+    -fx-stroke-linejoin: round;
+    -fx-scale-x: 1.5;
+    -fx-scale-y: 1.5;
+}
+
+.competence-name {
+    -fx-font-size: 18px;
+    -fx-font-weight: bold;
+    -fx-text-fill: #dfe6e9;
+}
+
+.empty-message-label {
+    -fx-font-size: 18px;
+    -fx-text-fill: #9ca3af;
+    -fx-padding: 50px;
+    -fx-alignment: center;
 }
