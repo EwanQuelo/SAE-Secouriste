@@ -57,7 +57,6 @@ public class AdminNavbar extends HBox {
         }
         return navButton;
     }
-
     private HBox createUserInfo(MainApp navigator, CompteUtilisateur compte) {
         HBox userInfo = new HBox(15);
         userInfo.setAlignment(Pos.CENTER_RIGHT);
@@ -69,8 +68,11 @@ public class AdminNavbar extends HBox {
         settingsButton.setGraphic(settingsIcon);
         settingsButton.getStyleClass().add("settings-button");
         
-        settingsButton.setOnAction(e -> navigator.showUserParametreView(compte));
+        // --- LA MODIFICATION CRUCIALE EST ICI ---
+        // On appelle la nouvelle méthode pour les paramètres de l'admin
+        settingsButton.setOnAction(e -> navigator.showAdminParametresView(compte));
         
+        // Le reste de la méthode ne change pas
         Secouriste secouriste = null;
         if (compte.getIdSecouriste() != null) {
             secouriste = secouristeDAO.findByID(compte.getIdSecouriste());

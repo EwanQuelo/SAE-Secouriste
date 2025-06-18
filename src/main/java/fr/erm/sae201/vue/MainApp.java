@@ -118,10 +118,18 @@ public class MainApp extends Application {
         primaryStage.setTitle("SECOURS - Gestion des Affectations");
     }
 
-    public void showAdminParametresView(CompteUtilisateur compte) {
-        AdminParametresView view = new AdminParametresView(this, compte);
+public void showAdminParametresView(CompteUtilisateur compte) {
+    // Appelle la VUE et le CONTROLEUR de l'admin
+    AdminParametresView view = new AdminParametresView(this, compte, this.authService);
+    mainScene.setRoot(view.getView());
+    primaryStage.setTitle("SECOURS - Paramètres Administrateur");
+}
+
+    // La méthode pour l'utilisateur reste inchangée
+    public void showUserParametreView(CompteUtilisateur compte) {
+        UserParametresView view = new UserParametresView(this, compte, this.authService);
         mainScene.setRoot(view.getView());
-        primaryStage.setTitle("SECOURS - Gestion des Affectations");
+        primaryStage.setTitle("SECOURS - Paramètres");
     }
 
     // --- Vues Secouriste ---
@@ -148,12 +156,6 @@ public class MainApp extends Application {
         UserCompetencesView view = new UserCompetencesView(this, compte);
         mainScene.setRoot(view.getView());
         primaryStage.setTitle("SECOURS - Mes Compétences");
-    }
-
-    public void showUserParametreView(CompteUtilisateur compte) {
-        UserParametresView view = new UserParametresView(this, compte, this.authService);
-        mainScene.setRoot(view.getView());
-        primaryStage.setTitle("SECOURS - Paramètres");
     }
 
     public void showUserDispoView(CompteUtilisateur compte) {

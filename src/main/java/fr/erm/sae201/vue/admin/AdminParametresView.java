@@ -1,49 +1,120 @@
 package fr.erm.sae201.vue.admin;
 
+import fr.erm.sae201.controleur.admin.AdminParametresController; // Le nouveau contrôleur
 import fr.erm.sae201.metier.persistence.CompteUtilisateur;
+import fr.erm.sae201.metier.service.AuthService;
 import fr.erm.sae201.vue.MainApp;
 import fr.erm.sae201.vue.base.BaseView;
+import javafx.event.ActionEvent;
+import javafx.event.EventHandler;
+import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Node;
+import javafx.scene.control.Button;
 import javafx.scene.control.Label;
+import javafx.scene.control.PasswordField;
+import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
+import javafx.scene.text.Text;
 
-/**
- * Le tableau de bord spécifique pour un administrateur.
- * Il étend BaseView pour obtenir la structure commune (fond + navbar)
- * et fournit son contenu via createCenterContent().
- */
+// Remplacez le contenu de votre AdminParametresView.java par ceci
 public class AdminParametresView extends BaseView {
 
-    /**
-     * Constructeur du tableau de bord administrateur.
-     * @param navigator L'instance de MainApp pour la navigation.
-     * @param compte L'utilisateur connecté.
-     */
-    public AdminParametresView(MainApp navigator, CompteUtilisateur compte) {
-        // On appelle le constructeur parent en lui passant le compte et le nom de la vue active ("Accueil")
+    private PasswordField newPasswordField, confirmPasswordField;
+    private Button savePasswordButton, logoutButton;
+    private Label emailLabel; // Pour afficher l'email
+
+    public AdminParametresView(MainApp navigator, CompteUtilisateur compte, AuthService authService) {
+        // Le titre de la vue dans la navbar reste "Accueil" ou ce que vous préférez
         super(navigator, compte, "Accueil");
+        // On crée le contrôleur spécifique à l'admin
+        new AdminParametresController(this, navigator, compte, authService);
     }
 
-    /**
-     * Crée et retourne le contenu spécifique à ce tableau de bord.
-     * @return Un Node contenant les éléments du tableau de bord.
-     */
     @Override
     protected Node createCenterContent() {
-        // Créez ici le contenu de votre tableau de bord
-        VBox centerContent = new VBox(20);
-        centerContent.setAlignment(Pos.CENTER);
-        centerContent.getStyleClass().add("center-content-panel");
+        // On utilise la classe CSS originale pour garder le même style
+        VBox container = new VBox(40);
+        container.getStyleClass().add("form-container");
+        container.setAlignment(Pos.CENTER);
 
-        Label welcomeLabel = new Label("Bienvenue sur le tableau de bord Administrateur !");
-        welcomeLabel.setStyle("-fx-font-size: 24px; -fx-text-fill: #333;");
+        Text scenetitle = new Text("Paramètres Administrateur");
+        scenetitle.getStyleClass().add("form-title");
 
-        Label infoLabel = new Label("Ici, vous pouvez gérer les dispositifs, les utilisateurs et les affectations.");
-        infoLabel.setStyle("-fx-font-size: 16px; -fx-text-fill: #666;");
+        VBox emailInfoBox = createEmailInfoSection();
+        VBox passwordBox = createPasswordSection();
 
-        centerContent.getChildren().addAll(welcomeLabel, infoLabel);
+        logoutButton = new Button("Déconnexion");
+        logoutButton.getStyleClass().add("logout-button");
+        VBox.setMargin(logoutButton, new Insets(10, 0, 0, 0));
 
-        return centerContent;
+        container.getChildren().addAll(scenetitle, emailInfoBox, passwordBox, logoutButton);
+        return container;
+    }
+
+    private VBox createEmailInfoSection() {
+        VBox sectionContainer = new VBox(5);
+        sectionContainer.getStyleClass().add("settings-section");
+
+        HBox emailLine = new HBox(10);
+        emailLine.setAlignment(Pos.CENTER_LEFT);
+
+        Label emailTitle = new Label("Compte Administrateur:");
+        emailTitle.getStyleClass().add("section-title");
+
+        emailLabel = new Label(); // Le contrôleur remplira ceci
+        emailLabel.getStyleClass().add("info-text-main");
+
+        emailLine.getChildren().addAll(emailTitle, emailLabel);
+        sectionContainer.getChildren().add(emailLine);
+        return sectionContainer;
+    }
+
+    private VBox createPasswordSection() {
+        VBox box = new VBox(10);
+        box.getStyleClass().add("settings-section");
+        box.setAlignment(Pos.CENTER_LEFT);
+
+        Label passwordTitle = new Label("Modifier le mot de passe");
+        passwordTitle.getStyleClass().add("section-title");
+
+        newPasswordField = new PasswordField();
+        newPasswordField.setPromptText("Nouveau mot de passe");
+        newPasswordField.getStyleClass().add("settings-input");
+
+        confirmPasswordField = new PasswordField();
+        confirmPasswordField.setPromptText("Confirmer le nouveau mot de passe");
+        confirmPasswordField.getStyleClass().add("settings-input");
+
+        savePasswordButton = new Button("Enregistrer le mot de passe");
+        savePasswordButton.getStyleClass().add("save-button");
+
+        HBox buttonContainer = new HBox(savePasswordButton);
+        buttonContainer.setAlignment(Pos.CENTER);
+        VBox.setMargin(buttonContainer, new Insets(10, 0, 0, 0));
+
+        box.getChildren().addAll(passwordTitle, newPasswordField, confirmPasswordField, buttonContainer);
+        return box;
+    }
+
+    // Getters et Setters pour le contrôleur
+    public void setEmail(String email) {
+        emailLabel.setText(email);
+    }
+
+    public String getNewPassword() {
+        return newPasswordField.getText();
+    }
+
+    public String getConfirmPassword() {
+        return confirmPasswordField.getText();
+    }
+
+    public void setSavePasswordButtonAction(EventHandler<ActionEvent> handler) {
+        savePasswordButton.setOnAction(handler);
+    }
+
+    public void setLogoutButtonAction(EventHandler<ActionEvent> handler) {
+        logoutButton.setOnAction(handler);
     }
 }

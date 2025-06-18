@@ -964,3 +964,121 @@ Styles pour les Vues Administrateur
 .admin-form-container .cancel-button:hover {
     -fx-background-color: #475569;
 }
+
+
+
+
+/* ========================================================================== */
+/* ==                  NEW STYLES FOR USER PARAMETRES VIEW                 == */
+/* ========================================================================== */
+
+/* This is the main container for the user settings view. */
+.user-settings-view {
+    -fx-max-width: 900px; /* Uses more horizontal space */
+    -fx-background-color: rgba(30, 41, 59, 0.9); /* A modern, dark blue-gray */
+    -fx-background-radius: 20px;
+    -fx-border-color: rgba(255, 255, 255, 0.1);
+    -fx-border-radius: 20px;
+    -fx-border-width: 1px;
+    -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.4), 25, 0, 0, 0);
+    -fx-padding: 40px;
+}
+
+/* Scoped title style for the user settings page */
+.user-settings-view .form-title {
+    -fx-font-size: 26px;
+    -fx-fill: white;
+    -fx-font-weight: bold;
+}
+
+/* This styles the two "cards" for Personal Info and Security */
+.user-settings-view .settings-section {
+    -fx-background-color: rgba(255, 255, 255, 0.05); /* Subtle inner background */
+    -fx-background-radius: 12px;
+    -fx-border-color: rgba(255, 255, 255, 0.1);
+    -fx-border-radius: 12px;
+    -fx-padding: 25px;
+    -fx-spacing: 15px; /* Space between elements inside the card */
+}
+
+/* Scoped style for the title of each card */
+.user-settings-view .section-title {
+    -fx-text-fill: white;
+    -fx-font-weight: bold;
+    -fx-font-size: 18px;
+    -fx-border-color: transparent transparent #3b82f6 transparent; /* Blue underline */
+    -fx-border-width: 2px;
+    -fx-padding-bottom: 8px;
+}
+
+/* Scoped style for all labels next to input fields */
+.user-settings-view .label {
+    -fx-text-fill: #cbd5e1; /* Light gray-blue text */
+    -fx-font-weight: 500;
+    -fx-font-size: 14px;
+}
+
+/* Scoped style for all input fields */
+.user-settings-view .settings-input {
+    -fx-font-size: 14px;
+    -fx-background-color: rgba(0, 0, 0, 0.2);
+    -fx-text-fill: white;
+    -fx-prompt-text-fill: #94a3b8; /* Lighter prompt text */
+    -fx-border-color: rgba(255, 255, 255, 0.2);
+    -fx-border-radius: 8px;
+    -fx-background-radius: 8px;
+    -fx-padding: 10px 12px;
+}
+
+.user-settings-view .settings-input:focused {
+    -fx-border-color: #3b82f6; /* Blue highlight on focus */
+    -fx-effect: dropshadow(gaussian, rgba(59, 130, 246, 0.4), 8, 0, 0, 0);
+}
+
+/* Specific style for the non-editable email field */
+.user-settings-view .disabled-input {
+    -fx-opacity: 0.6;
+    -fx-cursor: not-allowed;
+}
+
+/* Scoped style for the save buttons */
+.user-settings-view .save-button {
+    -fx-background-color: #2563eb; /* A nice blue */
+    -fx-text-fill: white;
+    -fx-font-weight: bold;
+    -fx-background-radius: 8px;
+    -fx-padding: 10px 25px;
+    -fx-cursor: hand;
+    -fx-font-size: 14px;
+}
+
+.user-settings-view .save-button:hover {
+    -fx-background-color: #3b82f6; /* Lighter blue on hover */
+}
+
+/* Scoped style for the logout button */
+.user-settings-view .logout-button {
+    -fx-background-color: transparent;
+    -fx-text-fill: #9ca3af; /* Gray, less prominent */
+    -fx-font-size: 14px;
+    -fx-underline: false;
+    -fx-cursor: hand;
+    -fx-font-weight: bold;
+}
+
+.user-settings-view .logout-button:hover {
+    -fx-underline: true;
+    -fx-text-fill: #ef4444; /* Red on hover for a "danger" feel */
+}
+
+/* Scoped style for DatePicker specifically */
+.user-settings-view .date-picker.settings-input .text-field {
+    -fx-background-color: transparent;
+}
+.user-settings-view .date-picker.settings-input .arrow-button {
+    -fx-background-color: rgba(255, 255, 255, 0.1);
+    -fx-background-radius: 0 8px 8px 0;
+}
+.user-settings-view .date-picker.settings-input .arrow-button .arrow {
+    -fx-background-color: white;
+}
