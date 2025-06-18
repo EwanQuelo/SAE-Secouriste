@@ -11,6 +11,7 @@ import fr.erm.sae201.vue.admin.AdminEditDpsView;
 import javafx.application.Platform;
 import java.time.LocalDate;
 import java.util.List;
+import java.util.Optional;
 
 public class AdminEditDpsController {
 
@@ -33,6 +34,8 @@ public class AdminEditDpsController {
 
         view.setSaveButtonAction(e -> saveDps());
         view.setCancelButtonAction(e -> cancel());
+        view.setAddSiteAction(e -> addNewSite());
+        view.setAddSportAction(e -> addNewSport());
 
         loadComboBoxData();
         initializeForm();
@@ -40,29 +43,19 @@ public class AdminEditDpsController {
 
     private void initializeForm() {
         if (dpsToEdit != null) {
-            // --- Mode ÉDITION ---
             view.setFormTitle("Modifier le Dispositif");
             view.setDpsData(dpsToEdit);
-
-
             view.setDateFieldsEditable(false);
-
         } else {
-            // --- Mode CRÉATION ---
             view.setFormTitle("Créer un nouveau Dispositif");
-
-
             view.setDateFieldsEditable(true);
         }
     }
 
     private void loadComboBoxData() {
         Platform.runLater(() -> {
-            List<Site> sites = siteDAO.findAll();
-            view.populateSiteComboBox(sites);
-
-            List<Sport> sports = sportDAO.findAll();
-            view.populateSportComboBox(sports);
+            view.populateSiteComboBox(siteDAO.findAll());
+            view.populateSportComboBox(sportDAO.findAll());
         });
     }
 
@@ -71,16 +64,17 @@ public class AdminEditDpsController {
         Sport sport = view.getSelectedSport();
         LocalDate date = view.getSelectedDate();
 
-        if (site == null || sport == null || date == null) {
-            NotificationUtils.showError("Champs manquants", "Veuillez sélectionner un site, un sport et une date.");
+        if (site == null || sport == null || date == null || view.getStartHour().isEmpty()
+                || view.getEndHour().isEmpty()) {
+            NotificationUtils.showError("Champs manquants", "Veuillez remplir tous les champs.");
             return;
         }
 
         try {
             int startHour = Integer.parseInt(view.getStartHour());
-            int startMinute = Integer.parseInt(view.getStartMinute());
+            int startMinute = view.getStartMinute().isEmpty() ? 0 : Integer.parseInt(view.getStartMinute());
             int endHour = Integer.parseInt(view.getEndHour());
-            int endMinute = Integer.parseInt(view.getEndMinute());
+            int endMinute = view.getEndMinute().isEmpty() ? 0 : Integer.parseInt(view.getEndMinute());
 
             journeeDAO.create(new Journee(date));
 
@@ -88,13 +82,9 @@ public class AdminEditDpsController {
             int[] horaireFin = { endHour, endMinute };
 
             if (dpsToEdit != null) {
-                // Mise à jour
                 dpsToEdit.setSite(site);
                 dpsToEdit.setSport(sport);
-                dpsToEdit.setJournee(new Journee(date));
-                dpsToEdit.setHoraireDepart(horaireDepart);
-                dpsToEdit.setHoraireFin(horaireFin);
-
+                // La date et les horaires ne sont pas modifiés car les champs sont désactivés
                 if (dpsDAO.update(dpsToEdit) > 0) {
                     NotificationUtils.showSuccess("Succès", "Dispositif mis à jour.");
                     navigator.showAdminDispositifView(view.getCompte());
@@ -102,7 +92,6 @@ public class AdminEditDpsController {
                     NotificationUtils.showError("Erreur", "La mise à jour a échoué.");
                 }
             } else {
-                // Création
                 DPS newDps = new DPS(0, horaireDepart, horaireFin, site, new Journee(date), sport);
                 if (dpsDAO.create(newDps) != -1) {
                     NotificationUtils.showSuccess("Succès", "Dispositif créé.");
@@ -116,6 +105,35 @@ public class AdminEditDpsController {
         } catch (IllegalArgumentException e) {
             NotificationUtils.showError("Données invalides", e.getMessage());
         }
+    }
+
+    private void addNewSite() {
+        // Appelle la nouvelle méthode de dialogue qui retourne un objet Site
+        Optional<Site> result = view.showCreateSiteDialog();
+
+        // si l'utilisateur a cliqué sur "Créer" et que les données sont valides
+        result.ifPresent(newSite -> {
+            if (siteDAO.create(newSite) != -1) {
+                NotificationUtils.showSuccess("Succès", "Site '" + newSite.getNom() + "' créé.");
+                loadComboBoxData(); // Rafraîchit la liste des sites
+            } else {
+                NotificationUtils.showError("Erreur", "Ce site (ou son code) existe déjà.");
+            }
+        });
+    }
+
+    private void addNewSport() {
+        // Appelle la nouvelle méthode de dialogue qui retourne un objet Sport
+        Optional<Sport> result = view.showCreateSportDialog();
+
+        result.ifPresent(newSport -> {
+            if (sportDAO.create(newSport) != -1) {
+                NotificationUtils.showSuccess("Succès", "Sport '" + newSport.getNom() + "' créé.");
+                loadComboBoxData(); // Rafraîchit la liste des sports
+            } else {
+                NotificationUtils.showError("Erreur", "Ce sport (ou son code) existe déjà.");
+            }
+        });
     }
 
     private void cancel() {
