@@ -1205,3 +1205,106 @@ Styles pour les Vues Administrateur
     -fx-padding: 50px;
     -fx-alignment: center;
 }
+
+
+/* ============================================= */
+/*          STYLE DU DASHBOARD ADMIN             */
+/* ============================================= */
+
+/* Conteneur pour un panneau de graphique */
+.dashboard-chart-panel {
+    -fx-background-color: #2B2B2B; /* Fond sombre, identique au calendrier */
+    -fx-background-radius: 12px;
+    -fx-padding: 20px;
+    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.4), 10, 0, 0, 5);
+}
+
+/* Titre principal d'un graphique (ex: "Compétences les plus maîtrisées") */
+.chart-title {
+    -fx-text-fill: #EAEAEA;
+    -fx-font-size: 1.4em;
+    -fx-font-weight: bold;
+}
+
+/* --- Style commun aux deux graphiques --- */
+
+/* Fond de la zone de dessin du graphique */
+.chart-plot-background {
+    -fx-background-color: #3C3F41; /* Un gris très foncé mais distinct du panneau */
+    -fx-background-radius: 6px;
+}
+
+/* --- Style des axes (pour le BarChart) --- */
+
+/* Lignes des axes X et Y */
+.axis {
+    -fx-border-color: #616161 transparent transparent transparent; /* Ligne de l'axe X */
+}
+.axis:vertical {
+    -fx-border-color: transparent #616161 transparent transparent; /* Ligne de l'axe Y */
+}
+
+/* Etiquettes des graduations sur les axes (ex: "PSE1", "10", "12") */
+.axis .tick-label {
+    -fx-fill: #CCCCCC; /* Texte des étiquettes en gris clair */
+    -fx-font-size: 1.0em;
+    -fx-padding: 5px;
+}
+
+/* Titre de l'axe (ex: "Nombre de secouristes") */
+.axis-label {
+    -fx-text-fill: #A9A9A9; /* Titre d'axe plus discret */
+    -fx-font-size: 1.1em;
+}
+
+/* Lignes de la grille de fond */
+.chart-vertical-grid-lines,
+.chart-horizontal-grid-lines {
+    -fx-stroke: #555555; /* Lignes de grille sombres et discrètes */
+    -fx-stroke-dash-array: 2 4; /* Lignes en pointillés */
+}
+
+/* --- Style des barres (BarChart) --- */
+.chart-bar {
+    -fx-bar-fill: #1E90FF; /* Bleu roi vibrant */
+    -fx-background-radius: 3;
+}
+.chart-bar:hover {
+    -fx-bar-fill: #46a4ff; /* Couleur plus claire au survol */
+}
+
+
+/* --- Style du diagramme circulaire (PieChart) --- */
+
+/* Etiquettes sur les parts du diagramme (les rend blanches, grasses et plus grosses) */
+/* CORRECTION : Le sélecteur correct est .chart-pie-label */
+.chart-pie-label {
+    -fx-fill: white;
+    -fx-font-weight: bold;
+    -fx-font-size: 1.2em;
+}
+
+/* Lignes reliant les étiquettes aux parts */
+.pie-label-line {
+    -fx-stroke: #B0B0B0;
+    -fx-stroke-width: 1px;
+}
+
+/* Etiquettes dans la légende */
+.chart-legend .label {
+    -fx-text-fill: #EAEAEA;
+    -fx-font-size: 1.1em;
+}
+
+/* Conteneur de la légende */
+.chart-legend {
+    -fx-background-color: transparent;
+}
+
+/* Change les couleurs par défaut des parts du diagramme pour plus de contraste */
+.default-color0.chart-pie { -fx-pie-color: #1E90FF; }
+.default-color1.chart-pie { -fx-pie-color: #2ECC71; } /* Vert plus vif */
+.default-color2.chart-pie { -fx-pie-color: #F1C40F; }
+.default-color3.chart-pie { -fx-pie-color: #E74C3C; }
+.default-color4.chart-pie { -fx-pie-color: #9B59B6; }
+.default-color5.chart-pie { -fx-pie-color: #3498DB; }
