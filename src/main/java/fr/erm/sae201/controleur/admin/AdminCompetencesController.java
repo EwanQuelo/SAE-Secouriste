@@ -2,7 +2,6 @@ package fr.erm.sae201.controleur.admin;
 
 import fr.erm.sae201.dao.CompetenceDAO;
 import fr.erm.sae201.metier.persistence.Competence;
-// NOUVEAU : Import du service
 import fr.erm.sae201.metier.service.CompetenceMngt;
 import fr.erm.sae201.utils.NotificationUtils;
 import fr.erm.sae201.vue.MainApp;
@@ -21,7 +20,6 @@ public class AdminCompetencesController {
     private final AdminCompetencesView view;
     private final MainApp navigator;
     private final CompetenceDAO competenceDAO;
-    // NOUVEAU : Le contrôleur utilise le service pour la logique métier
     private final CompetenceMngt competenceService;
 
     public AdminCompetencesController(AdminCompetencesView view, MainApp navigator) {

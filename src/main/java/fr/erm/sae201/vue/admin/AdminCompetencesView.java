@@ -122,7 +122,9 @@ public class AdminCompetencesView extends BaseView {
         
         card.getChildren().addAll(titleBar, prereqLabel, prerequisitesPane);
         competencesContainer.getChildren().add(card);
-    }    /**
+    }    
+    
+    /**
      * Affiche la boîte de dialogue d'ajout avec une liste de CheckBox.
      * @param existingCompetences Toutes les compétences existantes à proposer.
      * @return Un Optional contenant le nom et la liste des prérequis sélectionnés.
