@@ -821,11 +821,11 @@ Styles pour les Vues Administrateur
 
 
 
-
 /* ========================================================================== */
 /* ==                        ADMIN FORM & EDIT VIEW                        == */
 /* ========================================================================== */
 
+/* Le conteneur principal de la vue d'édition. C'est notre sélecteur parent unique. */
 .admin-form-container {
     -fx-max-width: 950px; /* Fenêtre plus large */
     -fx-background-color: rgba(45, 55, 72, 0.85); /* Fond bleu-gris foncé et opaque */
@@ -836,15 +836,17 @@ Styles pour les Vues Administrateur
     -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.4), 25, 0, 0, 0);
 }
 
-.admin-title {
+/* MODIFIÉ : Ajout du sélecteur parent pour un ciblage unique */
+.admin-form-container .admin-title {
     -fx-font-size: 22px;
     -fx-font-weight: bold;
     -fx-text-fill: #e5e7eb;
     -fx-padding: 0 0 10px 0;
 }
 
-.settings-section {
-    -fx-background-color: rgba(255, 255, 255, 0.04); /* Fond des panneaux intérieurs très subtil */
+/* MODIFIÉ : Ajout du sélecteur parent */
+.admin-form-container .settings-section {
+    -fx-background-color: rgba(255, 255, 255, 0.04);
     -fx-background-radius: 12px;
     -fx-border-color: rgba(255, 255, 255, 0.1);
     -fx-border-radius: 12px;
@@ -852,58 +854,65 @@ Styles pour les Vues Administrateur
     -fx-padding: 25px;
 }
 
-.settings-section .label {
-    -fx-text-fill: #cbd5e1; /* Texte des labels plus clair */
-    -fx-font-weight: 500; /* Moins gras */
+/* MODIFIÉ : Cible uniquement les labels DANS une settings-section DANS le formulaire admin */
+.admin-form-container .settings-section .label {
+    -fx-text-fill: #cbd5e1;
+    -fx-font-weight: 500;
     -fx-font-size: 14px;
 }
 
-.section-title {
+/* MODIFIÉ : Cible uniquement les titres de section DANS le formulaire admin */
+.admin-form-container .section-title {
     -fx-text-fill: white !important;
     -fx-font-weight: bold !important;
 }
 
-.settings-input {
+/* MODIFIÉ : Cible uniquement les champs de saisie DANS le formulaire admin */
+.admin-form-container .settings-input {
     -fx-pref-width: 300px;
     -fx-font-size: 14px;
-    -fx-background-color: rgba(0, 0, 0, 0.2); /* Fond transparent foncé */
+    -fx-background-color: rgba(0, 0, 0, 0.2);
     -fx-text-fill: white;
     -fx-prompt-text-fill: #94a3b8;
     -fx-border-color: rgba(255, 255, 255, 0.15);
     -fx-border-radius: 8px;
     -fx-background-radius: 8px;
     -fx-padding: 10px 12px;
-    -fx-alignment: center-left; /* AJOUT : Force l'alignement du texte à gauche */
+    -fx-alignment: center-left;
 }
 
-.settings-input:focused {
+/* MODIFIÉ : Ajout du sélecteur parent */
+.admin-form-container .settings-input:focused {
     -fx-border-color: #3b82f6;
     -fx-effect: dropshadow(gaussian, rgba(59, 130, 246, 0.4), 8, 0, 0, 0);
 }
 
-/* Style pour les champs non-éditables (comme l'email) */
-.settings-input:readonly, .settings-input:editable:false {
+/* MODIFIÉ : Ajout du sélecteur parent */
+.admin-form-container .settings-input:readonly,
+.admin-form-container .settings-input:editable:false {
     -fx-opacity: 0.7;
 }
 
-.date-picker.settings-input .text-field {
+/* MODIFIÉ : Cible uniquement les DatePicker DANS le formulaire admin */
+.admin-form-container .date-picker.settings-input .text-field {
     -fx-background-color: transparent;
 }
-.date-picker.settings-input .arrow-button {
+.admin-form-container .date-picker.settings-input .arrow-button {
     -fx-background-color: rgba(255, 255, 255, 0.1);
     -fx-background-radius: 0 8px 8px 0;
 }
-.date-picker.settings-input .arrow-button .arrow {
+.admin-form-container .date-picker.settings-input .arrow-button .arrow {
     -fx-background-color: white;
 }
 
-.competence-checkbox {
+/* MODIFIÉ : Cible uniquement les CheckBox DANS le formulaire admin */
+.admin-form-container .competence-checkbox {
     -fx-font-size: 15px;
     -fx-text-fill: #e5e7eb;
-    -fx-padding: 8px 0; /* Plus d'espacement vertical */
+    -fx-padding: 8px 0;
     -fx-cursor: hand;
 }
-.competence-checkbox .box {
+.admin-form-container .competence-checkbox .box {
     -fx-background-color: transparent;
     -fx-border-color: #718096;
     -fx-border-radius: 4px;
@@ -911,14 +920,14 @@ Styles pour les Vues Administrateur
     -fx-pref-width: 18px;
     -fx-pref-height: 18px;
 }
-.competence-checkbox:hover .box {
+.admin-form-container .competence-checkbox:hover .box {
     -fx-border-color: #3b82f6;
 }
-.competence-checkbox:selected .box {
+.admin-form-container .competence-checkbox:selected .box {
     -fx-background-color: #3b82f6;
     -fx-border-color: #3b82f6;
 }
-.competence-checkbox:selected .mark {
+.admin-form-container .competence-checkbox:selected .mark {
     -fx-shape: "M7.6,13.4 L4.6,10.4 L3,12 L7.6,16.6 L17,7.2 L15.4,5.6 Z";
     -fx-background-color: white;
 }
@@ -927,7 +936,8 @@ Styles pour les Vues Administrateur
 /* ==                         BUTTONS (SAVE/CANCEL)                        == */
 /* ========================================================================== */
 
-.save-button {
+/* MODIFIÉ : Cible uniquement le bouton "save" DANS le formulaire admin */
+.admin-form-container .save-button {
     -fx-background-color: #3b82f6;
     -fx-text-fill: white;
     -fx-font-weight: bold;
@@ -937,11 +947,12 @@ Styles pour les Vues Administrateur
     -fx-font-size: 14px;
     -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.2), 5, 0, 2, 2);
 }
-.save-button:hover {
+.admin-form-container .save-button:hover {
     -fx-background-color: #2563eb;
 }
 
-.cancel-button {
+/* MODIFIÉ : Cible uniquement le bouton "cancel" DANS le formulaire admin */
+.admin-form-container .cancel-button {
     -fx-background-color: #64748b;
     -fx-text-fill: white;
     -fx-font-weight: bold;
@@ -950,6 +961,6 @@ Styles pour les Vues Administrateur
     -fx-cursor: hand;
     -fx-font-size: 14px;
 }
-.cancel-button:hover {
+.admin-form-container .cancel-button:hover {
     -fx-background-color: #475569;
 }
