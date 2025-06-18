@@ -1491,9 +1491,90 @@ Styles pour les Vues Administrateur
     -fx-padding: 0;
 }
 
-.dps-details-card {
-    -fx-background-color: #4a4747;
-    -fx-padding: 15px;
+/* ... (tous vos styles existants) ... */
+
+/*
+ * ===============================================
+ * Style pour le panneau d'édition des dispositifs
+ * ===============================================
+ */
+
+/* Conteneur principal de la section des besoins (le panneau de droite) */
+.requirements-panel {
+    -fx-background-color: rgba(18, 26, 41, 0.7); /* Fond sombre semi-transparent, comme le reste */
+    -fx-padding: 20px;
     -fx-background-radius: 8px;
-    -fx-alignment: center;
+    -fx-border-radius: 8px;
+    -fx-border-color: rgba(255, 255, 255, 0.2); /* Bordure subtile */
+    -fx-border-width: 1px;
+    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.5), 10, 0, 0, 2);
+}
+
+/* Le titre "Besoins en Compétences" doit être lisible */
+.requirements-panel .section-title {
+    -fx-text-fill: white;
+    -fx-border-color: #4A90E2; /* Bleu clair pour la ligne */
+    -fx-border-width: 0 0 2 0;
+    -fx-padding-bottom: 5px;
+}
+
+/* Rendre le fond du ScrollPane transparent pour voir le fond du panneau */
+.requirements-panel .scroll-pane,
+.requirements-panel .scroll-pane .viewport {
+    -fx-background-color: transparent;
+}
+
+/* Style de la barre de défilement pour qu'elle soit discrète */
+.requirements-panel .scroll-bar:vertical {
+    -fx-background-color: transparent;
+    -fx-pref-width: 8;
+}
+.requirements-panel .scroll-bar:vertical .thumb {
+    -fx-background-color: rgba(255, 255, 255, 0.3);
+    -fx-background-radius: 4;
+}
+.requirements-panel .scroll-bar:vertical .track {
+    -fx-background-color: transparent;
+}
+
+
+/* Style pour chaque ligne (Label + Spinner) */
+.competence-requirement-control {
+    -fx-padding: 5px 0;
+}
+
+/* Style pour le nom de la compétence (CE, CO, etc.) */
+.competence-requirement-label {
+    -fx-font-size: 14px;
+    -fx-text-fill: #EAEAEA; /* Texte gris clair, pas blanc pur */
+    -fx-font-family: 'Segoe UI', sans-serif;
+}
+
+/*
+ * Style complexe pour le Spinner pour qu'il s'intègre au thème sombre
+ */
+
+/* Le champ de texte du Spinner */
+.requirements-panel .spinner .text-field {
+    -fx-background-color: rgba(0, 0, 0, 0.3); /* Fond noir très transparent */
+    -fx-border-color: rgba(255, 255, 255, 0.2);
+    -fx-border-radius: 3;
+    -fx-background-insets: 0;
+    -fx-text-fill: white; /* Texte en blanc */
+    -fx-font-size: 14px;
+}
+
+/* Les boutons fléchés du Spinner */
+.requirements-panel .spinner .arrow-button {
+    -fx-background-color: rgba(255, 255, 255, 0.1);
+    -fx-background-radius: 3;
+}
+.requirements-panel .spinner .arrow-button:hover {
+    -fx-background-color: rgba(255, 255, 255, 0.2);
+}
+
+/* La forme de la flèche elle-même */
+.requirements-panel .spinner .arrow {
+    -fx-background-color: white; /* Flèches blanches pour la visibilité */
+    -fx-padding: 4px;
 }

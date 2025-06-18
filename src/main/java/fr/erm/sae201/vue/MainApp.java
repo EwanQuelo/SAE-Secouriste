@@ -177,7 +177,6 @@ public class MainApp extends Application {
     }
 
     public void showCreateDpsView(CompteUtilisateur compte) {
-
         AdminEditDpsView view = new AdminEditDpsView(this, compte, null);
         mainScene.setRoot(view.getView());
         primaryStage.setTitle("SECOURS - Création de Dispositif");

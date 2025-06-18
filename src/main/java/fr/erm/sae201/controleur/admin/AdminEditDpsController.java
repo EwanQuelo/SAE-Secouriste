@@ -1,16 +1,22 @@
+// src/main/java/fr/erm/sae201/controleur/admin/AdminEditDpsController.java
+
 package fr.erm.sae201.controleur.admin;
 
+import fr.erm.sae201.dao.CompetenceDAO;
 import fr.erm.sae201.dao.SiteDAO;
 import fr.erm.sae201.dao.SportDAO;
 import fr.erm.sae201.metier.persistence.*;
-import fr.erm.sae201.metier.service.DPSMngt; // NOUVEAU : Import du service
+import fr.erm.sae201.metier.service.DPSMngt;
 import fr.erm.sae201.utils.NotificationUtils;
 import fr.erm.sae201.vue.MainApp;
 import fr.erm.sae201.vue.admin.AdminEditDpsView;
 import javafx.application.Platform;
 import java.sql.SQLException;
 import java.time.LocalDate;
+import java.util.Collections; // NOUVEL IMPORT
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 public class AdminEditDpsController {
@@ -20,12 +26,8 @@ public class AdminEditDpsController {
     private final DPS dpsToEdit;
     private final SiteDAO siteDAO;
     private final SportDAO sportDAO;
-    
-    // NOUVEAU : Le contrôleur utilise le service DPSMngt
+    private final CompetenceDAO competenceDAO;
     private final DPSMngt dpsMngt;
-
-    // SUPPRIMÉ : Le contrôleur n'a plus besoin du JourneeDAO
-    // private final JourneeDAO journeeDAO;
 
     public AdminEditDpsController(AdminEditDpsView view, MainApp navigator, DPS dpsToEdit) {
         this.view = view;
@@ -33,18 +35,15 @@ public class AdminEditDpsController {
         this.dpsToEdit = dpsToEdit;
         this.siteDAO = new SiteDAO();
         this.sportDAO = new SportDAO();
-        
-        // NOUVEAU : Instanciation du service
+        this.competenceDAO = new CompetenceDAO();
         this.dpsMngt = new DPSMngt();
-        
-        // SUPPRIMÉ : this.journeeDAO = new JourneeDAO();
 
         view.setSaveButtonAction(e -> saveDps());
         view.setCancelButtonAction(e -> cancel());
         view.setAddSiteAction(e -> addNewSite());
         view.setAddSportAction(e -> addNewSport());
 
-        loadComboBoxData();
+        loadInitialData();
         initializeForm();
     }
 
@@ -59,20 +58,34 @@ public class AdminEditDpsController {
         }
     }
 
-    private void loadComboBoxData() {
+    // MODIFIÉ pour corriger l'erreur "effectively final"
+    private void loadInitialData() {
         new Thread(() -> {
             List<Site> sites = siteDAO.findAll();
             List<Sport> sports = sportDAO.findAll();
+            List<Competence> allCompetences = competenceDAO.findAll();
+
+            // CORRIGÉ : On utilise une variable qui sera "effectively final".
+            // Elle est déclarée ici et assignée une seule fois, soit dans le if, soit dans le else.
+            final Map<Competence, Integer> requirementsToLoad;
+            
+            if (dpsToEdit != null) {
+                // Le service getDps doit retourner un objet entièrement hydraté.
+                requirementsToLoad = dpsMngt.getDps(dpsToEdit.getId()).getCompetencesRequises();
+            } else {
+                // Pour une création, la map est vide.
+                requirementsToLoad = Collections.emptyMap();
+            }
+
             Platform.runLater(() -> {
                 view.populateSiteComboBox(sites);
                 view.populateSportComboBox(sports);
+                // On passe la variable final ou effectively final à la vue.
+                view.populateRequirements(allCompetences, requirementsToLoad);
             });
         }).start();
     }
 
-    /**
-     * MODIFIÉ : Utilise le service DPSMngt pour la création et la mise à jour.
-     */
     private void saveDps() {
         Site site = view.getSelectedSite();
         Sport sport = view.getSelectedSport();
@@ -91,12 +104,15 @@ public class AdminEditDpsController {
             
             int[] horaireDepart = { startHour, startMinute };
             int[] horaireFin = { endHour, endMinute };
+            
+            Map<Competence, Integer> requirements = view.getCompetenceRequirements();
 
             if (dpsToEdit != null) { // Mode mise à jour
                 dpsToEdit.setSite(site);
                 dpsToEdit.setSport(sport);
-                // La date et les horaires ne sont pas modifiables ici
+                
                 if (dpsMngt.updateDps(dpsToEdit)) {
+                    updateDpsRequirements(dpsToEdit.getId(), requirements);
                     NotificationUtils.showSuccess("Succès", "Dispositif mis à jour.");
                     navigator.showAdminDispositifView(view.getCompte());
                 } else {
@@ -105,8 +121,9 @@ public class AdminEditDpsController {
             } else { // Mode création
                 DPS newDps = new DPS(0, horaireDepart, horaireFin, site, new Journee(date), sport);
                 
-                // Le contrôleur appelle la méthode de service unique
-                if (dpsMngt.createDps(newDps) != -1) {
+                long newDpsId = dpsMngt.createDps(newDps);
+                if (newDpsId != -1) {
+                    updateDpsRequirements(newDpsId, requirements);
                     NotificationUtils.showSuccess("Succès", "Dispositif créé.");
                     navigator.showAdminDispositifView(view.getCompte());
                 } else {
@@ -120,13 +137,24 @@ public class AdminEditDpsController {
         }
     }
 
-    // Le reste des méthodes du contrôleur (addNewSite, addNewSport, cancel) ne change pas.
+    private void updateDpsRequirements(long dpsId, Map<Competence, Integer> requirements) {
+        for (Map.Entry<Competence, Integer> entry : requirements.entrySet()) {
+            String intitule = entry.getKey().getIntitule();
+            int nombre = entry.getValue();
+            if (nombre > 0) {
+                dpsMngt.setRequiredCompetence(dpsId, intitule, nombre);
+            } else {
+                dpsMngt.removeRequiredCompetence(dpsId, intitule);
+            }
+        }
+    }
+
     private void addNewSite() {
         Optional<Site> result = view.showCreateSiteDialog();
         result.ifPresent(newSite -> {
             if (siteDAO.create(newSite) != -1) {
                 NotificationUtils.showSuccess("Succès", "Site '" + newSite.getNom() + "' créé.");
-                loadComboBoxData();
+                loadInitialData();
             } else {
                 NotificationUtils.showError("Erreur", "Ce site (ou son code) existe déjà.");
             }
@@ -138,7 +166,7 @@ public class AdminEditDpsController {
         result.ifPresent(newSport -> {
             if (sportDAO.create(newSport) != -1) {
                 NotificationUtils.showSuccess("Succès", "Sport '" + newSport.getNom() + "' créé.");
-                loadComboBoxData();
+                loadInitialData();
             } else {
                 NotificationUtils.showError("Erreur", "Ce sport (ou son code) existe déjà.");
             }
