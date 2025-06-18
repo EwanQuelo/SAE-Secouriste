@@ -176,6 +176,7 @@ public class MainApp extends Application {
         primaryStage.setTitle("SECOURS - Mes Disponibilités");
     }
 
+
     public void showCreateDpsView(CompteUtilisateur compte) {
         AdminEditDpsView view = new AdminEditDpsView(this, compte, null);
         mainScene.setRoot(view.getView());
@@ -198,6 +199,16 @@ public class MainApp extends Application {
         AdminCreateUserView view = new AdminCreateUserView(this, adminCompte);
         mainScene.setRoot(view.getView());
         primaryStage.setTitle("SECOURS - Créer un Nouvel Utilisateur");
+    }
+
+    /**
+     * NOUVEAU: Affiche la vue du calendrier global pour l'administrateur.
+     * @param compte Le compte de l'administrateur.
+     */
+    public void showAdminCalendarView(CompteUtilisateur compte) {
+        AffectationCalendarView view = new AffectationCalendarView(this, compte);
+        mainScene.setRoot(view.getView());
+        primaryStage.setTitle("SECOURS - Calendrier des Affectations");
     }
 
     public static void main(String[] args) {

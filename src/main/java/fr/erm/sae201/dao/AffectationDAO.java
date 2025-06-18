@@ -56,6 +56,28 @@ public class AffectationDAO extends DAO<Affectation> {
         return affectations;
     }
 
+            /**
+     * NOUVEAU: Compte le nombre d'affectations pour un DPS donné.
+     * @param dpsId L'ID du DPS.
+     * @return Le nombre d'affectations.
+     */
+    public int countAffectationsForDps(long dpsId) {
+        String sql = "SELECT COUNT(*) FROM Affectation WHERE idDPS = ?";
+        try (Connection conn = getConnection();
+             PreparedStatement pstmt = conn.prepareStatement(sql)) {
+            pstmt.setLong(1, dpsId);
+            try (ResultSet rs = pstmt.executeQuery()) {
+                if (rs.next()) {
+                    return rs.getInt(1);
+                }
+            }
+        } catch (SQLException e) {
+            System.err.println("Error counting affectations for DPS " + dpsId + ": " + e.getMessage());
+        }
+        return 0;
+    }
+    
+
     /**
      * Finds all {@link Affectation} records associated with a specific {@link DPS}.
      *

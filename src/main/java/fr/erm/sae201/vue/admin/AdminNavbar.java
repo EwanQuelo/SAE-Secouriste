@@ -36,21 +36,24 @@ public class AdminNavbar extends HBox {
         Button accueilBtn = createNavButton("Accueil", "Accueil".equals(activeViewName));
         accueilBtn.setOnAction(e -> navigator.showAdminDashboard(compte));
 
-        Button dispositifBtn = createNavButton("Dispositif", "Dispositif".equals(activeViewName));
+        Button dispositifBtn = createNavButton("Dispositifs", "Dispositifs".equals(activeViewName));
         dispositifBtn.setOnAction(e -> navigator.showAdminDispositifView(compte));
 
         Button utilisateursBtn = createNavButton("Utilisateurs", "Utilisateurs".equals(activeViewName));
         utilisateursBtn.setOnAction(e -> navigator.showAdminUtilisateursView(compte));
 
-        // --- NOUVEAU BOUTON ---
         Button competencesBtn = createNavButton("Compétences", "Compétences".equals(activeViewName));
         competencesBtn.setOnAction(e -> navigator.showAdminCompetencesView(compte));
 
         Button affectationsBtn = createNavButton("Affectations", "Affectations".equals(activeViewName));
         affectationsBtn.setOnAction(e -> navigator.showAdminAffectationsView(compte));
         
+        // --- NOUVEAU BOUTON ---
+        Button calendrierAdminBtn = createNavButton("Calendrier", "Calendrier Admin".equals(activeViewName));
+        calendrierAdminBtn.setOnAction(e -> navigator.showAdminCalendarView(compte));
+        
         // Ajout du nouveau bouton à la barre de navigation
-        navLinks.getChildren().addAll(accueilBtn, dispositifBtn, utilisateursBtn, competencesBtn, affectationsBtn);
+        navLinks.getChildren().addAll(accueilBtn, dispositifBtn, utilisateursBtn, competencesBtn, affectationsBtn, calendrierAdminBtn);
         return navLinks;
     }
 

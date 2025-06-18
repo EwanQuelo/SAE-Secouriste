@@ -1578,3 +1578,47 @@ Styles pour les Vues Administrateur
     -fx-background-color: white; /* Flèches blanches pour la visibilité */
     -fx-padding: 4px;
 }
+
+/* === Admin Weekly Calendar === */
+.admin-event-box {
+    -fx-background-color: white;
+    -fx-border-radius: 4px;
+    -fx-background-radius: 4px;
+    -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.12), 4, 0, 1, 2);
+    -fx-border-width: 0 0 0 4px; /* Left border for color coding */
+    -fx-border-color: #B0BEC5; /* Default border color */
+}
+
+.admin-event-title {
+    -fx-font-size: 11px;
+    -fx-font-weight: bold;
+    -fx-text-fill: #212121;
+}
+
+.admin-event-count {
+    -fx-font-size: 10px;
+    -fx-text-fill: #424242;
+}
+
+.admin-event-box.event-complete {
+    -fx-border-color: #4CAF50; /* Green */
+}
+
+.admin-event-box.event-in-progress {
+    -fx-border-color: #FFC107; /* Amber */
+}
+
+.admin-event-box.event-empty {
+    -fx-border-color: #F44336; /* Red */
+}
+
+.day-header-label {
+    -fx-font-size: 13px;
+    -fx-font-weight: bold;
+    -fx-text-fill: #424242;
+    -fx-padding: 8px 0;
+}
+
+.day-header-label.today-header-label {
+    -fx-text-fill: #1976D2;
+}

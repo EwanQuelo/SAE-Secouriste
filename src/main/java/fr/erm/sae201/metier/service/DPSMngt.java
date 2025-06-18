@@ -10,6 +10,7 @@ import fr.erm.sae201.metier.persistence.DPS;
 import fr.erm.sae201.metier.persistence.Journee;
 
 import java.sql.SQLException;
+import java.time.LocalDate;
 import java.util.List;
 import java.util.Map; // IMPORT
 import java.util.stream.Collectors;
@@ -35,6 +36,26 @@ public class DPSMngt {
         dps.setCompetencesRequises(requirements);
         return dps;
     }
+
+    /**
+     * Récupère tous les DPS entre deux dates et les hydrate avec leurs besoins.
+     * @param startDate Date de début.
+     * @param endDate Date de fin.
+     * @return Une liste de DPS complets.
+     */
+    public List<DPS> getAllDpsBetweenDates(LocalDate startDate, LocalDate endDate) {
+        List<DPS> dpsList = dpsDAO.findAllBetweenDates(startDate, endDate);
+
+        dpsList.forEach(dps -> {
+            if (dps != null) {
+                Map<Competence, Integer> requirements = dpsDAO.findRequiredCompetencesForDps(dps.getId());
+                dps.setCompetencesRequises(requirements);
+            }
+        });
+        return dpsList;
+    }
+    
+
 
     public List<DPS> getAllDps() {
         return dpsDAO.findAll();

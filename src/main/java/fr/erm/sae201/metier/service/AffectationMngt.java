@@ -56,6 +56,16 @@ public class AffectationMngt {
     }
 
     /**
+     * NOUVEAU: Récupère le nombre d'affectations pour un DPS.
+     * @param dpsId L'ID du DPS.
+     * @return Le nombre de secouristes affectés.
+     */
+    public int getAssignmentCountForDps(long dpsId) {
+        return affectationDAO.countAffectationsForDps(dpsId);
+    }
+
+
+    /**
      * Vérifie si un secouriste peut être affecté à un DPS pour une compétence.
      *
      * @param secouriste L'objet Secouriste.

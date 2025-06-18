@@ -2,6 +2,7 @@ package fr.erm.sae201.dao;
 
 import fr.erm.sae201.metier.persistence.*;
 import java.sql.*;
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -128,6 +129,31 @@ public class DPSDAO extends DAO<DPS> {
             System.err.println("Error creating DPS: " + e.getMessage());
             return -1;
         }
+    }
+    
+
+    /**
+     * NOUVEAU: Récupère tous les DPS dans une plage de dates donnée.
+     * @param startDate La date de début.
+     * @param endDate La date de fin.
+     * @return Une liste de DPS.
+     */
+    public List<DPS> findAllBetweenDates(LocalDate startDate, LocalDate endDate) {
+        String sql = "SELECT id, horaire_depart_heure, horaire_depart_minute, horaire_fin_heure, horaire_fin_minute, lieu, sport, jour FROM DPS WHERE jour BETWEEN ? AND ?";
+        List<DPS> dpsList = new ArrayList<>();
+        try (Connection conn = getConnection();
+             PreparedStatement pstmt = conn.prepareStatement(sql)) {
+            pstmt.setDate(1, Date.valueOf(startDate));
+            pstmt.setDate(2, Date.valueOf(endDate));
+            try (ResultSet rs = pstmt.executeQuery()) {
+                while (rs.next()) {
+                    dpsList.add(mapResultSetToDPS(rs));
+                }
+            }
+        } catch (SQLException e) {
+            System.err.println("Error finding DPS between dates: " + e.getMessage());
+        }
+        return dpsList;
     }
 
     /**
