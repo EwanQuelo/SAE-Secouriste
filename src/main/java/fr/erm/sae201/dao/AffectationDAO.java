@@ -16,7 +16,7 @@ import java.time.LocalDate;
  * deleting affectations.
  *
  * @author Ewan QUELO, Raphael MILLE, Matheo BIET
- * @version 1.0
+ * @version 1.1
  */
 public class AffectationDAO extends DAO<Affectation> {
 
@@ -196,6 +196,7 @@ public class AffectationDAO extends DAO<Affectation> {
     /**
      * Récupère toutes les affectations pour un secouriste donné entre deux dates.
      * C'est une version optimisée qui ne fait qu'une seule requête complexe.
+     * CORRIGÉ : Utilisation d'alias SQL (AS) pour éviter les conflits de noms de colonnes.
      *
      * @param secouristeId L'ID du secouriste.
      * @param startDate    La date de début de la période.
@@ -205,12 +206,13 @@ public class AffectationDAO extends DAO<Affectation> {
     public List<Affectation> findAffectationsForSecouristeBetweenDates(long secouristeId, LocalDate startDate,
             LocalDate endDate) {
         List<Affectation> affectations = new ArrayList<>();
+        // CORRIGÉ : Ajout des alias (AS) pour les colonnes portant le même nom
         String sql = "SELECT " +
             "  Affectation.idSecouriste, Affectation.intituleCompetence, Affectation.idDPS, " +
-            "  DPS.horaire_depart_heure, DPS.horaire_depart_minute, DPS.horaire_fin_heure, DPS.horaire_fin_minute, DPS.jour, " +
-            "  Secouriste.nom, Secouriste.prenom, Secouriste.dateNaissance, Secouriste.email, Secouriste.tel, Secouriste.adresse, " +
-            "  Site.code, Site.nom, Site.longitude, Site.latitude, " +
-            "  Sport.code, Sport.nom " +
+            "  DPS.horaire_depart_heure, DPS.horaire_depart_minute, DPS.horaire_fin_heure, DPS.horaire_fin_minute, DPS.jour AS dps_jour, " +
+            "  Secouriste.nom AS secouriste_nom, Secouriste.prenom, Secouriste.dateNaissance, Secouriste.email, Secouriste.tel, Secouriste.adresse, " +
+            "  Site.code AS site_code, Site.nom AS site_nom, Site.longitude, Site.latitude, " +
+            "  Sport.code AS sport_code, Sport.nom AS sport_nom " +
             "FROM " +
             "  Affectation " +
             "JOIN Secouriste ON Affectation.idSecouriste = Secouriste.id " +
@@ -229,12 +231,16 @@ public class AffectationDAO extends DAO<Affectation> {
 
             try (ResultSet rs = pstmt.executeQuery()) {
                 while (rs.next()) {
+                    // CORRIGÉ : Utilisation des alias pour lire les données du ResultSet
                     Secouriste secouriste = new Secouriste(rs.getLong("idSecouriste"), rs.getString("secouriste_nom"),
                             rs.getString("prenom"), rs.getDate("dateNaissance"), rs.getString("email"),
                             rs.getString("tel"), rs.getString("adresse"));
+                    
                     Site site = new Site(rs.getString("site_code"), rs.getString("site_nom"), rs.getFloat("longitude"),
                             rs.getFloat("latitude"));
+
                     Sport sport = new Sport(rs.getString("sport_code"), rs.getString("sport_nom"));
+                    
                     Competence competence = new Competence(rs.getString("intituleCompetence"));
 
                     Journee journee = new Journee(rs.getDate("dps_jour").toLocalDate());

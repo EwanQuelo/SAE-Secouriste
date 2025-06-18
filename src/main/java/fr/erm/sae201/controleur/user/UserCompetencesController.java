@@ -1,9 +1,11 @@
 package fr.erm.sae201.controleur.user;
 
+import fr.erm.sae201.exception.EntityNotFoundException;
 import fr.erm.sae201.metier.persistence.Competence;
 import fr.erm.sae201.metier.persistence.CompteUtilisateur;
 import fr.erm.sae201.metier.persistence.Secouriste;
 import fr.erm.sae201.metier.service.SecouristeMngt;
+import fr.erm.sae201.utils.NotificationUtils;
 import fr.erm.sae201.vue.user.UserCompetencesView;
 import javafx.application.Platform;
 
@@ -24,17 +26,19 @@ public class UserCompetencesController {
     }
 
     private void loadUserCompetences() {
-        // C'est une bonne pratique de faire les appels BDD dans un thread séparé
-        // pour ne pas geler l'interface utilisateur.
         new Thread(() -> {
             if (compte.getIdSecouriste() != null) {
-                // On récupère le profil complet du secouriste
-                secouristeMngt.getSecouriste(compte.getIdSecouriste()).ifPresent(secouriste -> {
-                    // On récupère ses compétences
+                try {
+                    // MODIFIÉ : On récupère directement l'objet Secouriste.
+                    Secouriste secouriste = secouristeMngt.getSecouriste(compte.getIdSecouriste());
                     Set<Competence> competences = secouriste.getCompetences();
-                    // On met à jour l'interface graphique sur le thread JavaFX
                     Platform.runLater(() -> view.displayCompetences(competences));
-                });
+                } catch (EntityNotFoundException e) {
+                    // MODIFIÉ : On gère le cas où le secouriste n'est pas trouvé.
+                    System.err.println("Erreur: Impossible de charger les compétences car le secouriste n'a pas été trouvé.");
+                    // On pourrait aussi afficher un message dans la vue
+                    Platform.runLater(() -> NotificationUtils.showError("Erreur" ,"Profil utilisateur introuvable."));
+                }
             }
         }).start();
     }

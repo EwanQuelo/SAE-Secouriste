@@ -1,24 +1,14 @@
 package fr.erm.sae201.dao;
 
+import fr.erm.sae201.exception.EntityNotFoundException;
 import fr.erm.sae201.metier.persistence.CompteUtilisateur;
 import fr.erm.sae201.metier.persistence.Role;
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 
 /**
  * Data Access Object (DAO) for managing {@link CompteUtilisateur} entities.
- * A 'CompteUtilisateur' (user account) stores login credentials (login, hashed
- * password),
- * a {@link Role}, and optionally a link to a 'Secouriste' ID if the account
- * belongs to a rescuer.
- * This class handles database operations such as creating, retrieving,
- * updating,
- * and deleting user accounts.
- *
- * @author Ewan QUELO, Raphael MILLE, Matheo BIET
- * @version 1.0
  */
 public class CompteUtilisateurDAO extends DAO<CompteUtilisateur> {
 
@@ -26,34 +16,32 @@ public class CompteUtilisateurDAO extends DAO<CompteUtilisateur> {
      * Finds a {@link CompteUtilisateur} by its unique 'login' (username/email).
      *
      * @param login The login identifier of the user account to find.
-     *              Should not be null or empty.
-     * @return An {@link Optional} containing the {@link CompteUtilisateur} if
-     *         found;
-     *         an empty {@link Optional} if no account with the given 'login'
-     *         exists,
-     *         if 'login' is invalid, or if a database error occurs.
+     * @return The {@link CompteUtilisateur} if found.
+     * @throws EntityNotFoundException if no account with the given 'login' exists.
      */
-    public Optional<CompteUtilisateur> findByLogin(String login) {
-        if (login == null || login.trim().isEmpty())
-            return Optional.empty();
+    public CompteUtilisateur findByLogin(String login) {
+        if (login == null || login.trim().isEmpty()) {
+            throw new IllegalArgumentException("Login cannot be null or empty.");
+        }
         String sql = "SELECT login, motDePasseHash, role, idSecouriste FROM CompteUtilisateur WHERE login = ?";
         try (Connection conn = getConnection();
-                PreparedStatement pstmt = conn.prepareStatement(sql)) {
+             PreparedStatement pstmt = conn.prepareStatement(sql)) {
             pstmt.setString(1, login);
             try (ResultSet rs = pstmt.executeQuery()) {
                 if (rs.next()) {
-                    return Optional.of(new CompteUtilisateur(
+                    return new CompteUtilisateur(
                             rs.getString("login"),
                             rs.getString("motDePasseHash"),
                             Role.valueOf(rs.getString("role")),
-                            (Long) rs.getObject("idSecouriste")));
+                            (Long) rs.getObject("idSecouriste"));
+                } else {
+                    throw new EntityNotFoundException("Aucun compte utilisateur trouvé avec le login : " + login);
                 }
             }
         } catch (SQLException e) {
-            System.err.println(
-                    "Erreur lors de la recherche du CompteUtilisateur par login " + login + ": " + e.getMessage());
+            // En cas d'erreur SQL, on la "wrap" dans une RuntimeException pour ne pas forcer les 'throws'.
+            throw new RuntimeException("Erreur BDD lors de la recherche du compte : " + login, e);
         }
-        return Optional.empty();
     }
 
     /**
@@ -180,7 +168,6 @@ public class CompteUtilisateurDAO extends DAO<CompteUtilisateur> {
 
     @Override
     public List<CompteUtilisateur> findAll() {
-        // Implémentation si nécessaire, souvent peu utile pour les comptes.
         return new ArrayList<>();
     }
 

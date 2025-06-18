@@ -1,5 +1,6 @@
 package fr.erm.sae201.controleur.user;
 
+import fr.erm.sae201.exception.EntityNotFoundException;
 import fr.erm.sae201.metier.persistence.CompteUtilisateur;
 import fr.erm.sae201.metier.persistence.Secouriste;
 import fr.erm.sae201.metier.service.AuthService;
@@ -10,7 +11,6 @@ import fr.erm.sae201.vue.user.UserParametresView;
 
 import java.time.ZoneId;
 import java.util.Date;
-import java.util.Optional;
 
 public class UserParametresController {
 
@@ -41,11 +41,16 @@ public class UserParametresController {
 
     private void loadUserData() {
         if (compte.getIdSecouriste() != null) {
-            Optional<Secouriste> secouristeOpt = secouristeMngt.getSecouriste(compte.getIdSecouriste());
-            secouristeOpt.ifPresent(secouriste -> {
+            try {
+                // MODIFIÉ : On appelle directement getSecouriste qui retourne un objet ou lève une exception.
+                Secouriste secouriste = secouristeMngt.getSecouriste(compte.getIdSecouriste());
                 this.currentUser = secouriste;
                 view.setSecouristeData(currentUser);
-            });
+            } catch (EntityNotFoundException e) {
+                // MODIFIÉ : On gère l'exception si le secouriste n'est pas trouvé.
+                NotificationUtils.showError("Erreur critique", "Impossible de charger les données du secouriste associé à ce compte.");
+                System.err.println(e.getMessage());
+            }
         }
     }
 
@@ -67,7 +72,6 @@ public class UserParametresController {
             boolean success = secouristeMngt.update(currentUser);
             if (success) {
                 NotificationUtils.showSuccess("Succès", "Vos informations ont été mises à jour.");
-                // Refresh the view to update the navbar with the new name
                 navigator.showUserParametreView(compte);
             } else {
                 NotificationUtils.showError("Échec", "La mise à jour de vos informations a échoué.");

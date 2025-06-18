@@ -1,8 +1,7 @@
 package fr.erm.sae201.metier.service;
 
 import fr.erm.sae201.dao.AffectationDAO;
-import fr.erm.sae201.dao.DPSDAO;
-import fr.erm.sae201.dao.SecouristeDAO;
+import fr.erm.sae201.exception.EntityNotFoundException;
 import fr.erm.sae201.metier.persistence.Affectation;
 import fr.erm.sae201.metier.persistence.Competence;
 import fr.erm.sae201.metier.persistence.DPS;
@@ -10,38 +9,33 @@ import fr.erm.sae201.metier.persistence.Secouriste;
 
 import java.util.List;
 import java.util.Map;
-import java.util.Optional;
 
 /**
  * Service pour gérer la logique métier des affectations.
- * C'est le chef d'orchestre qui vérifie les règles avant d'affecter un secouriste.
+ * MODIFIÉ : Utilise les services qui lèvent des exceptions.
  */
 public class AffectationMngt {
 
     private final AffectationDAO affectationDAO = new AffectationDAO();
-    private final SecouristeDAO secouristeDAO = new SecouristeDAO();
-    private final DPSDAO dpsDAO = new DPSDAO();
+    // Utilisation des services pour la logique métier
+    private final SecouristeMngt secouristeMngt = new SecouristeMngt();
+    private final DPSMngt dpsMngt = new DPSMngt();
     
     /**
      * Tente d'affecter un secouriste à un DPS pour une compétence donnée.
-     * Effectue toutes les vérifications nécessaires avant de procéder.
      *
      * @param secouristeId L'ID du secouriste.
      * @param dpsId L'ID du DPS.
      * @param competenceIntitule L'intitulé de la compétence à remplir.
      * @return true si l'affectation a réussi, false sinon.
-     * @throws Exception si le secouriste ou le DPS n'existe pas.
+     * @throws EntityNotFoundException si le secouriste ou le DPS n'existe pas.
+     * @throws Exception pour d'autres erreurs.
      */
     public boolean assignSecouriste(long secouristeId, long dpsId, String competenceIntitule) throws Exception {
-        // 1. Récupérer les objets de la base
-        Optional<Secouriste> secouristeOpt = Optional.ofNullable(secouristeDAO.findByID(secouristeId));
-        Optional<DPS> dpsOpt = Optional.ofNullable(dpsDAO.findByID(dpsId));
-
-        if (secouristeOpt.isEmpty()) throw new Exception("Secouriste non trouvé avec l'ID: " + secouristeId);
-        if (dpsOpt.isEmpty()) throw new Exception("DPS non trouvé avec l'ID: " + dpsId);
-
-        Secouriste secouriste = secouristeOpt.get();
-        DPS dps = dpsOpt.get();
+        // 1. Récupérer les objets de la base via les services.
+        // Ces appels lèveront une EntityNotFoundException si l'entité n'existe pas.
+        Secouriste secouriste = secouristeMngt.getSecouriste(secouristeId);
+        DPS dps = dpsMngt.getDps(dpsId);
 
         // 2. Vérifier si l'affectation est possible
         if (!canAssign(secouriste, dps, competenceIntitule)) {
@@ -50,7 +44,6 @@ public class AffectationMngt {
         }
         
         // 3. Créer l'objet Affectation
-        // On récupère l'objet Competence via la map du DPS pour être sûr qu'elle est requise.
         Competence competenceToAssign = dps.getCompetencesRequises().keySet().stream()
             .filter(c -> c.getIntitule().equals(competenceIntitule))
             .findFirst()
@@ -79,7 +72,7 @@ public class AffectationMngt {
             return false;
         }
 
-        // Règle 2: Le secouriste possède-t-il la compétence requise (et ses prérequis via le service) ?
+        // Règle 2: Le secouriste possède-t-il la compétence requise ?
         boolean hasCompetence = secouriste.getCompetences().stream()
             .anyMatch(c -> c.getIntitule().equals(competenceIntitule));
         if (!hasCompetence) {
@@ -108,30 +101,17 @@ public class AffectationMngt {
             return false;
         }
 
-        // Si toutes les règles passent
         return true;
     }
     
-    /**
-     * Désaffecte un secouriste d'un DPS pour une compétence.
-     *
-     * @param affectation L'objet Affectation à supprimer.
-     * @return true si la suppression a réussi.
-     */
     public boolean unassignSecouriste(Affectation affectation) {
         return affectationDAO.delete(affectation) > 0;
     }
 
-    /**
-     * Récupère toutes les affectations pour un DPS donné.
-     */
     public List<Affectation> getAssignmentsForDps(long dpsId) {
         return affectationDAO.findAffectationsByDpsId(dpsId);
     }
     
-    /**
-     * Récupère toutes les affectations pour un Secouriste donné.
-     */
     public List<Affectation> getAssignmentsForSecouriste(long secouristeId) {
         return affectationDAO.findAffectationsBySecouristeId(secouristeId);
     }

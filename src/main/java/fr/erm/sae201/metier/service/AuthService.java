@@ -9,6 +9,8 @@ import com.mailjet.client.resource.Emailv31;
 import fr.erm.sae201.dao.CompteUtilisateurDAO;
 import fr.erm.sae201.dao.CompetenceDAO;
 import fr.erm.sae201.dao.SecouristeDAO;
+import fr.erm.sae201.exception.AuthenticationException;
+import fr.erm.sae201.exception.EntityNotFoundException;
 import fr.erm.sae201.metier.persistence.Competence;
 import fr.erm.sae201.metier.persistence.CompteUtilisateur;
 import fr.erm.sae201.metier.persistence.Role;
@@ -19,12 +21,10 @@ import org.mindrot.jbcrypt.BCrypt;
 
 import java.util.Date;
 import java.util.List;
-import java.util.Optional;
 import java.util.Random;
 
 /**
- * Service class for handling authentication-related logic,
- * such as login, registration, and password reset.
+ * Service class for handling authentication-related logic.
  */
 public class AuthService {
 
@@ -37,33 +37,37 @@ public class AuthService {
      *
      * @param login    The user's email.
      * @param password The user's plain text password.
-     * @return An {@link Optional} containing the {@link CompteUtilisateur} if login is successful,
-     *         otherwise an empty Optional.
+     * @return The {@link CompteUtilisateur} if login is successful.
+     * @throws EntityNotFoundException if the user does not exist.
+     * @throws AuthenticationException if the password is incorrect.
      */
-    public Optional<CompteUtilisateur> login(String login, String password) {
-        Optional<CompteUtilisateur> compteOpt = compteDAO.findByLogin(login);
-        if (compteOpt.isPresent()) {
-            CompteUtilisateur compte = compteOpt.get();
-            if (BCrypt.checkpw(password, compte.getMotDePasseHash())) {
-                return Optional.of(compte);
-            }
+    public CompteUtilisateur login(String login, String password) {
+        // La méthode findByLogin lève EntityNotFoundException si l'utilisateur n'est pas trouvé.
+        // Cette exception va "remonter" jusqu'au contrôleur.
+        CompteUtilisateur compte = compteDAO.findByLogin(login);
+
+        // Si l'utilisateur est trouvé, on vérifie le mot de passe.
+        if (BCrypt.checkpw(password, compte.getMotDePasseHash())) {
+            return compte;
+        } else {
+            // Si le mot de passe est incorrect, on lève une exception spécifique.
+            throw new AuthenticationException("Le mot de passe est incorrect.");
         }
-        return Optional.empty();
     }
+
     // Ancienne méthode registerSecouriste (ne change pas, utilisée par l'inscription publique)
     public boolean registerSecouriste(String firstName, String lastName, String email, String password, Date dateOfBirth) throws Exception {
         return registerSecouriste(firstName, lastName, email, password, dateOfBirth, null);
     }
 
-    // --- NOUVELLE MÉTHODE SURCHARGÉE ---
-    /**
-     * Enregistre un nouveau secouriste avec une liste optionnelle de compétences.
-     * @return {@code true} si l'enregistrement a réussi.
-     * @throws Exception si l'email existe déjà ou en cas d'erreur BDD.
-     */
     public boolean registerSecouriste(String firstName, String lastName, String email, String password, Date dateOfBirth, List<Competence> competences) throws Exception {
-        if (compteDAO.findByLogin(email).isPresent()) {
+        // Cette vérification est correcte, mais on pourrait la rendre plus spécifique.
+        try {
+            compteDAO.findByLogin(email);
+            // Si on arrive ici, le compte existe déjà.
             throw new Exception("Cet email est déjà utilisé par un autre compte.");
+        } catch (EntityNotFoundException e) {
+            // C'est le comportement attendu, on peut continuer.
         }
 
         Secouriste nouveauSecouriste = new Secouriste(lastName, firstName, dateOfBirth, email, "", "");
@@ -74,7 +78,6 @@ public class AuthService {
             throw new Exception("Erreur critique lors de la création du profil secouriste.");
         }
         
-        // Ajout des compétences si la liste n'est pas nulle
         if (competences != null) {
             for (Competence comp : competences) {
                 secouristeDAO.addCompetenceToSecouriste(secouristeId, comp.getIntitule());
@@ -101,6 +104,9 @@ public class AuthService {
      * @throws MailjetException If an error occurs while communicating with the API.
      */
     public String sendResetCode(String recipientEmail) throws MailjetException {
+        // On vérifie que le compte existe avant d'envoyer un email
+        compteDAO.findByLogin(recipientEmail); // Lèvera une EntityNotFoundException si le compte n'existe pas
+
         String code = String.format("%06d", new Random().nextInt(999999));
 
         ClientOptions options = ClientOptions.builder()
@@ -121,7 +127,7 @@ public class AuthService {
             .property(Emailv31.MESSAGES, new JSONArray()
                 .put(new JSONObject()
                     .put(Emailv31.Message.FROM, new JSONObject()
-                        .put("Email", "taboulakidoum@gmail.com") // IMPORTANT: Use a verified sender email in your Mailjet account
+                        .put("Email", "taboulakidoum@gmail.com")
                         .put("Name", "SECOURS App"))
                     .put(Emailv31.Message.TO, new JSONArray()
                         .put(new JSONObject()
