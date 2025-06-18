@@ -125,7 +125,7 @@ public class UserParametresView extends BaseView {
         emailField.setFocusTraversable(false);
         emailField.getStyleClass().addAll("settings-input", "disabled-input");
         
-        VBox emailBox = new VBox(5, new Label("Adresse e-mail (non modifiable)"), emailField);
+        VBox emailBox = new VBox(5, new Label("Adresse e-mail"), emailField);
         
         newPasswordField = new PasswordField();
         newPasswordField.setPromptText("Nouveau mot de passe");

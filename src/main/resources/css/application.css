@@ -1308,3 +1308,97 @@ Styles pour les Vues Administrateur
 .default-color3.chart-pie { -fx-pie-color: #E74C3C; }
 .default-color4.chart-pie { -fx-pie-color: #9B59B6; }
 .default-color5.chart-pie { -fx-pie-color: #3498DB; }
+
+
+/* ============================================= */
+/*          STYLES FOR USER DASHBOARD            */
+/* ============================================= */
+
+/* Left Panel: Schedule Card */
+.schedule-panel-card {
+    -fx-background-color: #1F2937; /* Dark Gray */
+    -fx-background-radius: 12;
+    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.15), 20, 0.2, 0, 4);
+    -fx-border-color: #374151;
+    -fx-border-width: 1;
+    -fx-border-radius: 12;
+}
+
+.schedule-header {
+    -fx-font-size: 16px;
+    -fx-font-weight: bold;
+    -fx-text-fill: white;
+    -fx-padding: 15px;
+    -fx-alignment: center;
+    -fx-background-color: #374151;
+    -fx-background-radius: 12 12 0 0; /* Rounded corners on top */
+}
+
+.schedule-scroll-pane {
+    -fx-background: transparent;
+    -fx-background-color: transparent;
+    -fx-border-color: transparent;
+}
+
+.timeline-hour-label {
+    -fx-text-fill: #9CA3AF; /* Light gray text */
+    -fx-font-size: 11px;
+}
+
+.timeline-half-hour-line {
+    -fx-stroke: #374151; /* Faint line color */
+    -fx-stroke-dash-array: 2 4;
+}
+
+.timeline-appointment-box {
+    -fx-background-color: #3B82F6; /* Blue background */
+    -fx-background-radius: 6;
+    -fx-border-color: #2563EB;
+    -fx-border-width: 0 0 0 4; /* Left border accent */
+}
+
+.appointment-title {
+    -fx-text-fill: white;
+    -fx-font-weight: bold;
+    -fx-font-size: 13px;
+}
+
+.appointment-subtitle {
+    -fx-text-fill: #D1D5DB; /* Lighter gray for subtitle */
+    -fx-font-size: 11px;
+}
+
+/* Right Panel: Map Card */
+.map-card {
+    -fx-background-color: #111827; /* Dark background for the card itself */
+    -fx-background-radius: 12;
+    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.15), 20, 0.2, 0, 4);
+    -fx-border-color: #374151;
+    -fx-border-width: 1;
+    -fx-border-radius: 12;
+    -fx-padding: 8px; /* Padding inside the card, around the map and footer */
+}
+
+/* The webview itself should have rounded corners to fit inside the card */
+.map-card .stack-pane {
+    -fx-background-radius: 8;
+    -fx-border-radius: 8;
+    -fx-background-color: grey; /* Fallback color while map loads */
+}
+.map-card .web-view {
+    -fx-background-radius: 8;
+}
+
+
+.map-footer {
+    -fx-background-color: #111827;
+    /* Footer no longer needs rounding, as it's part of the card */
+    -fx-background-radius: 0; 
+    -fx-padding: 12px;
+}
+
+.map-footer-label {
+    -fx-font-size: 14px;
+    -fx-font-weight: bold;
+    -fx-text-fill: white;
+}

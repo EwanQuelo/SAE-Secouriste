@@ -11,6 +11,7 @@ TODO:
 - Ajoute les vrai champs pour secouriste modification compte : ajouter email et tt
 - Support des minutes pour le calendrier
 - Trouver pk le champ email est bugger
+- TODO compétence check prérequis
 
 Changer par rapport a la maquette :
 - Ajout d'un champ pour choisir datedenaissance lors de l'inscription

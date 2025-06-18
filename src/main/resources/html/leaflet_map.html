@@ -40,6 +40,17 @@
 
         const markers = {};
 
+        function addDefaultMarker(id, lat, lon, popupHtml) {
+            if (markers[id]) {
+                map.removeLayer(markers[id]);
+            }
+            var newMarker = L.marker([lat, lon]).addTo(map);
+            if (popupHtml) {
+                newMarker.bindPopup(popupHtml);
+            }
+            markers[id] = newMarker;
+        }
+
         function addOrUpdateMarker(id, lat, lng, popupHtml, iconHtmlOrUrl) {
             if (markers[id]) {
                 markers[id].setLatLng([lat, lng]);
