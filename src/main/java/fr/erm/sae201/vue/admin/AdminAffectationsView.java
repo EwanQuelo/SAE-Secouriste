@@ -3,7 +3,9 @@ package fr.erm.sae201.vue.admin;
 import fr.erm.sae201.controleur.admin.AdminAffectationsController;
 import fr.erm.sae201.metier.persistence.CompteUtilisateur;
 import fr.erm.sae201.metier.persistence.DPS;
-import fr.erm.sae201.metier.service.ServiceAffectationExhaustive.AffectationResultat;
+// --- CORRECTION DES IMPORTS ---
+import fr.erm.sae201.metier.service.ModelesAlgorithme.AffectationResultat;
+import fr.erm.sae201.metier.service.ModelesAlgorithme.Poste; // <-- IMPORT MANQUANT
 import fr.erm.sae201.vue.MainApp;
 import fr.erm.sae201.vue.base.BaseView;
 import javafx.beans.value.ChangeListener;
@@ -22,7 +24,7 @@ public class AdminAffectationsView extends BaseView {
     private VBox rightPanel;
     private Label dpsDetailsLabel;
     private VBox propositionContainer;
-    private Button runExhaustiveButton, runGreedyButton, saveChangesButton;
+    private Button runExhaustiveButton, runGloutonButton, saveChangesButton;
     private ProgressIndicator loadingIndicator;
 
     public AdminAffectationsView(MainApp navigator, CompteUtilisateur compte) {
@@ -39,9 +41,6 @@ public class AdminAffectationsView extends BaseView {
         leftPanel.setPadding(new Insets(10));
         leftPanel.getChildren().add(new Label("Choisir un dispositif :"));
         dpsListView = new ListView<>();
-
-        // --- DÉBUT DE LA MODIFICATION ---
-        // Remplacement de l'opérateur ternaire par un if-else
         dpsListView.setCellFactory(param -> new ListCell<>() {
             @Override
             protected void updateItem(DPS item, boolean empty) {
@@ -49,12 +48,10 @@ public class AdminAffectationsView extends BaseView {
                 if (empty || item == null) {
                     setText(null);
                 } else {
-                    setText(item.getSport().getNom());
+                    setText(item.getSport().getNom() + " - " + item.getJournee().getDate());
                 }
             }
         });
-        // --- FIN DE LA MODIFICATION ---
-
         leftPanel.getChildren().add(dpsListView);
 
         rightPanel = new VBox(20);
@@ -65,9 +62,12 @@ public class AdminAffectationsView extends BaseView {
         dpsDetailsLabel.getStyleClass().add("admin-subtitle");
 
         runExhaustiveButton = new Button("Approche Exhaustive");
-        runGreedyButton = new Button("Approche Gloutonne");
-        runGreedyButton.setDisable(true);
-        HBox algoButtons = new HBox(20, runExhaustiveButton, runGreedyButton);
+        runExhaustiveButton.getStyleClass().add("algo-button"); // Ajout d'une classe commune
+
+        runGloutonButton = new Button("Approche Gloutonne");
+        runGloutonButton.getStyleClass().addAll("algo-button", "glouton-button"); // Classe commune + classe spécifique
+
+        HBox algoButtons = new HBox(20, runExhaustiveButton, runGloutonButton);
         algoButtons.setAlignment(Pos.CENTER);
 
         propositionContainer = new VBox(5);
@@ -94,6 +94,8 @@ public class AdminAffectationsView extends BaseView {
 
         return splitPane;
     }
+
+    // --- Méthodes pour le Contrôleur ---
 
     public void populateDpsList(List<DPS> dpsList) {
         dpsListView.getItems().setAll(dpsList);
@@ -127,6 +129,12 @@ public class AdminAffectationsView extends BaseView {
         }
     }
 
+    public void setRightPanelDisabled(boolean disabled) {
+        if (rightPanel != null) {
+            rightPanel.setDisable(disabled);
+        }
+    }
+
     public void showLoading(boolean isLoading) {
         loadingIndicator.setVisible(isLoading);
         rightPanel.setDisable(isLoading);
@@ -134,7 +142,7 @@ public class AdminAffectationsView extends BaseView {
 
     public void setAlgoButtonsDisabled(boolean disabled) {
         runExhaustiveButton.setDisable(disabled);
-        runGreedyButton.setDisable(disabled || true);
+        runGloutonButton.setDisable(disabled);
     }
 
     public void setRunExhaustiveAction(EventHandler<ActionEvent> handler) {
@@ -142,7 +150,7 @@ public class AdminAffectationsView extends BaseView {
     }
 
     public void setRunGreedyAction(EventHandler<ActionEvent> handler) {
-        runGreedyButton.setOnAction(handler);
+        runGloutonButton.setOnAction(handler);
     }
 
     public void setSaveChangesAction(EventHandler<ActionEvent> handler) {

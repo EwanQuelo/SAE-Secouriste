@@ -1,46 +1,50 @@
 package fr.erm.sae201.controleur.admin;
 
-import fr.erm.sae201.dao.AffectationDAO;
 import fr.erm.sae201.dao.DPSDAO;
+import fr.erm.sae201.dao.AffectationDAO;
 import fr.erm.sae201.metier.persistence.Affectation;
 import fr.erm.sae201.metier.persistence.DPS;
+import fr.erm.sae201.metier.service.ModelesAlgorithme.AffectationResultat; // Import du record partagé
 import fr.erm.sae201.metier.service.ServiceAffectationExhaustive;
-import fr.erm.sae201.metier.service.ServiceAffectationExhaustive.AffectationResultat;
+import fr.erm.sae201.metier.service.ServiceAffectationGloutonne;
 import fr.erm.sae201.utils.NotificationUtils;
 import fr.erm.sae201.vue.MainApp;
 import fr.erm.sae201.vue.admin.AdminAffectationsView;
 import javafx.application.Platform;
-import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.concurrent.Task;
+
 import java.util.List;
+import java.util.function.Function;
 import java.util.stream.Collectors;
 
 public class AdminAffectationsController {
 
     private final AdminAffectationsView view;
-    private final MainApp navigator; // CORRIGÉ : Ajout de la déclaration
+    private final MainApp navigator;
     private final DPSDAO dpsDAO;
-    private final AffectationDAO affectationDAO; // CORRIGÉ : Ajout de la déclaration
+    private final AffectationDAO affectationDAO;
     private final ServiceAffectationExhaustive serviceExhaustif;
+    private final ServiceAffectationGloutonne serviceGlouton;
 
     private DPS dpsSelectionne;
     private List<AffectationResultat> propositionActuelle;
 
     public AdminAffectationsController(AdminAffectationsView view, MainApp navigator) {
         this.view = view;
-        this.navigator = navigator; // CORRIGÉ : Initialisation
+        this.navigator = navigator;
         this.dpsDAO = new DPSDAO();
-        this.affectationDAO = new AffectationDAO(); // CORRIGÉ : Initialisation
+        this.affectationDAO = new AffectationDAO();
         this.serviceExhaustif = new ServiceAffectationExhaustive();
+        this.serviceGlouton = new ServiceAffectationGloutonne();
 
-        // Utilisation de la syntaxe lambda correcte pour le ChangeListener
+        // Lier les actions de l'interface aux méthodes du contrôleur
         view.setOnDpsSelected((observable, oldValue, newValue) -> handleDpsSelection(newValue));
+        view.setRunExhaustiveAction(event -> runAlgorithm(serviceExhaustif::trouverMeilleureAffectationPourDPS, "Approche exhaustive"));
+        view.setRunGreedyAction(event -> runAlgorithm(serviceGlouton::trouverAffectationPourDPS, "Approche gloutonne"));
+        view.setSaveChangesAction(event -> saveChanges());
         
-        view.setRunExhaustiveAction(e -> runExhaustiveAlgorithm());
-        // view.setRunGreedyAction(e -> runGreedyAlgorithm()); // Pour plus tard
-        view.setSaveChangesAction(e -> saveChanges());
-        
+        // Charger les données initiales (la liste des DPS)
         loadInitialData();
     }
 
@@ -51,17 +55,22 @@ public class AdminAffectationsController {
     
     private void handleDpsSelection(DPS dps) {
         if (dps == null) {
-            view.setAlgoButtonsDisabled(true);
+            view.setRightPanelDisabled(true);
             return;
         }
         this.dpsSelectionne = dps;
         this.propositionActuelle = null;
         view.displayDpsDetails(dps);
         view.clearProposition();
-        view.setAlgoButtonsDisabled(false);
+        view.setRightPanelDisabled(false);
     }
 
-    private void runExhaustiveAlgorithm() {
+    /**
+     * Méthode générique pour lancer un algorithme d'affectation.
+     * @param algorithmFunction La fonction de l'algorithme à exécuter (ex: serviceExhaustif::methode).
+     * @param algorithmName Le nom de l'algorithme pour les messages.
+     */
+    private void runAlgorithm(Function<DPS, List<AffectationResultat>> algorithmFunction, String algorithmName) {
         if (dpsSelectionne == null) {
             NotificationUtils.showError("Aucun DPS", "Veuillez d'abord sélectionner un dispositif.");
             return;
@@ -70,9 +79,16 @@ public class AdminAffectationsController {
         
         Task<List<AffectationResultat>> task = new Task<>() {
             @Override
-            protected List<AffectationResultat> call() throws Exception {
-                // On appelle la méthode du service qui prend un DPS en paramètre
-                return serviceExhaustif.trouverMeilleureAffectationPourDPS(dpsSelectionne);
+            protected List<AffectationResultat> call() {
+                System.out.println("Lancement de l'algorithme : " + algorithmName);
+                long startTime = System.currentTimeMillis();
+                
+                // Appelle la fonction de l'algorithme passée en paramètre
+                List<AffectationResultat> result = algorithmFunction.apply(dpsSelectionne);
+                
+                long endTime = System.currentTimeMillis();
+                System.out.println("Fin de l'algorithme : " + algorithmName + ". Temps : " + (endTime - startTime) + " ms.");
+                return result;
             }
         };
 
@@ -92,7 +108,7 @@ public class AdminAffectationsController {
         
         new Thread(task).start();
     }
-    
+
     private void saveChanges() {
         if (propositionActuelle == null || dpsSelectionne == null) {
             NotificationUtils.showError("Rien à enregistrer", "Veuillez d'abord générer une proposition pour un DPS.");
@@ -100,13 +116,10 @@ public class AdminAffectationsController {
         }
 
         if (propositionActuelle.isEmpty()) {
-            // CORRIGÉ : Utilisation de showError ou showSuccess, pas showInfo
             NotificationUtils.showSuccess("Aucune affectation", "La proposition était vide, rien n'a été enregistré.");
             return;
         }
     
-        System.out.println("Enregistrement de " + propositionActuelle.size() + " affectations pour le DPS " + dpsSelectionne.getId());
-        
         List<Affectation> affectationsAEnregistrer = propositionActuelle.stream()
             .map(res -> new Affectation(dpsSelectionne, res.secouriste(), res.poste().competenceRequise()))
             .collect(Collectors.toList());

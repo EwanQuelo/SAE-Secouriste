@@ -1622,3 +1622,36 @@ Styles pour les Vues Administrateur
 .day-header-label.today-header-label {
     -fx-text-fill: #1976D2;
 }
+
+/*
+Partie graphes
+*/
+
+.algo-button {
+    -fx-background-color: #5A5A5A; /* Fond gris foncé neutre */
+    -fx-text-fill: white;
+    -fx-font-weight: bold;
+    -fx-font-size: 14px;
+    -fx-padding: 10px 20px;
+    -fx-background-radius: 8px;
+    -fx-cursor: hand;
+}
+
+.algo-button:hover {
+    -fx-background-color: #6E6E6E; /* Un peu plus clair au survol */
+}
+
+/* Style spécifique pour le bouton Glouton pour le différencier */
+.glouton-button {
+    -fx-background-color: #007AFF; /* Bleu pour le distinguer */
+}
+.glouton-button:hover {
+    -fx-background-color: #0056b3;
+}
+
+/* Style pour les boutons quand ils sont désactivés */
+.algo-button:disabled {
+    -fx-background-color: #404249;
+    -fx-text-fill: #80848E;
+    -fx-opacity: 0.7;
+}

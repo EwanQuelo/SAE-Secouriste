@@ -336,6 +336,26 @@ public class AffectationDAO extends DAO<Affectation> {
         }
     }
 
+    public List<Affectation> findAllByDate(LocalDate date) {
+    List<Affectation> affectations = new ArrayList<>();
+    String sql = "SELECT a.idDPS, a.idSecouriste, a.intituleCompetence " +
+                 "FROM Affectation a JOIN DPS d ON a.idDPS = d.id " +
+                 "WHERE d.jour = ?";
+    try (Connection conn = getConnection();
+         PreparedStatement pstmt = conn.prepareStatement(sql)) {
+        pstmt.setDate(1, java.sql.Date.valueOf(date));
+        try (ResultSet rs = pstmt.executeQuery()) {
+            while (rs.next()) {
+                // Cette méthode vient de votre DAO, elle est déjà correcte
+                mapResultSetToAffectation(rs).ifPresent(affectations::add);
+            }
+        }
+    } catch (SQLException e) {
+        e.printStackTrace();
+    }
+    return affectations;
+}
+
     @Override
     public Affectation findByID(Long id) {
         throw new UnsupportedOperationException("Affectation has a composite PK. Use findByCompositeKey().");
