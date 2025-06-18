@@ -232,7 +232,7 @@
     -fx-background-radius: 8px;
     -fx-text-alignment: center;
     -fx-line-spacing: 2px;
-    -fx-padding: 8px 12px;
+    -fx-padding: 2px 12px;
     -fx-pref-width: 150px;
     -fx-min-height: 50px;
 }

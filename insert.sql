@@ -39,12 +39,10 @@ INSERT INTO Journee (jour) VALUES ('2025-06-16'), ('2025-06-17'), ('2025-06-18')
 
 -- 2.2 Secouristes et Comptes Utilisateurs (4 existants + 16 nouveaux)
 INSERT INTO Secouriste (nom, prenom, dateNaissance, email, tel, adresse) VALUES
--- 4 premiers secouristes
 ('Jean', 'Patrick', '1995-05-20', 'test@mail.com', '0612345678', '1 Rue de la Montagne, 73000 Chambéry'),
 ('Martin', 'Marie', '1998-11-12', 'marie.martin@secours.fr', '0687654321', '15 Avenue des Alpes, 38000 Grenoble'),
 ('Petit', 'Luc', '2001-02-28', 'luc.petit@secours.fr', '0611223344', '8 Boulevard de la Neige, 74000 Annecy'),
 ('Durand', 'Sophie', '1992-07-15', 'sophie.durand@secours.fr', '0655667788', '22 Place du Forum, 73200 Albertville'),
--- 16 nouveaux secouristes
 ('Bernard', 'Thomas', '1999-08-10', 'thomas.bernard@secours.fr', '0601020304', '5 Rue des Ecrins, 38000 Grenoble'),
 ('Dubois', 'Camille', '2000-01-15', 'camille.dubois@secours.fr', '0601020305', '12 Avenue du Mont Blanc, 74000 Annecy'),
 ('Moreau', 'Léa', '1997-06-25', 'lea.moreau@secours.fr', '0601020306', '3 Place de la Mairie, 73000 Chambéry'),
