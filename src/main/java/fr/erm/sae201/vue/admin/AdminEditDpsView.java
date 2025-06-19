@@ -174,19 +174,7 @@ public class AdminEditDpsView extends BaseView {
     }
 
     public CompteUtilisateur getCompte() { return this.compte; }
-    public void setDateFieldsEditable(boolean editable) {
-        datePicker.setDisable(!editable);
-        startHourField.setDisable(!editable);
-        startMinuteField.setDisable(!editable);
-        endHourField.setDisable(!editable);
-        endMinuteField.setDisable(!editable);
 
-        if (!editable) {
-            datePicker.setStyle("-fx-opacity: 0.7;");
-            startHourField.getParent().setStyle("-fx-opacity: 0.7;");
-            endHourField.getParent().setStyle("-fx-opacity: 0.7;");
-        }
-    }
     public Optional<Site> showCreateSiteDialog() {
         Dialog<Site> dialog = new Dialog<>();
         dialog.setTitle("Créer un nouveau Site");

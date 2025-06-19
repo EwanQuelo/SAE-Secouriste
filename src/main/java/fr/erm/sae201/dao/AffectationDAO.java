@@ -17,7 +17,7 @@ import java.time.LocalDate;
  * deleting affectations.
  *
  * @author Ewan QUELO, Raphael MILLE, Matheo BIET
- * @version 1.1
+ * @version 1.2
  */
 public class AffectationDAO extends DAO<Affectation> {
 
@@ -356,6 +356,23 @@ public class AffectationDAO extends DAO<Affectation> {
     }
     return affectations;
 }
+    
+    /**
+     * NOUVEAU: Supprime toutes les affectations pour un ID de DPS donné.
+     * @param dpsId L'ID du DPS.
+     * @return Le nombre de lignes affectées, ou -1 en cas d'erreur.
+     */
+    public int deleteAllAffectationsForDps(long dpsId) {
+        String sql = "DELETE FROM Affectation WHERE idDPS = ?";
+        try (Connection conn = getConnection();
+             PreparedStatement pstmt = conn.prepareStatement(sql)) {
+            pstmt.setLong(1, dpsId);
+            return pstmt.executeUpdate();
+        } catch (SQLException e) {
+            System.err.println("Error deleting all affectations for DPS ID " + dpsId + ": " + e.getMessage());
+            return -1;
+        }
+    }
 
     @Override
     public Affectation findByID(Long id) {

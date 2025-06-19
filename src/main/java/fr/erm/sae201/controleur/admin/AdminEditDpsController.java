@@ -11,9 +11,14 @@ import fr.erm.sae201.utils.NotificationUtils;
 import fr.erm.sae201.vue.MainApp;
 import fr.erm.sae201.vue.admin.AdminEditDpsView;
 import javafx.application.Platform;
+import javafx.scene.control.Alert;
+import javafx.scene.control.ButtonType;
+import javafx.scene.layout.Region;
+
 import java.sql.SQLException;
 import java.time.LocalDate;
-import java.util.Collections; // NOUVEL IMPORT
+import java.util.Arrays;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -51,36 +56,28 @@ public class AdminEditDpsController {
         if (dpsToEdit != null) {
             view.setFormTitle("Modifier le Dispositif");
             view.setDpsData(dpsToEdit);
-            view.setDateFieldsEditable(false);
         } else {
             view.setFormTitle("Créer un nouveau Dispositif");
-            view.setDateFieldsEditable(true);
         }
     }
 
-    // MODIFIÉ pour corriger l'erreur "effectively final"
     private void loadInitialData() {
         new Thread(() -> {
             List<Site> sites = siteDAO.findAll();
             List<Sport> sports = sportDAO.findAll();
             List<Competence> allCompetences = competenceDAO.findAll();
 
-            // CORRIGÉ : On utilise une variable qui sera "effectively final".
-            // Elle est déclarée ici et assignée une seule fois, soit dans le if, soit dans le else.
             final Map<Competence, Integer> requirementsToLoad;
             
             if (dpsToEdit != null) {
-                // Le service getDps doit retourner un objet entièrement hydraté.
                 requirementsToLoad = dpsMngt.getDps(dpsToEdit.getId()).getCompetencesRequises();
             } else {
-                // Pour une création, la map est vide.
                 requirementsToLoad = Collections.emptyMap();
             }
 
             Platform.runLater(() -> {
                 view.populateSiteComboBox(sites);
                 view.populateSportComboBox(sports);
-                // On passe la variable final ou effectively final à la vue.
                 view.populateRequirements(allCompetences, requirementsToLoad);
             });
         }).start();
@@ -102,23 +99,47 @@ public class AdminEditDpsController {
             int endHour = Integer.parseInt(view.getEndHour());
             int endMinute = view.getEndMinute().isEmpty() ? 0 : Integer.parseInt(view.getEndMinute());
             
-            int[] horaireDepart = { startHour, startMinute };
-            int[] horaireFin = { endHour, endMinute };
-            
             Map<Competence, Integer> requirements = view.getCompetenceRequirements();
 
             if (dpsToEdit != null) { // Mode mise à jour
+                int[] newHoraireDepart = { startHour, startMinute };
+                int[] newHoraireFin = { endHour, endMinute };
+                boolean dateChanged = !dpsToEdit.getJournee().getDate().equals(date);
+                boolean startTimeChanged = !Arrays.equals(dpsToEdit.getHoraireDepart(), newHoraireDepart);
+                boolean endTimeChanged = !Arrays.equals(dpsToEdit.getHoraireFin(), newHoraireFin);
+
+                if (dateChanged || startTimeChanged || endTimeChanged) {
+                    Alert confirmation = new Alert(Alert.AlertType.CONFIRMATION);
+                    confirmation.setTitle("Confirmation de Modification");
+                    confirmation.setHeaderText("Les informations critiques du DPS ont changé.");
+                    confirmation.setContentText("Modifier la date ou les horaires entraînera la suppression de toutes les affectations actuelles pour ce dispositif.\n\nVoulez-vous continuer ?");
+                    confirmation.getDialogPane().setMinHeight(Region.USE_PREF_SIZE);
+
+                    Optional<ButtonType> result = confirmation.showAndWait();
+                    if (result.isPresent() && result.get() == ButtonType.OK) {
+                        dpsMngt.deleteAllAffectationsForDps(dpsToEdit.getId());
+                    } else {
+                        return; // L'utilisateur a annulé, on arrête la sauvegarde.
+                    }
+                }
+
                 dpsToEdit.setSite(site);
                 dpsToEdit.setSport(sport);
+                dpsToEdit.setJournee(new Journee(date));
+                dpsToEdit.setHoraireDepart(newHoraireDepart);
+                dpsToEdit.setHoraireFin(newHoraireFin);
                 
                 if (dpsMngt.updateDps(dpsToEdit)) {
                     updateDpsRequirements(dpsToEdit.getId(), requirements);
-                    NotificationUtils.showSuccess("Succès", "Dispositif mis à jour.");
+                    NotificationUtils.showSuccess("Succès", "Dispositif mis à jour et affectations réinitialisées si nécessaire.");
                     navigator.showAdminDispositifView(view.getCompte());
                 } else {
                     NotificationUtils.showError("Erreur", "La mise à jour a échoué.");
                 }
+
             } else { // Mode création
+                int[] horaireDepart = { startHour, startMinute };
+                int[] horaireFin = { endHour, endMinute };
                 DPS newDps = new DPS(0, horaireDepart, horaireFin, site, new Journee(date), sport);
                 
                 long newDpsId = dpsMngt.createDps(newDps);

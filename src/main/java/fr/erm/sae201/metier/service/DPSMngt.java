@@ -2,6 +2,7 @@
 
 package fr.erm.sae201.metier.service;
 
+import fr.erm.sae201.dao.AffectationDAO;
 import fr.erm.sae201.dao.DPSDAO;
 import fr.erm.sae201.dao.JourneeDAO;
 import fr.erm.sae201.exception.EntityNotFoundException;
@@ -19,6 +20,7 @@ public class DPSMngt {
 
     private final DPSDAO dpsDAO = new DPSDAO();
     private final JourneeDAO journeeDAO = new JourneeDAO();
+    private final AffectationDAO affectationDAO = new AffectationDAO(); // NOUVELLE DÉPENDANCE
 
     /**
      * MODIFIÉ : Récupère un DPS par son ID et l'hydrate avec ses compétences requises.
@@ -100,4 +102,12 @@ public class DPSMngt {
         return dpsDAO.removeRequiredCompetence(dpsId, intituleCompetence) > 0;
     }
 
+    /**
+     * NOUVEAU: Supprime toutes les affectations liées à un DPS.
+     * @param dpsId L'ID du DPS.
+     * @return true si la suppression a réussi (même si 0 ligne supprimée).
+     */
+    public boolean deleteAllAffectationsForDps(long dpsId) {
+        return affectationDAO.deleteAllAffectationsForDps(dpsId) >= 0;
+    }
 }

@@ -15,7 +15,7 @@ public class NotificationUtils {
         Notifications.create()
                 .title(title)
                 .text(message)
-                .position(Pos.TOP_LEFT)
+                .position(Pos.BOTTOM_LEFT)
                 .hideAfter(Duration.seconds(4))
                 .showInformation(); // Utilise le style d'information (.info)
     }
@@ -29,7 +29,7 @@ public class NotificationUtils {
         Notifications.create()
                 .title(title)
                 .text(message)
-                .position(Pos.TOP_LEFT)
+                .position(Pos.BOTTOM_LEFT)
                 .hideAfter(Duration.seconds(4))
                 .showWarning();
     }
@@ -43,7 +43,7 @@ public class NotificationUtils {
         Notifications.create()
                 .title(title)
                 .text(message)
-                .position(Pos.TOP_LEFT)
+                .position(Pos.BOTTOM_LEFT)
                 .hideAfter(Duration.seconds(4)) // On laisse plus de temps pour lire une erreur
                 .showError();
     }
