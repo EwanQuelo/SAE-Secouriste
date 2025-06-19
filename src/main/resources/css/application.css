@@ -1792,3 +1792,54 @@ Styles pour les Vues Administrateur
 .affectations-view-container .save-button:hover {
     -fx-background-color: #388E3C;
 }
+
+/* ==========================================================================
+   ==        STYLES POUR LE CALENDRIER ADMIN "VISUALISER"                  ==
+   ========================================================================== */
+
+/* Style de base commun à tous les événements du calendrier admin */
+.admin-cal-event-box {
+    -fx-background-radius: 6px;
+    -fx-padding: 6px 8px;
+    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.3), 5, 0, 1, 1);
+    -fx-background-color: #5A5A5A; /* Gris neutre par défaut si aucun personnel requis */
+}
+
+/* Statut 1 : Incomplet (Orange) */
+.admin-cal-event-box.status-in-progress {
+    -fx-background-color: #F97316; /* Orange vibrant */
+}
+
+/* Statut 2 : Vide (Rouge) */
+.admin-cal-event-box.status-empty {
+    -fx-background-color: #EF4444; /* Rouge "danger" */
+}
+
+/* Statut 3 : Complet (Bleu, inspiré du calendrier utilisateur) */
+.admin-cal-event-box.status-complete {
+    -fx-background-color: #3b82f6; /* Bleu moderne et lisible */
+}
+
+
+/* --- Styles pour le texte A L'INTERIEUR des boîtes d'événement --- */
+/* Ces styles s'appliquent à tous les statuts pour garantir la lisibilité */
+
+.admin-cal-event-box .event-title {
+    -fx-text-fill: white;
+    -fx-font-weight: bold;
+    -fx-font-size: 13px;
+}
+
+.admin-cal-event-box .event-subtitle {
+    -fx-text-fill: #E0E0E0; /* Gris très clair pour le sous-titre */
+    -fx-font-size: 11px;
+}
+
+/* Style pour le texte "X / Y assigné(s)" */
+.admin-cal-event-box .event-info {
+    -fx-text-fill: white;
+    -fx-font-size: 11px;
+    -fx-font-weight: bold; /* On met le compteur en gras */
+    -fx-font-style: normal; /* On retire l'italique */
+    -fx-padding-top: 4px;
+}

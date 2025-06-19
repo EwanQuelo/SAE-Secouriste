@@ -1,3 +1,4 @@
+// src/main/java/fr/erm/sae201/dao/AffectationDAO.java
 package fr.erm.sae201.dao;
 
 import fr.erm.sae201.metier.persistence.*;
@@ -315,7 +316,7 @@ public class AffectationDAO extends DAO<Affectation> {
             return true;
 
         } catch (SQLException e) {
-            System.err.println("Erreur transactionnelle lors du remplacement des affectations : " + e.getMessage());
+            System.err.println("Transaction error during affectation replacement: " + e.getMessage());
             if (conn != null) {
                 try {
                     conn.rollback(); // Annule la transaction en cas d'erreur

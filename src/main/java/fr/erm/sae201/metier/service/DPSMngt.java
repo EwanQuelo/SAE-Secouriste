@@ -60,6 +60,17 @@ public class DPSMngt {
     public List<DPS> getAllDps() {
         return dpsDAO.findAll();
     }
+
+    public int getTotalPersonnelRequired(long dpsId) {
+        try {
+            DPS dps = getDps(dpsId); // Utilise la méthode hydratée
+            return dps.getCompetencesRequises().values().stream()
+                    .mapToInt(Integer::intValue)
+                    .sum();
+        } catch (EntityNotFoundException e) {
+            return 0;
+        }
+    }
     
     public long createDps(DPS newDps) throws SQLException {
         // La création d'une journée ne devrait se faire que si elle n'existe pas.
@@ -89,14 +100,4 @@ public class DPSMngt {
         return dpsDAO.removeRequiredCompetence(dpsId, intituleCompetence) > 0;
     }
 
-    public int getTotalPersonnelRequired(long dpsId) {
-        try {
-            DPS dps = getDps(dpsId); // Utilise la méthode hydratée
-            return dps.getCompetencesRequises().values().stream()
-                    .mapToInt(Integer::intValue)
-                    .sum();
-        } catch (EntityNotFoundException e) {
-            return 0;
-        }
-    }
 }

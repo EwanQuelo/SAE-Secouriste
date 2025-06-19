@@ -1,3 +1,4 @@
+// src/main/java/fr/erm/sae201/metier/service/AffectationMngt.java
 package fr.erm.sae201.metier.service;
 
 import fr.erm.sae201.dao.AffectationDAO;

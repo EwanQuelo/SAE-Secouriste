@@ -201,15 +201,12 @@ public class MainApp extends Application {
         primaryStage.setTitle("SECOURS - Créer un Nouvel Utilisateur");
     }
 
-    /**
-     * NOUVEAU: Affiche la vue du calendrier global pour l'administrateur.
-     * @param compte Le compte de l'administrateur.
-     */
-    public void showAdminCalendarView(CompteUtilisateur compte) {
-        AffectationCalendarView view = new AffectationCalendarView(this, compte);
+    public void showAdminVisualiserView(CompteUtilisateur compte) {
+        AdminVisualiserView view = new AdminVisualiserView(this, compte);
         mainScene.setRoot(view.getView());
-        primaryStage.setTitle("SECOURS - Calendrier des Affectations");
+        primaryStage.setTitle("SECOURS - Visualisation Calendrier");
     }
+
 
     public static void main(String[] args) {
         launch(args);

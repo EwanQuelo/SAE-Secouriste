@@ -1,3 +1,4 @@
+// src/main/java/fr/erm/sae201/vue/admin/AdminNavbar.java
 package fr.erm.sae201.vue.admin;
 
 import fr.erm.sae201.dao.SecouristeDAO;
@@ -47,13 +48,12 @@ public class AdminNavbar extends HBox {
 
         Button affectationsBtn = createNavButton("Affectations", "Affectations".equals(activeViewName));
         affectationsBtn.setOnAction(e -> navigator.showAdminAffectationsView(compte));
-        
-        // --- NOUVEAU BOUTON ---
-        Button calendrierAdminBtn = createNavButton("Calendrier", "Calendrier Admin".equals(activeViewName));
-        calendrierAdminBtn.setOnAction(e -> navigator.showAdminCalendarView(compte));
+
+        Button visualiserBtn = createNavButton("Visualiser", "Visualiser".equals(activeViewName));
+        visualiserBtn.setOnAction(e -> navigator.showAdminVisualiserView(compte));
         
         // Ajout du nouveau bouton à la barre de navigation
-        navLinks.getChildren().addAll(accueilBtn, dispositifBtn, utilisateursBtn, competencesBtn, affectationsBtn, calendrierAdminBtn);
+        navLinks.getChildren().addAll(accueilBtn, dispositifBtn, utilisateursBtn, competencesBtn, affectationsBtn, visualiserBtn);
         return navLinks;
     }
 
