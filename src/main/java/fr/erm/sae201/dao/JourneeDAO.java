@@ -111,7 +111,7 @@ public class JourneeDAO extends DAO<Journee> {
     }
 
     /**
-     * Non supporté. La clé primaire de Journee est une LocalDate.
+     * Non supporté car la clé primaire est une date, pas un ID.
      * Utilisez `findByDate(LocalDate)`.
      */
     @Override
@@ -120,7 +120,7 @@ public class JourneeDAO extends DAO<Journee> {
     }
 
     /**
-     * Non supporté. La mise à jour d'une clé primaire n'est pas recommandée.
+     * Non supporté car clé primaire
      * Utilisez `delete` puis `create`.
      */
     @Override

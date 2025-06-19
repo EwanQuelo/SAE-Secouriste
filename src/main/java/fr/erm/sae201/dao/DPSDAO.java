@@ -250,9 +250,6 @@ public class DPSDAO extends DAO<DPS> {
 
     /**
      * Définit ou met à jour le nombre requis pour une compétence spécifique d'un DPS.
-     * Utilise une instruction 'INSERT ... ON DUPLICATE KEY UPDATE' pour créer ou
-     * mettre à jour l'entrée dans la table 'ABesoin'.
-     *
      * @param dpsId              L'ID du DPS.
      * @param intituleCompetence L'intitulé de la compétence.
      * @param nombre             Le nombre de secouristes requis avec cette compétence.

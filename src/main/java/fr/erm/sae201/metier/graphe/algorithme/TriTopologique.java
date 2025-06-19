@@ -59,7 +59,7 @@ public class TriTopologique {
             resultat.add(courante);
 
             // Le but ici est de supprimer les compétences qui n'ont pas de degré entrant
-            // et de mettre à jour les degrés entrants des compétences dépendantes
+            // et de mettre a jour les degres entrants des compétences dépendantes
             for (Competence comp : competences) {
                 if (comp.getPrerequisites().contains(courante)) {
                     int nouveauDegre = degresEntrants.get(comp) - 1;
