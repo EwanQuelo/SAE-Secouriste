@@ -3,43 +3,53 @@ package fr.erm.sae201.metier.persistence;
 import java.util.Objects;
 
 /**
- * Represents a geographical site.
- * @author Raphael Mille, Ewan Quelo, Matheo Biet 
+ * Représente un site géographique.
+ *
+ * @author Raphael MILLE
+ * @author Ewan QUELO
+ * @author Matheo BIET
  * @version 1.0
  */
 public class Site {
+    /** Le code unique du site, servant de clé d'identification. */
     private String code;
+    /** Le nom complet du site. */
     private String nom;
+    /** La coordonnée de longitude du site. */
     private float longitude;
+    /** La coordonnée de latitude du site. */
     private float latitude;
 
     /**
-     * Constructs a new Site.
-     * @param code The unique code of the site. Must not be null or empty.
-     * @param nom The name of the site. Must not be null or empty.
-     * @param longitude The longitude of the site.
-     * @param latitude The latitude of the site.
-     * @throws IllegalArgumentException if code or nom is null or empty.
+     * Construit un nouveau Site.
+     *
+     * @param code Le code unique du site.
+     * @param nom Le nom du site.
+     * @param longitude La longitude du site.
+     * @param latitude La latitude du site.
+     * @throws IllegalArgumentException si le code ou le nom est null ou vide.
      */
     public Site(String code, String nom, float longitude, float latitude) {
         setCode(code);
         setNom(nom);
-        setLongitude(longitude); // Setters handle validation if any (not strictly needed for float here)
+        setLongitude(longitude);
         setLatitude(latitude);
     }
 
     /**
-     * Gets the code of the site.
-     * @return The site code.
+     * Retourne le code du site.
+     *
+     * @return Le code du site.
      */
     public String getCode() {
         return code;
     }
 
     /**
-     * Sets the code of the site.
-     * @param code The new code. Must not be null or empty.
-     * @throws IllegalArgumentException if code is null or empty.
+     * Définit le code du site.
+     *
+     * @param code Le nouveau code. Ne doit pas être null ou vide.
+     * @throws IllegalArgumentException si le code est null ou vide.
      */
     public void setCode(String code) {
         if (code == null || code.trim().isEmpty()) {
@@ -49,17 +59,19 @@ public class Site {
     }
 
     /**
-     * Gets the name of the site.
-     * @return The site name.
+     * Retourne le nom du site.
+     *
+     * @return Le nom du site.
      */
     public String getNom() {
         return nom;
     }
 
     /**
-     * Sets the name of the site.
-     * @param nom The new name. Must not be null or empty.
-     * @throws IllegalArgumentException if nom is null or empty.
+     * Définit le nom du site.
+     *
+     * @param nom Le nouveau nom. Ne doit pas être null ou vide.
+     * @throws IllegalArgumentException si le nom est null ou vide.
      */
     public void setNom(String nom) {
         if (nom == null || nom.trim().isEmpty()) {
@@ -69,37 +81,48 @@ public class Site {
     }
 
     /**
-     * Gets the longitude of the site.
-     * @return The site longitude.
+     * Retourne la longitude du site.
+     *
+     * @return La longitude.
      */
     public float getLongitude() {
         return longitude;
     }
 
     /**
-     * Sets the longitude of the site.
-     * @param longitude The new longitude.
+     * Définit la longitude du site.
+     *
+     * @param longitude La nouvelle longitude.
      */
     public void setLongitude(float longitude) {
         this.longitude = longitude;
     }
 
     /**
-     * Gets the latitude of the site.
-     * @return The site latitude.
+     * Retourne la latitude du site.
+     *
+     * @return La latitude.
      */
     public float getLatitude() {
         return latitude;
     }
 
     /**
-     * Sets the latitude of the site.
-     * @param latitude The new latitude.
+     * Définit la latitude du site.
+     *
+     * @param latitude La nouvelle latitude.
      */
     public void setLatitude(float latitude) {
         this.latitude = latitude;
     }
 
+    /**
+     * Compare ce site à un autre objet.
+     * Deux sites sont considérés comme égaux si leurs codes sont identiques.
+     *
+     * @param o L'objet à comparer.
+     * @return `true` si les objets sont égaux, `false` sinon.
+     */
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
@@ -108,11 +131,21 @@ public class Site {
         return Objects.equals(code, site.code);
     }
 
+    /**
+     * Génère un code de hachage pour le site, basé sur son code.
+     *
+     * @return Un entier représentant le code de hachage.
+     */
     @Override
     public int hashCode() {
         return Objects.hash(code);
     }
 
+    /**
+     * Retourne une représentation textuelle du site.
+     *
+     * @return Une chaîne de caractères décrivant le site.
+     */
     @Override
     public String toString() {
         return "Site{" +

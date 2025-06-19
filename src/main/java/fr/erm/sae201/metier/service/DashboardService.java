@@ -11,13 +11,27 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
+/**
+ * Service fournissant des données agrégées pour le tableau de bord de l'administrateur.
+ * <p>
+ * Cette classe contient la logique pour calculer des statistiques, comme la
+ * répartition des compétences ou des tranches d'âge parmi les secouristes.
+ * </p>
+ *
+ * @author Ewan QUELO
+ * @author Raphael MILLE
+ * @author Matheo BIET
+ * @version 1.0
+ */
 public class DashboardService {
 
     private final SecouristeMngt secouristeMngt = new SecouristeMngt();
 
     /**
      * Calcule la répartition des compétences parmi tous les secouristes.
-     * @return Une Map avec l'intitulé de la compétence et le nombre de fois où elle est possédée.
+     *
+     * @return Une Map associant chaque intitulé de compétence au nombre de
+     *         secouristes la possédant.
      */
     public Map<String, Integer> getSkillDistribution() {
         List<Secouriste> secouristes = secouristeMngt.getAllSecouristes();
@@ -32,7 +46,10 @@ public class DashboardService {
 
     /**
      * Calcule la répartition des secouristes par tranche d'âge.
-     * @return Une Map avec la tranche d'âge et le nombre de secouristes correspondants.
+     * L'ordre des tranches d'âge est préservé grâce à l'utilisation d'une LinkedHashMap.
+     *
+     * @return Une Map associant chaque tranche d'âge au nombre de secouristes
+     *         correspondants.
      */
     public Map<String, Integer> getAgeDistribution() {
         List<Secouriste> secouristes = secouristeMngt.getAllSecouristes();

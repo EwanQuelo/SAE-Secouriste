@@ -24,7 +24,12 @@ import java.util.List;
 import java.util.Random;
 
 /**
- * Service class for handling authentication-related logic.
+ * Service gérant la logique métier liée à l'authentification.
+ *
+ * @author Ewan QUELO
+ * @author Raphael MILLE
+ * @author Matheo BIET
+ * @version 1.0
  */
 public class AuthService {
 
@@ -33,47 +38,65 @@ public class AuthService {
     private final CompetenceDAO competenceDAO = new CompetenceDAO();
 
     /**
-     * Attempts to log in a user with the given credentials.
+     * Tente de connecter un utilisateur avec ses identifiants.
      *
-     * @param login    The user's email.
-     * @param password The user's plain text password.
-     * @return The {@link CompteUtilisateur} if login is successful.
-     * @throws EntityNotFoundException if the user does not exist.
-     * @throws AuthenticationException if the password is incorrect.
+     * @param login    L'email de l'utilisateur.
+     * @param password Le mot de passe en clair de l'utilisateur.
+     * @return Le CompteUtilisateur si la connexion réussit.
+     * @throws EntityNotFoundException si l'utilisateur n'existe pas.
+     * @throws AuthenticationException si le mot de passe est incorrect.
      */
     public CompteUtilisateur login(String login, String password) {
-        // La méthode findByLogin lève EntityNotFoundException si l'utilisateur n'est pas trouvé.
-        // Cette exception va "remonter" jusqu'au contrôleur.
+        // La méthode findByLogin lève une EntityNotFoundException si l'utilisateur est introuvable.
+        // Cette exception remontera jusqu'au contrôleur qui pourra l'interpréter.
         CompteUtilisateur compte = compteDAO.findByLogin(login);
 
-        // Si l'utilisateur est trouvé, on vérifie le mot de passe.
         if (BCrypt.checkpw(password, compte.getMotDePasseHash())) {
             return compte;
         } else {
-            // Si le mot de passe est incorrect, on lève une exception spécifique.
+            // Le mot de passe est incorrect, on lève une exception spécifique.
             throw new AuthenticationException("Le mot de passe est incorrect.");
         }
     }
 
-    // Ancienne méthode registerSecouriste (ne change pas, utilisée par l'inscription publique)
+    /**
+     * Inscrit un nouveau secouriste sans compétences initiales.
+     *
+     * @param firstName   Le prénom.
+     * @param lastName    Le nom de famille.
+     * @param email       L'email, qui servira de login.
+     * @param password    Le mot de passe en clair.
+     * @param dateOfBirth La date de naissance.
+     * @return `true` si l'inscription a réussi.
+     * @throws Exception si l'email est déjà utilisé ou en cas d'erreur critique.
+     */
     public boolean registerSecouriste(String firstName, String lastName, String email, String password, Date dateOfBirth) throws Exception {
         return registerSecouriste(firstName, lastName, email, password, dateOfBirth, null);
     }
 
+    /**
+     * Inscrit un nouveau secouriste avec une liste optionnelle de compétences.
+     *
+     * @param firstName   Le prénom.
+     * @param lastName    Le nom de famille.
+     * @param email       L'email, qui servira de login.
+     * @param password    Le mot de passe en clair.
+     * @param dateOfBirth La date de naissance.
+     * @param competences La liste des compétences initiales (peut être null).
+     * @return `true` si l'inscription a réussi.
+     * @throws Exception si l'email est déjà utilisé ou en cas d'erreur critique.
+     */
     public boolean registerSecouriste(String firstName, String lastName, String email, String password, Date dateOfBirth, List<Competence> competences) throws Exception {
-        // Cette vérification est correcte, mais on pourrait la rendre plus spécifique.
         try {
             compteDAO.findByLogin(email);
-            // Si on arrive ici, le compte existe déjà.
+            // Si on arrive ici sans exception, c'est que le compte existe déjà.
             throw new Exception("Cet email est déjà utilisé par un autre compte.");
         } catch (EntityNotFoundException e) {
-            // C'est le comportement attendu, on peut continuer.
+            // C'est le comportement attendu pour une nouvelle inscription, on peut continuer.
         }
 
         Secouriste nouveauSecouriste = new Secouriste(lastName, firstName, dateOfBirth, email, "", "");
-        
         long secouristeId = secouristeDAO.create(nouveauSecouriste);
-        
         if (secouristeId == -1L) {
             throw new Exception("Erreur critique lors de la création du profil secouriste.");
         }
@@ -91,21 +114,26 @@ public class AuthService {
         return result > 0;
     }
 
+    /**
+     * Récupère la liste de toutes les compétences disponibles dans le système.
+     *
+     * @return Une liste d'objets Competence.
+     */
     public List<Competence> getAllCompetences() {
         return competenceDAO.findAll();
     }
 
-
     /**
-     * Generates a reset code, sends it via email using Mailjet, and returns it.
+     * Génère un code de réinitialisation, l'envoie par email via Mailjet et le retourne.
      *
-     * @param recipientEmail The recipient's email address.
-     * @return The generated code on success, or {@code null} on failure.
-     * @throws MailjetException If an error occurs while communicating with the API.
+     * @param recipientEmail L'adresse email du destinataire.
+     * @return Le code généré en cas de succès, sinon `null`.
+     * @throws MailjetException Si une erreur survient lors de la communication avec l'API.
+     * @throws EntityNotFoundException Si l'email ne correspond à aucun compte.
      */
     public String sendResetCode(String recipientEmail) throws MailjetException {
-        // On vérifie que le compte existe avant d'envoyer un email
-        compteDAO.findByLogin(recipientEmail); // Lèvera une EntityNotFoundException si le compte n'existe pas
+        // Vérifie que le compte existe avant d'envoyer un email, ce qui peut coûter de l'argent.
+        compteDAO.findByLogin(recipientEmail);
 
         String code = String.format("%06d", new Random().nextInt(999999));
 
@@ -113,47 +141,46 @@ public class AuthService {
                 .apiKey("8122fbfcf9aa6f8c3ad3d5230df3b5a8")
                 .apiSecretKey("a86b3cc785667ec7a2613400d6e4250e")
                 .build();
-
         MailjetClient client = new MailjetClient(options);
 
-        String htmlContent = "<h1>Password Reset</h1>"
-                           + "<p>Hello,</p>"
-                           + "<p>You have requested to reset your password. Use the code below to proceed:</p>"
+        String htmlContent = "<h1>Réinitialisation de mot de passe</h1>"
+                           + "<p>Bonjour,</p>"
+                           + "<p>Vous avez demandé à réinitialiser votre mot de passe. Utilisez le code ci-dessous pour continuer :</p>"
                            + "<h2 style='color: #1a73e8;'>" + code + "</h2>"
-                           + "<p>If you did not make this request, you can ignore this email.</p>"
-                           + "<p>The SECOURS Team</p>";
+                           + "<p>Si vous n'êtes pas à l'origine de cette demande, vous pouvez ignorer cet email.</p>"
+                           + "<p>L'équipe SECOURS</p>";
 
         MailjetRequest request = new MailjetRequest(Emailv31.resource)
             .property(Emailv31.MESSAGES, new JSONArray()
                 .put(new JSONObject()
                     .put(Emailv31.Message.FROM, new JSONObject()
                         .put("Email", "taboulakidoum@gmail.com")
-                        .put("Name", "SECOURS App"))
+                        .put("Name", "Application SECOURS"))
                     .put(Emailv31.Message.TO, new JSONArray()
                         .put(new JSONObject()
                             .put("Email", recipientEmail)
-                            .put("Name", "User")))
-                    .put(Emailv31.Message.SUBJECT, "Your password reset code")
+                            .put("Name", "Utilisateur")))
+                    .put(Emailv31.Message.SUBJECT, "Votre code de réinitialisation de mot de passe")
                     .put(Emailv31.Message.HTMLPART, htmlContent)
             ));
 
         MailjetResponse response = client.post(request);
 
         if (response.getStatus() == 200) {
-            System.out.println("Email sent successfully via Mailjet. Response: " + response.getData());
+            System.out.println("Email envoyé avec succès via Mailjet. Réponse : " + response.getData());
             return code;
         } else {
-            System.err.println("Failed to send email via Mailjet. Status: " + response.getStatus() + ", Response: " + response.getData());
+            System.err.println("Échec de l'envoi de l'email via Mailjet. Statut : " + response.getStatus() + ", Réponse : " + response.getData());
             return null;
         }
     }
 
     /**
-     * Resets the password for a given user.
+     * Réinitialise le mot de passe pour un utilisateur donné.
      *
-     * @param email       The user's email.
-     * @param newPassword The new password in plain text.
-     * @return {@code true} if the update was successful, {@code false} otherwise.
+     * @param email       L'email de l'utilisateur.
+     * @param newPassword Le nouveau mot de passe en clair.
+     * @return `true` si la mise à jour a réussi, `false` sinon.
      */
     public boolean resetPassword(String email, String newPassword) {
         String newPasswordHash = BCrypt.hashpw(newPassword, BCrypt.gensalt());

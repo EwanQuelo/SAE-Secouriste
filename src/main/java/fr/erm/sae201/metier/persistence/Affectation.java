@@ -3,21 +3,35 @@ package fr.erm.sae201.metier.persistence;
 import java.util.Objects;
 
 /**
- * Represents the assignment of a Secouriste to a specific DPS for a specific Competence.
- * This corresponds to the 'Affectation' join table.
+ * Représente l'affectation d'un secouriste à un DPS pour une compétence spécifique.
+ * <p>
+ * Cette classe correspond à un enregistrement de la table de jointure 'Affectation',
+ * liant un DPS, un Secouriste et une Compétence.
+ * </p>
+ *
+ * @author Ewan QUELO
+ * @author Raphael MILLE
+ * @author Matheo BIET
+ * @version 1.0
  */
 public class Affectation {
 
+    /** Le Dispositif Prévisionnel de Secours (DPS) de l'affectation. */
     private DPS dps;
+
+    /** Le secouriste affecté. */
     private Secouriste secouriste;
+
+    /** La compétence que le secouriste utilise pour ce poste. */
     private Competence competence;
 
     /**
-     * Constructs a new Affectation.
+     * Construit une nouvelle affectation.
      *
-     * @param dps        The DPS the assignment is for. Must not be null.
-     * @param secouriste The Secouriste being assigned. Must not be null.
-     * @param competence The specific Competence the Secouriste is fulfilling for this DPS. Must not be null.
+     * @param dps        Le DPS pour lequel l'affectation est faite. Ne peut pas être null.
+     * @param secouriste Le secouriste qui est affecté. Ne peut pas être null.
+     * @param competence La compétence spécifique que le secouriste remplit. Ne peut pas être null.
+     * @throws IllegalArgumentException si l'un des paramètres est null.
      */
     public Affectation(DPS dps, Secouriste secouriste, Competence competence) {
         if (dps == null || secouriste == null || competence == null) {
@@ -28,21 +42,41 @@ public class Affectation {
         this.competence = competence;
     }
 
-    // Getters
+    /**
+     * Retourne le DPS de l'affectation.
+     *
+     * @return Le DPS de l'affectation.
+     */
     public DPS getDps() {
         return dps;
     }
 
+    /**
+     * Retourne le secouriste de l'affectation.
+     *
+     * @return Le secouriste de l'affectation.
+     */
     public Secouriste getSecouriste() {
         return secouriste;
     }
 
+    /**
+     * Retourne la compétence de l'affectation.
+     *
+     * @return La compétence de l'affectation.
+     */
     public Competence getCompetence() {
         return competence;
     }
 
-    // Setters could be added if needed, but entity is often treated as immutable once created.
-
+    /**
+     * Compare cette affectation à un autre objet pour vérifier l'égalité.
+     * Deux affectations sont égales si leur DPS, leur secouriste et leur
+     * compétence sont identiques.
+     *
+     * @param o L'objet à comparer avec cette affectation.
+     * @return `true` si les objets sont égaux, `false` sinon.
+     */
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
@@ -53,11 +87,22 @@ public class Affectation {
                Objects.equals(competence, that.competence);
     }
 
+    /**
+     * Génère un code de hachage pour l'affectation.
+     * Le code est basé sur les objets DPS, Secouriste et Competence.
+     *
+     * @return Un entier représentant le code de hachage.
+     */
     @Override
     public int hashCode() {
         return Objects.hash(dps, secouriste, competence);
     }
 
+    /**
+     * Retourne une représentation textuelle de l'affectation.
+     *
+     * @return Une chaîne de caractères décrivant l'affectation.
+     */
     @Override
     public String toString() {
         return "Affectation{" +

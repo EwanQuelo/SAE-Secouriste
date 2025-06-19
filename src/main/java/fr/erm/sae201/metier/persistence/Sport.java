@@ -3,20 +3,26 @@ package fr.erm.sae201.metier.persistence;
 import java.util.Objects;
 
 /**
- * Represents a type of sport.
- * @author Raphael Mille, Ewan Quelo, Matheo Biet 
+ * Représente un type de sport.
+ *
+ * @author Raphael MILLE
+ * @author Ewan QUELO
+ * @author Matheo BIET
  * @version 1.0
  */
 public class Sport {
     
+    /** Le code unique du sport, servant de clé d'identification. */
     private String code;
+    /** Le nom complet du sport. */
     private String nom;
 
     /**
-     * Constructs a new Sport.
-     * @param code The unique code of the sport. Must not be null or empty.
-     * @param nom The name of the sport. Must not be null or empty.
-     * @throws IllegalArgumentException if code or nom is null or empty.
+     * Construit un nouveau Sport.
+     *
+     * @param code Le code unique du sport.
+     * @param nom Le nom du sport.
+     * @throws IllegalArgumentException si le code ou le nom est null ou vide.
      */
     public Sport(String code, String nom) {
         setCode(code);
@@ -24,17 +30,19 @@ public class Sport {
     }
 
     /**
-     * Gets the code of the sport.
-     * @return The sport code.
+     * Retourne le code du sport.
+     *
+     * @return Le code du sport.
      */
     public String getCode() {
         return code;
     }
 
     /**
-     * Sets the code of the sport.
-     * @param code The new code. Must not be null or empty.
-     * @throws IllegalArgumentException if code is null or empty.
+     * Définit le code du sport.
+     *
+     * @param code Le nouveau code. Ne doit pas être null ou vide.
+     * @throws IllegalArgumentException si le code est null ou vide.
      */
     public void setCode(String code) {
         if (code == null || code.trim().isEmpty()) {
@@ -44,17 +52,19 @@ public class Sport {
     }
 
     /**
-     * Gets the name of the sport.
-     * @return The sport name.
+     * Retourne le nom du sport.
+     *
+     * @return Le nom du sport.
      */
     public String getNom() {
         return nom;
     }
 
     /**
-     * Sets the name of the sport.
-     * @param nom The new name. Must not be null or empty.
-     * @throws IllegalArgumentException if nom is null or empty.
+     * Définit le nom du sport.
+     *
+     * @param nom Le nouveau nom. Ne doit pas être null ou vide.
+     * @throws IllegalArgumentException si le nom est null ou vide.
      */
     public void setNom(String nom) {
         if (nom == null || nom.trim().isEmpty()) {
@@ -63,6 +73,13 @@ public class Sport {
         this.nom = nom;
     }
 
+    /**
+     * Compare ce sport à un autre objet.
+     * Deux sports sont considérés comme égaux si leurs codes sont identiques.
+     *
+     * @param o L'objet à comparer.
+     * @return `true` si les objets sont égaux, `false` sinon.
+     */
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
@@ -71,11 +88,21 @@ public class Sport {
         return Objects.equals(code, sport.code);
     }
 
+    /**
+     * Génère un code de hachage pour le sport, basé sur son code.
+     *
+     * @return Un entier représentant le code de hachage.
+     */
     @Override
     public int hashCode() {
         return Objects.hash(code);
     }
 
+    /**
+     * Retourne une représentation textuelle du sport.
+     *
+     * @return Une chaîne de caractères décrivant le sport.
+     */
     @Override
     public String toString() {
         return "Sport{" +

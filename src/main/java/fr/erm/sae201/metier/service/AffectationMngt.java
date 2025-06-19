@@ -1,33 +1,43 @@
-// src/main/java/fr/erm/sae201/metier/service/AffectationMngt.java
 package fr.erm.sae201.metier.service;
 
 import fr.erm.sae201.dao.AffectationDAO;
-import fr.erm.sae201.exception.EntityNotFoundException;
 import fr.erm.sae201.metier.persistence.Affectation;
-import fr.erm.sae201.metier.persistence.Competence;
-import fr.erm.sae201.metier.persistence.DPS;
-import fr.erm.sae201.metier.persistence.Secouriste;
-
 import java.util.List;
-import java.util.Map;
 
 /**
  * Service pour gérer la logique métier des affectations.
- * MODIFIÉ : Utilise les services qui lèvent des exceptions.
+ * <p>
+ * Cette classe sert d'intermédiaire entre les contrôleurs et le DAO des affectations,
+ * en encapsulant la logique de récupération des données liées aux affectations.
+ * </p>
+ *
+ * @author Ewan QUELO
+ * @author Raphael MILLE
+ * @author Matheo BIET
+ * @version 1.0
  */
 public class AffectationMngt {
 
+    /** Le DAO pour l'accès aux données des affectations. */
     private final AffectationDAO affectationDAO = new AffectationDAO();
     
     /**
-     * NOUVEAU: Récupère le nombre d'affectations pour un DPS.
-     * @param dpsId L'ID du DPS.
-     * @return Le nombre de secouristes affectés.
+     * Récupère le nombre total de secouristes affectés à un DPS donné.
+     *
+     * @param dpsId L'identifiant du DPS.
+     * @return Le nombre d'affectations pour ce DPS.
      */
     public int getAssignmentCountForDps(long dpsId) {
         return affectationDAO.countAffectationsForDps(dpsId);
     }
     
+    /**
+     * Récupère toutes les affectations pour un secouriste spécifique.
+     *
+     * @param secouristeId L'identifiant du secouriste.
+     * @return Une liste d'objets Affectation, qui peut être vide si le
+     *         secouriste n'a aucune affectation.
+     */
     public List<Affectation> getAssignmentsForSecouriste(long secouristeId) {
         return affectationDAO.findAffectationsBySecouristeId(secouristeId);
     }

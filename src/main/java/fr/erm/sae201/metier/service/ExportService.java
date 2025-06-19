@@ -10,23 +10,28 @@ import java.util.Map;
 import java.util.stream.Collectors;
 
 /**
- * Service dédié à l'exportation de données, comme la génération de fichiers CSV.
+ * Service dédié à l'exportation de données, notamment pour la génération de fichiers CSV.
+ *
+ * @author Ewan QUELO
+ * @author Raphael MILLE
+ * @author Matheo BIET
+ * @version 1.0
  */
 public class ExportService {
 
     private final DPSDAO dpsDAO = new DPSDAO();
 
     /**
-     * MODIFIÉ : Génère une chaîne CSV contenant tous les dispositifs,
-     * y compris leurs besoins en compétences, avec la virgule comme séparateur.
+     * Génère une chaîne de caractères au format CSV contenant tous les dispositifs.
+     * Les données incluent les détails du DPS ainsi que ses besoins en compétences.
+     * Le séparateur de champ utilisé est la virgule.
      *
-     * @return Une chaîne de caractères représentant les données en CSV.
+     * @return Une chaîne de caractères représentant les données au format CSV.
      */
     public String exportDpsToCsvString() {
         List<DPS> allDps = dpsDAO.findAll();
         StringBuilder csvBuilder = new StringBuilder();
 
-        // 1. MODIFIÉ : L'en-tête utilise maintenant des virgules.
         csvBuilder.append("ID,Date,Sport,Site,Heure Debut,Heure Fin,Besoins\n");
 
         DateTimeFormatter dateFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
@@ -34,9 +39,10 @@ public class ExportService {
         for (DPS dps : allDps) {
             Map<Competence, Integer> requirements = dpsDAO.findRequiredCompetencesForDps(dps.getId());
 
+            // Formatte la liste des besoins en une seule chaîne de caractères pour la colonne CSV.
             String requirementsString = requirements.entrySet().stream()
                     .map(entry -> entry.getKey().getIntitule() + ": " + entry.getValue())
-                    .collect(Collectors.joining(" | ")); // Utilisation d'un séparateur interne différent pour plus de clarté
+                    .collect(Collectors.joining(" | "));
 
             String sportNom = sanitizeCsvField(dps.getSport().getNom());
             String siteNom = sanitizeCsvField(dps.getSite().getNom());
@@ -45,7 +51,6 @@ public class ExportService {
             String heureFin = String.format("%02d:%02d", dps.getHoraireFin()[0], dps.getHoraireFin()[1]);
             String sanitizedRequirements = sanitizeCsvField(requirementsString);
 
-            // 2. MODIFIÉ : La chaîne de formatage utilise maintenant des virgules.
             csvBuilder.append(String.format("%d,%s,%s,%s,%s,%s,%s\n",
                     dps.getId(),
                     date,
@@ -60,19 +65,19 @@ public class ExportService {
     }
 
     /**
-     * MODIFIÉ : Assainit un champ de texte pour le format CSV avec virgule comme séparateur.
+     * Assainit une chaîne de caractères pour son insertion dans un champ CSV.
      * Si le champ contient une virgule, des guillemets ou un retour à la ligne,
-     * il est entouré de guillemets. Les guillemets existants sont doublés.
+     * il est entouré de guillemets. Les guillemets déjà présents dans la chaîne
+     * sont doublés pour être correctement échappés.
      *
      * @param field La chaîne de caractères à assainir.
-     * @return La chaîne de caractères assainie.
+     * @return La chaîne de caractères prête à être insérée dans un champ CSV.
      */
     private String sanitizeCsvField(String field) {
         if (field == null) {
             return "";
         }
         String sanitized = field.replace("\"", "\"\"");
-        // 3. MODIFIÉ : La condition vérifie la présence de virgules au lieu de points-virgules.
         if (sanitized.contains(",") || sanitized.contains("\"") || sanitized.contains("\n")) {
             return "\"" + sanitized + "\"";
         }

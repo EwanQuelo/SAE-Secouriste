@@ -4,12 +4,25 @@ import javafx.geometry.Pos;
 import javafx.util.Duration;
 import org.controlsfx.control.Notifications;
 
+/**
+ * Classe utilitaire pour afficher des notifications standardisées dans l'application.
+ * <p>
+ * Elle centralise la configuration et l'affichage des notifications de succès,
+ * d'avertissement et d'erreur en utilisant la bibliothèque ControlsFX.
+ * </p>
+ *
+ * @author Ewan QUELO
+ * @author Raphael MILLE
+ * @author Matheo BIET
+ * @version 1.0
+ */
 public class NotificationUtils {
 
     /**
-     * Affiche une notification de succès.
-     * @param title Titre de la notification.
-     * @param message Message à afficher.
+     * Affiche une notification de succès de type "information".
+     *
+     * @param title   Titre de la notification.
+     * @param message Message à afficher dans la notification.
      */
     public static void showSuccess(String title, String message) {
         Notifications.create()
@@ -17,13 +30,14 @@ public class NotificationUtils {
                 .text(message)
                 .position(Pos.BOTTOM_LEFT)
                 .hideAfter(Duration.seconds(4))
-                .showInformation(); // Utilise le style d'information (.info)
+                .showInformation();
     }
 
     /**
-     * Affiche une notification d'avertissement.
-     * @param title Titre de la notification.
-     * @param message Message à afficher.
+     * Affiche une notification de type "avertissement".
+     *
+     * @param title   Titre de la notification.
+     * @param message Message à afficher dans la notification.
      */
     public static void showWarning(String title, String message) {
         Notifications.create()
@@ -35,16 +49,17 @@ public class NotificationUtils {
     }
 
     /**
-     * Affiche une notification d'erreur.
-     * @param title Titre de la notification.
-     * @param message Message à afficher.
+     * Affiche une notification de type "erreur".
+     *
+     * @param title   Titre de la notification.
+     * @param message Message à afficher dans la notification.
      */
     public static void showError(String title, String message) {
         Notifications.create()
                 .title(title)
                 .text(message)
                 .position(Pos.BOTTOM_LEFT)
-                .hideAfter(Duration.seconds(4)) // On laisse plus de temps pour lire une erreur
+                .hideAfter(Duration.seconds(4))
                 .showError();
     }
 }

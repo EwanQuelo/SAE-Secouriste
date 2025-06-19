@@ -4,46 +4,55 @@ import java.time.LocalDate;
 import java.util.Objects;
 
 /**
- * Represents a specific day using java.time.LocalDate, matching the DATE SQL type.
- * @author L'IA qui corrige
+ * Représente une journée spécifique en utilisant un objet LocalDate.
+ * Cette classe correspond au type DATE en SQL.
+ *
+ * @author Ewan QUELO
+ * @author Raphael MILLE
+ * @author Matheo BIET
  * @version 2.0
  */
 public class Journee {
+    /** La date qui définit cette journée. */
     private LocalDate date;
 
     /**
-     * Constructs a new Journee from a LocalDate object.
-     * @param date The specific date. Must not be null.
-     * @throws IllegalArgumentException if date is null.
+     * Construit une nouvelle Journee à partir d'un objet LocalDate.
+     *
+     * @param date La date spécifique. Ne peut pas être null.
+     * @throws IllegalArgumentException si la date est null.
      */
     public Journee(LocalDate date) {
         setDate(date);
     }
 
     /**
-     * Legacy constructor for creating a Journee from day, month, and year.
-     * This now internally creates a LocalDate object.
-     * @param jour The day of the month.
-     * @param mois The month of the year.
-     * @param annee The year.
-     * @throws java.time.DateTimeException if the date is invalid.
+     * Ancien constructeur pour créer une Journee à partir du jour, du mois et de l'année.
+     * Crée en interne un objet LocalDate.
+     *
+     * @param jour  Le jour du mois.
+     * @param mois  Le mois de l'année.
+     * @param annee L'année.
+     * @throws java.time.DateTimeException si la date est invalide.
      */
     public Journee(int jour, int mois, int annee) {
         this.date = LocalDate.of(annee, mois, jour);
     }
 
     /**
-     * Gets the date.
-     * @return The LocalDate object representing the day.
+     * Retourne la date de la journée.
+     *
+     * @return L'objet LocalDate représentant la journée.
      */
     public LocalDate getDate() {
         return date;
     }
 
     /**
-     * Sets the date.
-     * @param date The new date. Must not be null.
-     * @throws IllegalArgumentException if date is null.
+     * Définit la date de la journée.
+     *
+     * @param date La nouvelle date. Ne peut pas être null.
+     * @throws IllegalArgumentException si la date est null.
      */
     public void setDate(LocalDate date) {
         if (date == null) {
@@ -52,6 +61,13 @@ public class Journee {
         this.date = date;
     }
 
+    /**
+     * Compare cette journée à un autre objet.
+     * Deux journées sont considérées comme égales si leurs dates sont identiques.
+     *
+     * @param o L'objet à comparer.
+     * @return `true` si les objets sont égaux, `false` sinon.
+     */
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
@@ -60,11 +76,21 @@ public class Journee {
         return Objects.equals(date, journee.date);
     }
 
+    /**
+     * Génère un code de hachage pour la journée, basé sur sa date.
+     *
+     * @return Un entier représentant le code de hachage.
+     */
     @Override
     public int hashCode() {
         return Objects.hash(date);
     }
 
+    /**
+     * Retourne une représentation textuelle de la journée.
+     *
+     * @return Une chaîne de caractères décrivant la journée.
+     */
     @Override
     public String toString() {
         return "Journee{" +
