@@ -8,7 +8,7 @@ import java.util.Objects;
 /**
  * Represents a Dispositif Prévisionnel de Secours (DPS).
  * @author Raphael Mille, Ewan Quelo, Matheo Biet
- * @version 1.1
+ * @version 1.2
  */
 public class DPS {
     private long id;
@@ -113,11 +113,9 @@ public class DPS {
                 throw new IllegalArgumentException("Competence key in map cannot be null.");
             }
             if (entry.getValue() == null) {
-                // MODIFIÉ : Utilise getIntitule() au lieu de getNom()
                 throw new IllegalArgumentException("Number for competence " + entry.getKey().getIntitule() + " cannot be null.");
             }
             if (entry.getValue() <= 0) {
-                 // MODIFIÉ : Utilise getIntitule() au lieu de getNom()
                 throw new IllegalArgumentException("Number for competence " + entry.getKey().getIntitule() + " must be positive.");
             }
             tempMap.put(entry.getKey(), entry.getValue());
@@ -130,7 +128,6 @@ public class DPS {
             throw new IllegalArgumentException("Competence to add/update cannot be null.");
         }
         if (nombre <= 0) {
-            // MODIFIÉ : Utilise getIntitule() au lieu de getNom()
             throw new IllegalArgumentException("Number for competence " + competence.getIntitule() + " must be positive.");
         }
         this.competencesRequises.put(competence, nombre);
