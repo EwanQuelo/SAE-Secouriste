@@ -218,7 +218,7 @@ public class UserCalendrierView extends BaseView {
             calendarGrid.getRowConstraints().add(rowConstraints);
         }
 
-        // 2. Créer les étiquettes d'heure et les cellules de fond.
+        // 2. Créer les Labels d'heure et les cellules de fond.
         for (int hour = START_HOUR; hour < END_HOUR; hour++) {
             int row = hour - START_HOUR;
             Label timeLabel = new Label(String.format("%02dh", hour));

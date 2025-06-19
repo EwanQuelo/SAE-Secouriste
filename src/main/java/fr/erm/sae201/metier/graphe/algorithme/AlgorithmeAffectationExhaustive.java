@@ -1,7 +1,7 @@
 package fr.erm.sae201.metier.graphe.algorithme;
 
-import fr.erm.sae201.metier.graphe.algorithme.ModelesAlgorithme.AffectationResultat;
-import fr.erm.sae201.metier.graphe.algorithme.ModelesAlgorithme.Poste;
+import fr.erm.sae201.metier.graphe.modele.AffectationResultat;
+import fr.erm.sae201.metier.graphe.modele.Poste;
 import fr.erm.sae201.metier.graphe.modele.Graphe;
 import fr.erm.sae201.metier.persistence.Secouriste;
 
@@ -12,7 +12,11 @@ import java.util.List;
  * Implémente un algorithme d'affectation par recherche exhaustive (backtracking).
  * Il garantit de trouver la solution optimale (le plus grand nombre d'affectations)
  * en explorant toutes les combinaisons possibles.
- * Cette classe opère sur un objet Graphe et ne contient aucune logique de base de données.
+ * 
+ * @author Ewan QUELO
+ * @author Raphael MILLE
+ * @author Matheo BIET
+ * @version 1.0
  */
 public class AlgorithmeAffectationExhaustive {
 

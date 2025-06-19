@@ -25,10 +25,10 @@ import java.util.function.Consumer;
 
 /**
  * Vue pour la gestion des compétences par l'administrateur.
- * <p>
+ * 
  * Affiche les compétences sous forme de cartes, permet leur ajout, modification
  * et suppression via des boîtes de dialogue interactives.
- * </p>
+ * 
  *
  * @author Ewan QUELO
  * @author Raphael MILLE

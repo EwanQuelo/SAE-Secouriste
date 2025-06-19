@@ -13,12 +13,12 @@ import java.util.Set;
 
 /**
  * DAO (Data Access Object) pour la gestion des entités Secouriste.
- * <p>
+ * 
  * Un Secouriste possède des informations personnelles, un ensemble de compétences
  * et un ensemble de journées où il est disponible. Ce DAO gère les opérations CRUD
  * pour les secouristes et leurs relations avec les Compétences (table 'Possede')
  * et les disponibilités (table 'EstDisponible').
- * </p>
+ * 
  *
  * @author Ewan QUELO
  * @author Raphael MILLE

@@ -26,7 +26,7 @@ import javafx.stage.Stage;
 /**
  * Classe principale de l'application JavaFX.
  * Elle gère la fenêtre principale (Stage), la scène, et agit comme un navigateur
- * central pour afficher les différentes vues de l'application, que ce soit pour
+ * central pour afficher les différentes vues de l'application (un routeur), que ce soit pour
  * l'authentification, l'administration ou l'interface secouriste.
  *
  * @author Ewan QUELO

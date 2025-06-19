@@ -5,10 +5,10 @@ import java.util.Objects;
 
 /**
  * Représente un compte utilisateur dans le système.
- * <p>
+ * 
  * Cette classe contient les informations d'authentification et de rôle
  * d'un utilisateur, qu'il soit secouriste ou administrateur.
- * </p>
+ * 
  *
  * @author Ewan QUELO
  * @author Raphael MILLE

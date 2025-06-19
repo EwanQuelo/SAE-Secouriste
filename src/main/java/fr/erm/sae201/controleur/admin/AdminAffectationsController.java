@@ -2,7 +2,7 @@ package fr.erm.sae201.controleur.admin;
 
 import fr.erm.sae201.dao.AffectationDAO;
 import fr.erm.sae201.dao.DPSDAO;
-import fr.erm.sae201.metier.graphe.algorithme.ModelesAlgorithme.AffectationResultat;
+import fr.erm.sae201.metier.graphe.modele.AffectationResultat;
 import fr.erm.sae201.metier.persistence.Affectation;
 import fr.erm.sae201.metier.persistence.DPS;
 import fr.erm.sae201.metier.service.ServiceAffectation;
@@ -16,16 +16,16 @@ import java.util.List;
 
 /**
  * Contrôleur pour l'interface de gestion des affectations par l'administrateur.
- * <p>
+ * 
  * Cette classe fait le lien entre la vue (AdminAffectationsView) et les modèles de données.
  * Elle gère la sélection d'un Dispositif Prévisionnel de Secours (DPS), le lancement
  * des algorithmes d'affectation et l'enregistrement des résultats en base de données.
- * </p>
+ * 
  *
  * @author Ewan QUELO
  * @author Raphael MILLE
  * @author Matheo BIET
- * @version 1.0
+ * @version 1.2
  */
 public class AdminAffectationsController {
 
@@ -114,24 +114,16 @@ public class AdminAffectationsController {
         }
         view.showLoading(true);
 
-        // Utilisation d'une Tâche (Task) pour exécuter l'algorithme en arrière-plan.
+        // Utilisation d'une Task pour exécuter l'algorithme en arrière-plan, pour eviter de bloquer l'interface utilisateur.
         Task<List<AffectationResultat>> task = new Task<>() {
             @Override
             protected List<AffectationResultat> call() {
-                long startTime = System.currentTimeMillis();
                 List<AffectationResultat> result;
-                final String algorithmName;
-
                 if ("exhaustive".equals(algorithmType)) {
-                    algorithmName = "Approche exhaustive";
                     result = serviceAffectation.trouverAffectationExhaustive(dpsSelectionne);
                 } else {
-                    algorithmName = "Approche gloutonne";
                     result = serviceAffectation.trouverAffectationGloutonne(dpsSelectionne);
                 }
-
-                long endTime = System.currentTimeMillis();
-                System.out.println("Fin de l'algorithme : " + algorithmName + ". Temps : " + (endTime - startTime) + " ms.");
                 return result;
             }
         };
@@ -172,7 +164,7 @@ public class AdminAffectationsController {
         List<Affectation> affectationsAEnregistrer = new ArrayList<>();
         for (AffectationResultat res : propositionActuelle) {
             affectationsAEnregistrer.add(
-                new Affectation(dpsSelectionne, res.secouriste(), res.poste().competenceRequise())
+                new Affectation(dpsSelectionne, res.getSecouriste(), res.getPoste().getCompetenceRequise())
             );
         }
 

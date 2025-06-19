@@ -7,11 +7,11 @@ import java.util.List;
 
 /**
  * DAO (Data Access Object) pour la gestion des entités Site.
- * <p>
+ * 
  * Un Site représente un lieu géographique, identifié par un 'code' unique,
  * et inclut un nom, une longitude et une latitude. Cette classe gère les
  * opérations CRUD pour les enregistrements de Site.
- * </p>
+ * 
  *
  * @author Ewan QUELO
  * @author Raphael MILLE

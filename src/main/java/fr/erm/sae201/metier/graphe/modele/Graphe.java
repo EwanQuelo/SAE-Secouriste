@@ -1,17 +1,16 @@
 package fr.erm.sae201.metier.graphe.modele;
 
-import fr.erm.sae201.metier.graphe.algorithme.ModelesAlgorithme.Poste;
 import fr.erm.sae201.metier.persistence.Secouriste;
 
 import java.util.List;
 
 /**
  * Représente un graphe biparti utilisé pour modéliser le problème d'affectation.
- * <p>
+ * 
  * Cette structure de données contient les deux ensembles de sommets (les secouristes
  * et les postes à pourvoir) ainsi qu'une matrice d'adjacence qui définit les arêtes
  * possibles, c'est-à-dire l'aptitude d'un secouriste pour un poste donné.
- * </p>
+ * 
  *
  * @author Ewan QUELO
  * @author Raphael MILLE
@@ -31,7 +30,6 @@ public class Graphe {
 
     /**
      * Construit un objet Graphe.
-     *
      * @param secouristes      La liste des secouristes (un des ensembles de sommets).
      * @param postes           La liste des postes à pourvoir (l'autre ensemble de sommets).
      * @param adjacenceMatrice La matrice d'adjacence représentant les aptitudes.

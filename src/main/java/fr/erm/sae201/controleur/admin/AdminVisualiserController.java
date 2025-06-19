@@ -14,12 +14,12 @@ import java.util.List;
 
 /**
  * Contrôleur pour la vue de visualisation du planning des DPS.
- * <p>
+ * 
  * Cette classe gère l'affichage d'un calendrier hebdomadaire. Elle récupère
  * les Dispositifs Prévisionnels de Secours (DPS) pour la semaine sélectionnée,
  * calcule leur état d'avancement (nombre d'affectés vs. requis) et demande
  * à la vue de les afficher.
- * </p>
+ * 
  *
  * @author Ewan QUELO
  * @author Raphael MILLE

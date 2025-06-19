@@ -21,10 +21,10 @@ import java.util.Locale;
 
 /**
  * Vue pour la gestion des Dispositifs Prévisionnels de Secours (DPS) par l'administrateur.
- * <p>
+ * 
  * Affiche la liste des DPS sous forme de cartes cliquables et fournit des
  * boutons pour ajouter un nouveau dispositif ou exporter la liste en CSV.
- * </p>
+ * 
  *
  * @author Ewan QUELO
  * @author Raphael MILLE

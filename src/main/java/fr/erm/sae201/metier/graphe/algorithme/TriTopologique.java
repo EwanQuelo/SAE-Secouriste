@@ -13,6 +13,10 @@ import fr.erm.sae201.metier.persistence.Competence;
 /**
  * Classe permettant de vérifier si un ensemble de compétences forme un graphe sans cycle
  * et d'en fournir un tri topologique si possible.
+ * @author Ewan QUELO
+ * @author Raphael MILLE
+ * @author Matheo BIET
+ * @version 1.0
  */
 public class TriTopologique {
 

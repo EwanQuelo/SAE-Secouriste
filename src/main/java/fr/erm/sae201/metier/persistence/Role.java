@@ -2,10 +2,10 @@ package fr.erm.sae201.metier.persistence;
 
 /**
  * Définit les rôles possibles pour un utilisateur dans l'application.
- * <p>
+ * 
  * L'utilisation d'une énumération garantit la sécurité des types et évite les
  * erreurs de saisie qui pourraient survenir avec des chaînes de caractères.
- * </p>
+ * 
  *
  * @author Ewan QUELO
  * @author Raphael MILLE

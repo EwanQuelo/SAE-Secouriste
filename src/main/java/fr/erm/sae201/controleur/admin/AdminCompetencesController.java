@@ -17,11 +17,11 @@ import java.util.Optional;
 
 /**
  * Contrôleur pour l'interface de gestion des compétences par l'administrateur.
- * <p>
+ * 
  * Cette classe gère les interactions de l'utilisateur avec la vue des compétences.
  * Elle coordonne les appels au service métier (pour la logique de création/modification)
  * et au DAO (pour l'accès aux données), puis met à jour l'interface en conséquence.
- * </p>
+ * 
  *
  * @author Ewan QUELO
  * @author Raphael MILLE

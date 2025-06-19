@@ -14,10 +14,10 @@ import java.util.Date;
 
 /**
  * Contrôleur pour la vue des paramètres du secouriste.
- * <p>
+ * 
  * Gère le chargement des données personnelles de l'utilisateur, leur mise à jour,
  * la modification du mot de passe et la déconnexion.
- * </p>
+ * 
  *
  * @author Ewan QUELO
  * @author Raphael MILLE

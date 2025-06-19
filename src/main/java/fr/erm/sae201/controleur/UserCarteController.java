@@ -13,11 +13,11 @@ import java.util.Locale;
 
 /**
  * Contrôleur pour la vue "Carte".
- * <p>
+ * 
  * Cette classe charge les affectations de l'utilisateur et les affiche
  * sur une carte géographique. Elle gère la création des marqueurs personnalisés
  * et la communication avec la vue pour l'affichage et le centrage.
- * </p>
+ * 
  *
  * @author Ewan QUELO
  * @author Raphael MILLE

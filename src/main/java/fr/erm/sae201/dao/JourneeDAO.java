@@ -8,10 +8,10 @@ import java.util.List;
 
 /**
  * DAO (Data Access Object) pour la gestion des entités Journee.
- * <p>
+ * 
  * Une Journee représente une date spécifique, qui sert de clé primaire.
  * Cette classe gère les opérations CRUD pour les enregistrements de Journee.
- * </p>
+ * 
  *
  * @author Ewan QUELO
  * @author Raphael MILLE

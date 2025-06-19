@@ -6,6 +6,11 @@ import fr.erm.sae201.metier.persistence.Secouriste;
 /**
  * Ce fichier contient les modèles de données (records) partagés
  * par les différents algorithmes d'affectation.
+ * 
+ * @author Ewan QUELO
+ * @author Raphael MILLE
+ * @author Matheo BIET
+ * @version 1.0
  */
 public class ModelesAlgorithme {
 

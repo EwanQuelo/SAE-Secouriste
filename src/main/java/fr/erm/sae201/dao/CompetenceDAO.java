@@ -9,11 +9,11 @@ import java.util.Set;
 
 /**
  * DAO (Data Access Object) pour la gestion des entités Competence.
- * <p>
+ * 
  * Une compétence représente un savoir-faire ou une qualification. Les compétences
  * peuvent avoir des prérequis, qui sont d'autres compétences à acquérir au préalable.
  * Ces relations sont gérées via la table 'Necessite'.
- * </p>
+ * 
  *
  * @author Ewan QUELO
  * @author Raphael MILLE

@@ -2,11 +2,11 @@ package fr.erm.sae201.exception;
 
 /**
  * Exception personnalisée levée lorsqu'une tentative d'authentification échoue.
- * <p>
+ * 
  * Cette exception est typiquement utilisée pour des cas comme un mot de passe
  * incorrect ou un utilisateur non autorisé, où l'identifiant existe mais les
  * informations de connexion sont invalides.
- * </p>
+ * 
  *
  * @author Ewan QUELO
  * @author Raphael MILLE

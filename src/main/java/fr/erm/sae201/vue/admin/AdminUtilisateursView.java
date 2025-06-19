@@ -189,7 +189,7 @@ public class AdminUtilisateursView extends BaseView {
 
     /**
      * Crée la représentation visuelle d'une ligne pour un secouriste.
-     * Cette ligne contient les initiales, le nom/prénom, l'e-mail, des étiquettes colorées
+     * Cette ligne contient les initiales, le nom/prénom, l'e-mail, des Labels colorées
      * pour les compétences, et les boutons de modification et de suppression.
      *
      * @param secouriste Le secouriste pour lequel créer la ligne.

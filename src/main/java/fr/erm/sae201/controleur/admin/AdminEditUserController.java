@@ -19,12 +19,12 @@ import java.util.Set;
 
 /**
  * Contrôleur pour la vue de modification des informations d'un secouriste.
- * <p>
+ * 
  * Cette classe charge les données du secouriste à éditer, y compris ses
  * compétences
  * actuelles, et permet à l'administrateur de les mettre à jour. La sauvegarde
  * est gérée par le service SecouristeMngt qui assure la cohérence des données.
- * </p>
+ * 
  *
  * @author Ewan QUELO
  * @author Raphael MILLE

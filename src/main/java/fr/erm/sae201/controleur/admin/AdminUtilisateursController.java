@@ -14,12 +14,12 @@ import java.util.Optional;
 
 /**
  * Contrôleur pour la vue qui affiche et gère la liste des secouristes.
- * <p>
+ * 
  * Cette classe gère la logique de la pagination, de la recherche, ainsi que
  * les actions de suppression et de modification d'un secouriste. Elle interagit
  * avec le service SecouristeMngt pour récupérer les données et les met à jour
  * dans la vue correspondante.
- * </p>
+ * 
  *
  * @author Ewan QUELO
  * @author Raphael MILLE

@@ -5,8 +5,8 @@ import fr.erm.sae201.dao.DPSDAO;
 import fr.erm.sae201.dao.SecouristeDAO;
 import fr.erm.sae201.metier.graphe.algorithme.AlgorithmeAffectationExhaustive;
 import fr.erm.sae201.metier.graphe.algorithme.AlgorithmeAffectationGloutonne;
-import fr.erm.sae201.metier.graphe.algorithme.ModelesAlgorithme.AffectationResultat;
-import fr.erm.sae201.metier.graphe.algorithme.ModelesAlgorithme.Poste;
+import fr.erm.sae201.metier.graphe.modele.AffectationResultat;
+import fr.erm.sae201.metier.graphe.modele.Poste;
 import fr.erm.sae201.metier.graphe.modele.Graphe;
 import fr.erm.sae201.metier.persistence.*;
 
@@ -18,16 +18,16 @@ import java.util.Map;
 
 /**
  * Service principal pour orchestrer la création et la résolution des problèmes d'affectation.
- * <p>
+ * 
  * Ce service utilise les DAOs pour récupérer les données nécessaires, construit
  * un graphe biparti représentant les secouristes et les postes, puis délègue
  * la résolution à des classes d'algorithmes spécifiques.
- * </p>
+ * 
  *
  * @author Ewan QUELO
  * @author Raphael MILLE
  * @author Matheo BIET
- * @version 1.0
+ * @version 1.2
  */
 public class ServiceAffectation {
 
@@ -46,7 +46,13 @@ public class ServiceAffectation {
     public List<AffectationResultat> trouverAffectationExhaustive(DPS dpsCible) {
         Graphe graphe = construireGraphePourDPS(dpsCible);
         AlgorithmeAffectationExhaustive algorithme = new AlgorithmeAffectationExhaustive();
-        return algorithme.resoudre(graphe);
+        
+        long startTime = System.currentTimeMillis();
+        List<AffectationResultat> result = algorithme.resoudre(graphe);
+        long endTime = System.currentTimeMillis();
+        System.out.println("Temps d'exécution de l'algorithme EXHAUSTIF : " + (endTime - startTime) + " ms.");
+
+        return result;
     }
 
     /**
@@ -59,7 +65,13 @@ public class ServiceAffectation {
     public List<AffectationResultat> trouverAffectationGloutonne(DPS dpsCible) {
         Graphe graphe = construireGraphePourDPS(dpsCible);
         AlgorithmeAffectationGloutonne algorithme = new AlgorithmeAffectationGloutonne();
-        return algorithme.resoudre(graphe);
+
+        long startTime = System.currentTimeMillis();
+        List<AffectationResultat> result = algorithme.resoudre(graphe);
+        long endTime = System.currentTimeMillis();
+        System.out.println("Temps d'exécution de l'algorithme GLOUTON : " + (endTime - startTime) + " ms.");
+
+        return result;
     }
 
     /**
@@ -92,7 +104,7 @@ public class ServiceAffectation {
      *
      * @param dps1 Le premier DPS.
      * @param dps2 Le second DPS.
-     * @return `true` si les intervalles de temps se chevauchent, `false` sinon.
+     * @return true si les intervalles de temps se chevauchent, false sinon.
      */
     private boolean horairesSeChevauchent(DPS dps1, DPS dps2) {
         int[] horaireDepart1 = dps1.getHoraireDepart();
@@ -105,8 +117,6 @@ public class ServiceAffectation {
         int startMinutes2 = horaireDepart2[0] * 60 + horaireDepart2[1];
         int endMinutes2 = horaireFin2[0] * 60 + horaireFin2[1];
 
-        // Deux intervalles [start1, end1] et [start2, end2] se chevauchent si
-        // le début de l'un est avant la fin de l'autre, et vice versa.
         return startMinutes1 < endMinutes2 && startMinutes2 < endMinutes1;
     }
 
@@ -181,7 +191,7 @@ public class ServiceAffectation {
      * @return `true` si le secouriste possède la compétence requise ou une compétence supérieure.
      */
     private boolean estApte(Secouriste secouriste, Poste poste) {
-        return serviceCompetences.possedeCompetenceRequiseOuSuperieure(secouriste.getCompetences(), poste.competenceRequise());
+        return serviceCompetences.possedeCompetenceRequiseOuSuperieure(secouriste.getCompetences(), poste.getCompetenceRequise());
     }
 
     /**

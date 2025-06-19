@@ -6,10 +6,10 @@ import org.controlsfx.control.Notifications;
 
 /**
  * Classe utilitaire pour afficher des notifications standardisées dans l'application.
- * <p>
+ * 
  * Elle centralise la configuration et l'affichage des notifications de succès,
  * d'avertissement et d'erreur en utilisant la bibliothèque ControlsFX.
- * </p>
+ * 
  *
  * @author Ewan QUELO
  * @author Raphael MILLE

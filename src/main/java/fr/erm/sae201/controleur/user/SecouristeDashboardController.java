@@ -13,11 +13,11 @@ import java.util.stream.Collectors;
 
 /**
  * Contrôleur pour la vue du tableau de bord du secouriste.
- * <p>
+ * 
  * Il récupère et gère les données affichées sur le tableau de bord
  * principal de l'utilisateur, notamment son planning du jour et les
  * localisations correspondantes sur une carte.
- * </p>
+ * 
  *
  * @author Ewan QUELO
  * @author Raphael MILLE

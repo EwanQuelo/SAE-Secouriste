@@ -19,11 +19,11 @@ import java.util.Optional;
 
 /**
  * Contrôleur pour l'interface de gestion des Dispositifs Prévisionnels de Secours (DPS).
- * <p>
+ * 
  * Cette classe gère les opérations CRUD (Création, Lecture, Mise à jour, Suppression)
  * pour les DPS ainsi que l'exportation de la liste des dispositifs au format CSV.
  * Elle fait le lien entre la vue et les services/DAO correspondants.
- * </p>
+ * 
  *
  * @author Ewan QUELO
  * @author Raphael MILLE

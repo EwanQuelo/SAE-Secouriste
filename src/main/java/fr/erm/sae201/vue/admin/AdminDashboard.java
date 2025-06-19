@@ -17,10 +17,10 @@ import java.util.stream.Collectors;
 
 /**
  * Vue du tableau de bord spécifique pour un administrateur.
- * <p>
+ * 
  * Affiche des graphiques de statistiques, tels que la répartition des
  * compétences et des tranches d'âge parmi les secouristes.
- * </p>
+ * 
  *
  * @author Ewan QUELO
  * @author Raphael MILLE

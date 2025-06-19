@@ -6,10 +6,10 @@ import java.util.List;
 
 /**
  * Service pour gérer la logique métier des affectations.
- * <p>
+ * 
  * Cette classe sert d'intermédiaire entre les contrôleurs et le DAO des affectations,
  * en encapsulant la logique de récupération des données liées aux affectations.
- * </p>
+ * 
  *
  * @author Ewan QUELO
  * @author Raphael MILLE

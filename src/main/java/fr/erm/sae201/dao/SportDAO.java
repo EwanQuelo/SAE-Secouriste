@@ -7,10 +7,10 @@ import java.util.List;
 
 /**
  * DAO (Data Access Object) pour la gestion des entités Sport.
- * <p>
+ * 
  * Un Sport est identifié par un 'code' unique et possède un 'nom'.
  * Cette classe gère les opérations CRUD pour les enregistrements de Sport.
- * </p>
+ * 
  *
  * @author Ewan QUELO
  * @author Raphael MILLE

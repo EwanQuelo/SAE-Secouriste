@@ -8,12 +8,12 @@ import fr.erm.sae201.vue.auth.ForgotPasswordView;
 
 /**
  * Contrôleur pour la vue de réinitialisation de mot de passe ("Mot de passe oublié").
- * <p>
+ * 
  * Cette classe gère le processus en plusieurs étapes : elle envoie un code de
  * vérification à l'email de l'utilisateur, valide le code saisi, puis navigue
  * vers l'écran final de réinitialisation si la validation est réussie.
  * Elle gère également les cas d'erreur, comme un email non trouvé.
- * </p>
+ * 
  *
  * @author Ewan QUELO
  * @author Raphael MILLE

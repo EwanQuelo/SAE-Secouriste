@@ -10,12 +10,12 @@ import fr.erm.sae201.vue.auth.LoginView;
 
 /**
  * Contrôleur pour la vue de connexion.
- * <p>
+ * 
  * Gère la logique d'authentification de l'utilisateur. Il récupère les
  * identifiants saisis, les valide via l'AuthService et, en cas de succès,
  * redirige l'utilisateur vers le tableau de bord correspondant à son rôle
  * (administrateur ou secouriste).
- * </p>
+ * 
  *
  * @author Ewan QUELO
  * @author Raphael MILLE

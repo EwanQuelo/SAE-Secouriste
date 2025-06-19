@@ -13,10 +13,10 @@ import java.util.Set;
 
 /**
  * Contrôleur pour la vue affichant les compétences d'un secouriste.
- * <p>
+ * 
  * Cette classe est responsable de charger les compétences associées à
  * l'utilisateur connecté et de les transmettre à la vue pour affichage.
- * </p>
+ * 
  *
  * @author Ewan QUELO
  * @author Raphael MILLE

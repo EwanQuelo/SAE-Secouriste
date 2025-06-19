@@ -21,12 +21,12 @@ import java.util.Set;
 
 /**
  * Vue pour la création d'un nouvel utilisateur (secouriste) par un administrateur.
- * <p>
+ * 
  * Cette vue présente un formulaire divisé en deux sections : les informations
  * personnelles et la sélection des compétences. Elle gère également la logique
  * de dépendance entre les compétences cochées (un prérequis est automatiquement
  * coché si une compétence supérieure est sélectionnée).
- * </p>
+ * 
  *
  * @author Ewan QUELO
  * @author Raphael MILLE

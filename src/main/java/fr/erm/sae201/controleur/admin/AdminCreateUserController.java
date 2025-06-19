@@ -16,11 +16,11 @@ import java.util.Map;
 
 /**
  * Contrôleur pour l'interface de création d'un nouvel utilisateur (secouriste).
- * <p>
+ * 
  * Cette classe orchestre la création d'un secouriste en collectant les informations
  * de la vue, en validant les données saisies et en appelant le service d'authentification
  * pour finaliser l'inscription en base de données.
- * </p>
+ * 
  *
  * @author Ewan QUELO
  * @author Raphael MILLE

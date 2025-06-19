@@ -11,11 +11,11 @@ import java.util.Date;
 
 /**
  * Contrôleur pour la vue d'inscription.
- * <p>
+ * 
  * Cette classe gère le processus d'inscription de l'utilisateur. Elle récupère
  * les informations de l'utilisateur depuis la vue, les valide, puis utilise
  * l'AuthService pour créer un nouveau compte de type "Secouriste".
- * </p>
+ * 
  *
  * @author Ewan QUELO
  * @author Raphael MILLE
@@ -60,13 +60,13 @@ public class SignupController {
 
     /**
      * Gère le processus d'inscription de l'utilisateur.
-     * <p>
+     * 
      * Récupère les informations (prénom, nom, email, mot de passe et date de naissance)
      * depuis la vue. Valide que tous les champs sont remplis. Tente d'inscrire
      * l'utilisateur comme "Secouriste". Si l'inscription réussit, navigue vers l'écran
      * de connexion. Affiche des notifications appropriées pour le succès, l'échec
      * ou les erreurs de validation.
-     * </p>
+     * 
      */
     private void handleSignup() {
         String firstName = view.getFirstName();

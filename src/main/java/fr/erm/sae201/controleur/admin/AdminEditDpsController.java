@@ -23,12 +23,12 @@ import java.util.Optional;
 
 /**
  * Contrôleur pour la vue de création et d'édition d'un Dispositif Prévisionnel de Secours (DPS).
- * <p>
+ * 
  * Cette classe gère deux modes : la création d'un nouveau DPS ou la modification
  * d'un DPS existant. Elle est responsable de charger les données nécessaires
  * (sites, sports, compétences), de pré-remplir le formulaire en mode édition,
  * et de traiter la sauvegarde des données en interaction avec le service DPSMngt.
- * </p>
+ * 
  *
  * @author Ewan QUELO
  * @author Raphael MILLE

@@ -1,7 +1,7 @@
 package fr.erm.sae201.metier.graphe.algorithme;
 
-import fr.erm.sae201.metier.graphe.algorithme.ModelesAlgorithme.AffectationResultat;
-import fr.erm.sae201.metier.graphe.algorithme.ModelesAlgorithme.Poste;
+import fr.erm.sae201.metier.graphe.modele.AffectationResultat;
+import fr.erm.sae201.metier.graphe.modele.Poste;
 import fr.erm.sae201.metier.graphe.modele.Graphe;
 import fr.erm.sae201.metier.persistence.Secouriste;
 
@@ -14,7 +14,11 @@ import java.util.Set;
  * Implémente un algorithme d'affectation simple et rapide (glouton).
  * Il parcourt chaque poste et lui assigne le premier secouriste apte et disponible qu'il trouve.
  * Ne garantit pas une solution optimale.
- * Cette classe opère sur un objet Graphe et ne contient aucune logique de base de données.
+ * 
+ * @author Ewan QUELO
+ * @author Raphael MILLE
+ * @author Matheo BIET
+ * @version 1.0
  */
 public class AlgorithmeAffectationGloutonne {
 

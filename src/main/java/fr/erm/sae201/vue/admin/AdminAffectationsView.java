@@ -1,7 +1,7 @@
 package fr.erm.sae201.vue.admin;
 
 import fr.erm.sae201.controleur.admin.AdminAffectationsController;
-import fr.erm.sae201.metier.graphe.algorithme.ModelesAlgorithme.AffectationResultat;
+import fr.erm.sae201.metier.graphe.modele.AffectationResultat;
 import fr.erm.sae201.metier.persistence.CompteUtilisateur;
 import fr.erm.sae201.metier.persistence.DPS;
 import fr.erm.sae201.vue.MainApp;
@@ -23,33 +23,40 @@ import java.util.Locale;
 
 /**
  * Vue pour l'interface de gestion des affectations des secouristes par un administrateur.
- * <p>
+ * 
  * Elle affiche une liste de Dispositifs Prévisionnels de Secours (DPS), permet de
  * lancer des algorithmes d'affectation (exhaustif et glouton) et de visualiser
  * les propositions résultantes avant de les enregistrer.
- * </p>
+ * 
  *
  * @author Ewan QUELO
  * @author Raphael MILLE
  * @author Matheo BIET
- * @version 1.0
+ * @version 1.2
  */
 public class AdminAffectationsView extends BaseView {
 
     /** Liste affichant les DPS sélectionnables. */
     private ListView<DPS> dpsListView;
+
     /** Panneau droit affichant les détails et actions pour le DPS sélectionné. */
     private VBox rightPanel;
-    /** Étiquette affichant les détails du DPS choisi. */
+
+    /** Label affichant les détails du DPS choisi. */
     private Label dpsDetailsLabel;
+
     /** Conteneur pour afficher les lignes de la proposition d'affectation. */
     private VBox propositionContainer;
+
     /** Bouton pour lancer l'algorithme exhaustif. */
     private Button runExhaustiveButton;
+
     /** Bouton pour lancer l'algorithme glouton. */
     private Button runGloutonButton;
+
     /** Bouton pour enregistrer les modifications. */
     private Button saveChangesButton;
+
     /** Vue pour l'animation de chargement (GIF). */
     private ImageView loadingGifView;
 
@@ -196,9 +203,9 @@ public class AdminAffectationsView extends BaseView {
         }
         for (AffectationResultat res : proposition) {
             String text = String.format("Poste [%s] → %s %s",
-                    res.poste().competenceRequise().getIntitule(),
-                    res.secouriste().getPrenom(),
-                    res.secouriste().getNom());
+                    res.getPoste().getCompetenceRequise().getIntitule(),
+                    res.getSecouriste().getPrenom(),
+                    res.getSecouriste().getNom());
             propositionContainer.getChildren().add(new Label(text));
         }
     }

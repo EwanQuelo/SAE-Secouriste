@@ -11,11 +11,11 @@ import java.util.Set;
 
 /**
  * Service pour gérer la logique métier des compétences.
- * <p>
+ * 
  * Ce service encapsule les règles de validation, comme la détection de
  * dépendances cycliques entre les compétences, avant d'appliquer les
  * changements en base de données.
- * </p>
+ * 
  *
  * @author Ewan QUELO
  * @author Raphael MILLE

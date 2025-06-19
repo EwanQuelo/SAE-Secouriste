@@ -13,10 +13,10 @@ import java.util.Map;
 
 /**
  * Service fournissant des données agrégées pour le tableau de bord de l'administrateur.
- * <p>
+ * 
  * Cette classe contient la logique pour calculer des statistiques, comme la
  * répartition des compétences ou des tranches d'âge parmi les secouristes.
- * </p>
+ * 
  *
  * @author Ewan QUELO
  * @author Raphael MILLE

@@ -9,11 +9,11 @@ import java.util.Optional;
 
 /**
  * DAO (Data Access Object) pour la gestion des entités Affectation.
- * <p>
+ * 
  * Une affectation représente l'assignation d'un Secouriste avec une Compétence
  * spécifique à un DPS (Dispositif Prévisionnel de Secours). Cette classe gère
  * les opérations de base de données comme la création, la recherche et la suppression.
- * </p>
+ * 
  *
  * @author Ewan QUELO
  * @author Raphael MILLE

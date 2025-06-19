@@ -4,11 +4,11 @@ import javafx.scene.image.Image;
 
 /**
  * Classe utilitaire pour centraliser le chargement des ressources.
- * <p>
+ * 
  * Fournit des méthodes statiques pour charger des images et des feuilles de style
  * depuis les répertoires de ressources de l'application, en gérant les erreurs
  * de chargement de manière sécurisée.
- * </p>
+ * 
  *
  * @author Ewan QUELO
  * @author Raphael MILLE

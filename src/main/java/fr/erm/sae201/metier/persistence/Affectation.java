@@ -4,10 +4,10 @@ import java.util.Objects;
 
 /**
  * Représente l'affectation d'un secouriste à un DPS pour une compétence spécifique.
- * <p>
+ * 
  * Cette classe correspond à un enregistrement de la table de jointure 'Affectation',
  * liant un DPS, un Secouriste et une Compétence.
- * </p>
+ * 
  *
  * @author Ewan QUELO
  * @author Raphael MILLE

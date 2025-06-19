@@ -10,10 +10,10 @@ import java.time.LocalDate;
 
 /**
  * Contrôleur pour la vue de gestion des disponibilités de l'utilisateur.
- * <p>
+ * 
  * Cette classe contient la logique métier pour sauvegarder ou annuler les
  * changements de disponibilités effectués par le secouriste dans la vue associée.
- * </p>
+ * 
  *
  * @author Ewan QUELO
  * @author Raphael MILLE

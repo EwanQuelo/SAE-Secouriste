@@ -8,10 +8,10 @@ import fr.erm.sae201.vue.admin.AdminParametresView;
 
 /**
  * Contrôleur pour l'écran des paramètres de l'administrateur.
- * <p>
+ * 
  * Cette classe gère les actions disponibles dans la vue des paramètres,
  * comme la modification du mot de passe de l'administrateur et la déconnexion.
- * </p>
+ * 
  *
  * @author Ewan QUELO
  * @author Raphael MILLE

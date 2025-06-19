@@ -6,11 +6,11 @@ import java.util.*;
 
 /**
  * Service pour gérer la logique métier liée à la hiérarchie des compétences.
- * <p>
+ * 
  * Il construit un graphe des prérequis en mémoire au moment de son instanciation,
  * puis l'utilise pour vérifier si une compétence possédée par un secouriste est
  * suffisante pour un poste requérant une compétence inférieure.
- * </p>
+ * 
  *
  * @author Ewan QUELO
  * @author Raphael MILLE
@@ -42,10 +42,10 @@ public class ServiceCompetences {
     /**
      * Vérifie si un secouriste, avec son ensemble de compétences, satisfait une
      * compétence requise en tenant compte de la hiérarchie.
-     * <p>
+     * 
      * Pour chaque compétence possédée par le secouriste, elle vérifie si celle-ci
      * est équivalente ou supérieure à la compétence requise en explorant le graphe des prérequis.
-     * </p>
+     * 
      *
      * @param competencesPossedees L'ensemble des compétences du secouriste.
      * @param competenceRequise    La compétence demandée pour le poste.

@@ -144,11 +144,11 @@ public class AuthService {
         MailjetClient client = new MailjetClient(options);
 
         String htmlContent = "<h1>Réinitialisation de mot de passe</h1>"
-                           + "<p>Bonjour,</p>"
-                           + "<p>Vous avez demandé à réinitialiser votre mot de passe. Utilisez le code ci-dessous pour continuer :</p>"
+                           + "Bonjour,"
+                           + "Vous avez demandé à réinitialiser votre mot de passe. Utilisez le code ci-dessous pour continuer :"
                            + "<h2 style='color: #1a73e8;'>" + code + "</h2>"
-                           + "<p>Si vous n'êtes pas à l'origine de cette demande, vous pouvez ignorer cet email.</p>"
-                           + "<p>L'équipe SECOURS</p>";
+                           + "Si vous n'êtes pas à l'origine de cette demande, vous pouvez ignorer cet email."
+                           + "L'équipe SECOURS";
 
         MailjetRequest request = new MailjetRequest(Emailv31.resource)
             .property(Emailv31.MESSAGES, new JSONArray()

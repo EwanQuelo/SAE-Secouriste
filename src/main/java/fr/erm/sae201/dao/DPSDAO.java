@@ -10,12 +10,12 @@ import java.util.Map;
 
 /**
  * DAO (Data Access Object) pour la gestion des entités DPS (Dispositif Prévisionnel de Secours).
- * <p>
+ * 
  * Un DPS représente un déploiement planifié de secours, détaillant les horaires,
  * le lieu, le sport associé et le jour de l'opération. Ce DAO gère les opérations CRUD
  * pour les enregistrements de DPS et la relation avec les compétences requises
  * via la table de jointure 'ABesoin'.
- * </p>
+ * 
  *
  * @author Ewan QUELO
  * @author Raphael MILLE
