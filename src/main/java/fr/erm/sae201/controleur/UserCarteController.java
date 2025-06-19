@@ -5,25 +5,45 @@ import fr.erm.sae201.metier.persistence.CompteUtilisateur;
 import fr.erm.sae201.metier.persistence.DPS;
 import fr.erm.sae201.metier.persistence.Site;
 import fr.erm.sae201.metier.service.AffectationMngt;
-import fr.erm.sae201.vue.user.UserCarteView; // Import de la vue pour la méthode de couleur
+import fr.erm.sae201.vue.user.UserCarteView;
 import javafx.application.Platform;
 
 import java.util.List;
 import java.util.Locale;
 
 /**
- * Controller for the "Carte" view.
+ * Contrôleur pour la vue "Carte".
+ * <p>
+ * Cette classe charge les affectations de l'utilisateur et les affiche
+ * sur une carte géographique. Elle gère la création des marqueurs personnalisés
+ * et la communication avec la vue pour l'affichage et le centrage.
+ * </p>
  *
- * @author Ewan QUELO, Raphael MILLE, Matheo BIET (and AI assistant)
+ * @author Ewan QUELO
+ * @author Raphael MILLE
+ * @author Matheo BIET
  * @version 2.1
  */
 public class UserCarteController {
 
+    /** La vue de la carte associée à ce contrôleur. */
     private final UserCarteView view;
+
+    /** Le compte de l'utilisateur connecté. */
     private final CompteUtilisateur compte;
+
+    /** Le service métier pour la gestion des affectations. */
     private final AffectationMngt affectationMngt;
+
+    /** La liste des affectations de l'utilisateur, pré-chargée pour un accès rapide. */
     private List<Affectation> userAffectations;
 
+    /**
+     * Constructeur du contrôleur de la carte.
+     *
+     * @param view   La vue à contrôler.
+     * @param compte Le compte de l'utilisateur connecté.
+     */
     public UserCarteController(UserCarteView view, CompteUtilisateur compte) {
         this.view = view;
         this.compte = compte;
@@ -32,17 +52,29 @@ public class UserCarteController {
         preloadData();
     }
 
+    /**
+     * Pré-charge les affectations de l'utilisateur depuis la base de données
+     * pour les rendre disponibles immédiatement lorsque la vue est prête.
+     */
     private void preloadData() {
         if (compte.getIdSecouriste() != null) {
             this.userAffectations = affectationMngt.getAssignmentsForSecouriste(compte.getIdSecouriste());
         }
     }
 
+    /**
+     * Méthode appelée par la vue lorsque la page de la carte est entièrement chargée.
+     * Déclenche le chargement et l'affichage des affectations sur la carte.
+     */
     public void onMapPageReady() {
         System.out.println("CONTROLLER: onMapPageReady() called by View. Loading and displaying affectations.");
         loadAndDisplayAffectations();
     }
 
+    /**
+     * Efface les listes et marqueurs existants, puis charge et affiche
+     * les nouvelles affectations sur la carte et dans la liste textuelle.
+     */
     private void loadAndDisplayAffectations() {
         Platform.runLater(() -> {
             view.clearAffectationsList();
@@ -66,6 +98,12 @@ public class UserCarteController {
         });
     }
 
+    /**
+     * Construit et exécute le script JavaScript pour ajouter un marqueur
+     * sur la carte pour une affectation donnée.
+     *
+     * @param affectation L'affectation pour laquelle créer un marqueur.
+     */
     private void addMarkerForAssignment(Affectation affectation) {
         DPS dps = affectation.getDps();
         Site site = dps.getSite();
@@ -86,18 +124,16 @@ public class UserCarteController {
     }
 
     /**
-     * Generates custom HTML for a map marker.
-     * **FIXED**: The '%' in '50%' is now escaped as '50%%'.
-     * **IMPROVED**: Uses the static method from UserCarteView to get the color.
+     * Génère le code HTML pour une icône de marqueur personnalisée.
+     * L'icône est un cercle coloré contenant l'identifiant du DPS.
+     * La couleur est déterminée par une méthode centralisée dans la vue.
      *
-     * @param dps The DPS object.
-     * @return A string of HTML for a colored circle marker.
+     * @param dps Le DPS concerné.
+     * @return Une chaîne de caractères HTML représentant l'icône du marqueur.
      */
     private String generateMarkerIconHtml(DPS dps) {
-        // IMPROVED: Get the color from the centralized method in the View
         String color = UserCarteView.getDpsColor(dps);
 
-        // FIXED: Escaped the '%' character to '%%'
         String html = String.format(
             "<div style='background-color:%s; color:white; border-radius:50%%; width:24px; height:24px; text-align:center; line-height:24px; font-weight:bold; border: 2px solid white; box-shadow: 0 0 5px rgba(0,0,0,0.5);'>%d</div>",
             color,

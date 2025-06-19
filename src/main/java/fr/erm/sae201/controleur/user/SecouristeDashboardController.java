@@ -12,18 +12,41 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 /**
- * Controller for the SecouristeDashboard view.
- * It fetches and manages the data displayed on the user's main dashboard.
+ * Contrôleur pour la vue du tableau de bord du secouriste.
+ * <p>
+ * Il récupère et gère les données affichées sur le tableau de bord
+ * principal de l'utilisateur, notamment son planning du jour et les
+ * localisations correspondantes sur une carte.
+ * </p>
+ *
+ * @author Ewan QUELO
+ * @author Raphael MILLE
+ * @author Matheo BIET
+ * @version 1.0
  */
 public class SecouristeDashboardController {
 
+    /** La vue du tableau de bord associée à ce contrôleur. */
     private final SecouristeDashboard view;
+
+    /** Le compte de l'utilisateur secouriste connecté. */
     private final CompteUtilisateur compte;
+
+    /** Le DAO pour accéder aux données des affectations. */
     private final AffectationDAO affectationDAO;
 
-    // We store the daily assignments to pass them to the map when it's ready.
+    /**
+     * Stocke les affectations du jour pour les transmettre à la carte
+     * une fois que celle-ci est initialisée.
+     */
     private List<Affectation> dailyAssignments;
 
+    /**
+     * Constructeur du contrôleur du tableau de bord.
+     *
+     * @param view   La vue à contrôler.
+     * @param compte Le compte de l'utilisateur connecté.
+     */
     public SecouristeDashboardController(SecouristeDashboard view, CompteUtilisateur compte) {
         this.view = view;
         this.compte = compte;
@@ -33,7 +56,9 @@ public class SecouristeDashboardController {
     }
 
     /**
-     * Fetches assignments for the current day and populates the view.
+     * Récupère les affectations pour le jour courant et met à jour la vue.
+     * La méthode charge d'abord toutes les affectations de la semaine pour l'utilisateur,
+     * puis filtre cette liste pour ne conserver que celles du jour actuel.
      */
     private void loadDashboardData() {
         if (compte.getIdSecouriste() == null) {
@@ -41,26 +66,21 @@ public class SecouristeDashboardController {
             return;
         }
 
-        // Use the actual current date for a live dashboard.
         final LocalDate today = LocalDate.now();
-
-        // Find the start and end of the current week.
         LocalDate startOfWeek = today.with(DayOfWeek.MONDAY);
         LocalDate endOfWeek = today.with(DayOfWeek.SUNDAY);
 
-        // Fetch all assignments for the secouriste for the entire week.
         List<Affectation> weeklyAssignments = affectationDAO.findAffectationsForSecouristeBetweenDates(
             compte.getIdSecouriste(),
             startOfWeek,
             endOfWeek
         );
 
-        // CORRECTION: Filter to get assignments only for the current day.
         this.dailyAssignments = weeklyAssignments.stream()
             .filter(a -> a.getDps().getJournee().getDate().equals(today))
             .collect(Collectors.toList());
 
-        // Update the UI on the JavaFX thread with today's assignments and date.
+        // S'assure que la mise à jour de l'interface est effectuée sur le thread JavaFX.
         Platform.runLater(() -> {
             view.populateSchedule(this.dailyAssignments, today);
             view.setMapFooterText("Vos affectations du jour");
@@ -68,28 +88,25 @@ public class SecouristeDashboardController {
     }
 
     /**
-     * Called by the view when the map is ready. Populates the map with markers for the day.
+     * Appelée par la vue lorsque la carte est prête.
+     * Peuple la carte avec les marqueurs géographiques des affectations du jour.
      */
     public void onMapReady() {
         Platform.runLater(() -> {
             view.clearMapMarkers();
 
             if (this.dailyAssignments == null || this.dailyAssignments.isEmpty()) {
-                // If there are no assignments today, we don't add markers.
-                // We could center the map on a default location here if desired.
                 return;
             }
 
-            // CORRECTION: Add markers only for the daily assignments.
             for (Affectation affectation : this.dailyAssignments) {
                 view.addMarkerToMap(affectation);
             }
 
-            // Center the map on the first assignment of the day.
             Affectation firstAffectation = this.dailyAssignments.get(0);
             double lat = firstAffectation.getDps().getSite().getLatitude();
             double lon = firstAffectation.getDps().getSite().getLongitude();
-            view.centerMap(lat, lon, 11); // Zoom in a bit more
+            view.centerMap(lat, lon, 11);
         });
     }
 }

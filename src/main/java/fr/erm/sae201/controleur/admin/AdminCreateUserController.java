@@ -14,38 +14,71 @@ import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
+/**
+ * Contrôleur pour l'interface de création d'un nouvel utilisateur (secouriste).
+ * <p>
+ * Cette classe orchestre la création d'un secouriste en collectant les informations
+ * de la vue, en validant les données saisies et en appelant le service d'authentification
+ * pour finaliser l'inscription en base de données.
+ * </p>
+ *
+ * @author Ewan QUELO
+ * @author Raphael MILLE
+ * @author Matheo BIET
+ * @version 1.0
+ */
 public class AdminCreateUserController {
 
+    /** La vue de création d'utilisateur associée. */
     private final AdminCreateUserView view;
-    private final MainApp navigator;
-    private final AuthService authService;
-    
 
+    /** Le navigateur principal de l'application pour gérer les changements de vue. */
+    private final MainApp navigator;
+
+    /** Le service d'authentification qui gère la logique d'inscription. */
+    private final AuthService authService;
+
+    /**
+     * Constructeur du contrôleur de création d'utilisateur.
+     * Initialise les dépendances et connecte les actions des boutons de la vue
+     * aux méthodes de gestion correspondantes.
+     *
+     * @param view La vue à contrôler.
+     * @param navigator Le navigateur principal de l'application.
+     */
     public AdminCreateUserController(AdminCreateUserView view, MainApp navigator) {
         this.view = view;
         this.navigator = navigator;
-        this.authService = new AuthService(); // Instance locale pour l'inscription
+        this.authService = new AuthService();
 
-        // Lier les actions des boutons
         view.setSaveButtonAction(e -> handleSave());
         view.setCancelButtonAction(e -> handleCancel());
 
-        // Charger les données (compétences) dans la vue
         loadData();
     }
 
+    /**
+     * Charge les données nécessaires à l'affichage de la vue,
+     * notamment la liste de toutes les compétences disponibles.
+     */
     private void loadData() {
-        // Dans ce cas, on a juste besoin de charger les compétences disponibles
         Platform.runLater(() -> view.populateCompetences(authService.getAllCompetences()));
     }
 
+    /**
+     * Gère la sauvegarde du nouvel utilisateur.
+     * Cette méthode récupère l'ensemble des données saisies dans la vue, effectue
+     * une validation de base (champs requis, format de l'email), puis délègue
+     * la création à l'AuthService. Elle gère également l'affichage des notifications
+     * de succès ou d'erreur et la redirection.
+     */
     private void handleSave() {
-        // 1. Récupérer toutes les données de la vue
         String prenom = view.getPrenom();
         String nom = view.getNom();
         String email = view.getEmail();
         String password = view.getPassword();
         LocalDate dateNaissance = view.getDateNaissance();
+
         List<Competence> selectedCompetences = new ArrayList<>();
         Map<Competence, CheckBox> checkBoxes = view.getCompetenceCheckBoxes();
         for (Map.Entry<Competence, CheckBox> entry : checkBoxes.entrySet()) {
@@ -53,7 +86,7 @@ public class AdminCreateUserController {
                 selectedCompetences.add(entry.getKey());
             }
         }
-        // 2. Valider les champs obligatoires
+
         if (prenom.isEmpty() || nom.isEmpty() || email.isEmpty() || password.isEmpty() || dateNaissance == null) {
             NotificationUtils.showError("Champs manquants", "Veuillez remplir tous les champs personnels et le mot de passe.");
             return;
@@ -64,27 +97,27 @@ public class AdminCreateUserController {
             return;
         }
 
-        // 3. Appeler le service d'authentification pour créer le secouriste et son compte
         try {
             Date dob = Date.from(dateNaissance.atStartOfDay(ZoneId.systemDefault()).toInstant());
-            
-            // On utilise la méthode registerSecouriste étendue
             boolean success = authService.registerSecouriste(prenom, nom, email, password, dob, selectedCompetences);
 
             if (success) {
                 NotificationUtils.showSuccess("Utilisateur créé", "Le secouriste " + prenom + " " + nom + " a été ajouté avec succès.");
-                navigator.showAdminUtilisateursView(view.getCompte()); // Rediriger vers la liste des utilisateurs
+                navigator.showAdminUtilisateursView(view.getCompte());
             } else {
-                // Le service devrait avoir levé une exception en cas d'email dupliqué,
-                // mais on garde une sécurité.
+                // Cette branche est une sécurité ; une erreur (ex: email dupliqué)
+                // devrait normalement lever une exception depuis le service.
                 NotificationUtils.showError("Erreur", "La création de l'utilisateur a échoué. L'email existe peut-être déjà.");
             }
         } catch (Exception e) {
-            // Capturer les exceptions spécifiques comme l'email dupliqué
             NotificationUtils.showError("Erreur de création", e.getMessage());
         }
     }
 
+    /**
+     * Gère l'annulation de la création de l'utilisateur.
+     * Redirige l'administrateur vers la vue listant tous les utilisateurs.
+     */
     private void handleCancel() {
         navigator.showAdminUtilisateursView(view.getCompte());
     }

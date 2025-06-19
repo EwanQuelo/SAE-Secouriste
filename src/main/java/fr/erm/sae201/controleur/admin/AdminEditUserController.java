@@ -16,16 +16,45 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-import java.util.stream.Collectors; // NOUVEAU : Import pour le stream
 
+/**
+ * Contrôleur pour la vue de modification des informations d'un secouriste.
+ * <p>
+ * Cette classe charge les données du secouriste à éditer, y compris ses
+ * compétences
+ * actuelles, et permet à l'administrateur de les mettre à jour. La sauvegarde
+ * est gérée par le service SecouristeMngt qui assure la cohérence des données.
+ * </p>
+ *
+ * @author Ewan QUELO
+ * @author Raphael MILLE
+ * @author Matheo BIET
+ * @version 1.0
+ */
 public class AdminEditUserController {
 
+    /** La vue de modification d'utilisateur. */
     private final AdminEditUserView view;
+
+    /** Le navigateur principal de l'application. */
     private final MainApp navigator;
+
+    /** Le secouriste dont les informations sont en cours de modification. */
     private final Secouriste secouristeToEdit;
+
+    /** Le service métier pour la gestion de la logique des secouristes. */
     private final SecouristeMngt secouristeMngt;
+
+    /** Le DAO pour accéder aux données des compétences. */
     private final CompetenceDAO competenceDAO;
 
+    /**
+     * Constructeur du contrôleur de modification d'utilisateur.
+     *
+     * @param view             La vue à contrôler.
+     * @param navigator        Le navigateur principal.
+     * @param secouristeToEdit Le secouriste à modifier.
+     */
     public AdminEditUserController(AdminEditUserView view, MainApp navigator, Secouriste secouristeToEdit) {
         this.view = view;
         this.navigator = navigator;
@@ -39,6 +68,10 @@ public class AdminEditUserController {
         loadData();
     }
 
+    /**
+     * Charge les données du secouriste et la liste de toutes les compétences
+     * de manière asynchrone pour peupler la vue.
+     */
     private void loadData() {
         new Thread(() -> {
             List<Competence> allCompetences = competenceDAO.findAll();
@@ -52,40 +85,48 @@ public class AdminEditUserController {
     }
 
     /**
-     * MODIFIÉ : La logique est maintenant déléguée au service SecouristeMngt.
+     * Gère la sauvegarde des modifications apportées au secouriste.
+     * Récupère les données du formulaire, met à jour l'objet Secouriste,
+     * puis délègue la mise à jour en base de données au service SecouristeMngt.
      */
     private void saveChanges() {
-        // 1. Mettre à jour l'objet secouriste avec les données du formulaire
         try {
             secouristeToEdit.setPrenom(view.getPrenom());
             secouristeToEdit.setNom(view.getNom());
             secouristeToEdit.setTel(view.getTel());
             secouristeToEdit.setAddresse(view.getAdresse());
             if (view.getDateNaissance() != null) {
-                secouristeToEdit.setDateNaissance(Date.from(view.getDateNaissance().atStartOfDay(ZoneId.systemDefault()).toInstant()));
+                secouristeToEdit.setDateNaissance(
+                        Date.from(view.getDateNaissance().atStartOfDay(ZoneId.systemDefault()).toInstant()));
             }
         } catch (IllegalArgumentException e) {
             NotificationUtils.showError("Données invalides", e.getMessage());
             return;
         }
 
-        // 2. Récupérer l'ensemble final des compétences souhaitées depuis la vue
-        Set<Competence> selectedCompetences = view.getCompetenceCheckBoxes().entrySet().stream()
-                .filter(entry -> entry.getValue().isSelected())
-                .map(Map.Entry::getKey)
-                .collect(Collectors.toSet());
+        // Récupère l'ensemble des compétences cochées dans la vue.
+        Set<Competence> selectedCompetences = new HashSet<>();
+        for (Map.Entry<Competence, CheckBox> entry : view.getCompetenceCheckBoxes().entrySet()) {
+            if (entry.getValue().isSelected()) {
+                selectedCompetences.add(entry.getKey());
+            }
+        }
 
-        // 3. Appeler le service avec les informations à jour et le nouvel ensemble de compétences
         boolean success = secouristeMngt.updateSecouristeInfoAndCompetences(secouristeToEdit, selectedCompetences);
-        
+
         if (success) {
-            NotificationUtils.showSuccess("Mise à jour réussie", "Les informations du secouriste ont été mises à jour.");
+            NotificationUtils.showSuccess("Mise à jour réussie",
+                    "Les informations du secouriste ont été mises à jour.");
             navigator.showAdminUtilisateursView(view.getCompte());
         } else {
-            NotificationUtils.showError("Échec", "La mise à jour a échoué. Consultez les logs pour plus de détails.");
+            NotificationUtils.showError("Échec",
+                    "La mise à jour a échoué. Consultez les journaux pour plus de détails.");
         }
     }
 
+    /**
+     * Annule les modifications et retourne à la liste des utilisateurs.
+     */
     private void cancel() {
         navigator.showAdminUtilisateursView(view.getCompte());
     }

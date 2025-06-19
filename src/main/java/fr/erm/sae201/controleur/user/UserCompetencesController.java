@@ -11,12 +11,35 @@ import javafx.application.Platform;
 
 import java.util.Set;
 
+/**
+ * Contrôleur pour la vue affichant les compétences d'un secouriste.
+ * <p>
+ * Cette classe est responsable de charger les compétences associées à
+ * l'utilisateur connecté et de les transmettre à la vue pour affichage.
+ * </p>
+ *
+ * @author Ewan QUELO
+ * @author Raphael MILLE
+ * @author Matheo BIET
+ * @version 1.0
+ */
 public class UserCompetencesController {
 
+    /** La vue des compétences gérée par ce contrôleur. */
     private final UserCompetencesView view;
+
+    /** Le compte de l'utilisateur secouriste connecté. */
     private final CompteUtilisateur compte;
+
+    /** Le service métier pour la gestion des secouristes. */
     private final SecouristeMngt secouristeMngt;
 
+    /**
+     * Constructeur du contrôleur des compétences de l'utilisateur.
+     *
+     * @param view   La vue à contrôler.
+     * @param compte Le compte de l'utilisateur connecté.
+     */
     public UserCompetencesController(UserCompetencesView view, CompteUtilisateur compte) {
         this.view = view;
         this.compte = compte;
@@ -25,18 +48,21 @@ public class UserCompetencesController {
         loadUserCompetences();
     }
 
+    /**
+     * Charge les compétences de l'utilisateur de manière asynchrone.
+     * Récupère l'objet Secouriste via le service, puis extrait ses compétences
+     * et met à jour la vue sur le thread de l'application JavaFX.
+     * Gère le cas où le profil du secouriste ne serait pas trouvé.
+     */
     private void loadUserCompetences() {
         new Thread(() -> {
             if (compte.getIdSecouriste() != null) {
                 try {
-                    // MODIFIÉ : On récupère directement l'objet Secouriste.
                     Secouriste secouriste = secouristeMngt.getSecouriste(compte.getIdSecouriste());
                     Set<Competence> competences = secouriste.getCompetences();
                     Platform.runLater(() -> view.displayCompetences(competences));
                 } catch (EntityNotFoundException e) {
-                    // MODIFIÉ : On gère le cas où le secouriste n'est pas trouvé.
                     System.err.println("Erreur: Impossible de charger les compétences car le secouriste n'a pas été trouvé.");
-                    // On pourrait aussi afficher un message dans la vue
                     Platform.runLater(() -> NotificationUtils.showError("Erreur" ,"Profil utilisateur introuvable."));
                 }
             }

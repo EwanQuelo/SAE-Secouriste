@@ -12,15 +12,46 @@ import fr.erm.sae201.vue.user.UserParametresView;
 import java.time.ZoneId;
 import java.util.Date;
 
+/**
+ * Contrôleur pour la vue des paramètres du secouriste.
+ * <p>
+ * Gère le chargement des données personnelles de l'utilisateur, leur mise à jour,
+ * la modification du mot de passe et la déconnexion.
+ * </p>
+ *
+ * @author Ewan QUELO
+ * @author Raphael MILLE
+ * @author Matheo BIET
+ * @version 1.0
+ */
 public class UserParametresController {
 
+    /** La vue des paramètres associée à ce contrôleur. */
     private final UserParametresView view;
+
+    /** Le navigateur principal de l'application. */
     private final MainApp navigator;
+
+    /** Le compte de l'utilisateur connecté. */
     private final CompteUtilisateur compte;
+
+    /** Le service d'authentification pour la gestion du mot de passe. */
     private final AuthService authService;
+
+    /** Le service métier pour la gestion des informations du secouriste. */
     private final SecouristeMngt secouristeMngt;
+
+    /** L'objet Secouriste correspondant à l'utilisateur, chargé depuis la BDD. */
     private Secouriste currentUser;
 
+    /**
+     * Constructeur du contrôleur des paramètres utilisateur.
+     *
+     * @param view        La vue à contrôler.
+     * @param navigator   Le navigateur principal.
+     * @param compte      Le compte de l'utilisateur connecté.
+     * @param authService Le service d'authentification.
+     */
     public UserParametresController(UserParametresView view, MainApp navigator, CompteUtilisateur compte, AuthService authService) {
         this.view = view;
         this.navigator = navigator;
@@ -31,29 +62,40 @@ public class UserParametresController {
         initialize();
     }
 
+    /**
+     * Initialise le contrôleur en chargeant les données de l'utilisateur et en
+     * liant les actions des boutons de la vue aux méthodes correspondantes.
+     */
     private void initialize() {
         loadUserData();
-        
+
         view.setSaveInfoButtonAction(e -> handleUpdateInfo());
         view.setSavePasswordButtonAction(e -> handleUpdatePassword());
         view.setLogoutButtonAction(e -> navigator.showLoginScreen());
     }
 
+    /**
+     * Charge les informations détaillées du secouriste et les affiche dans la vue.
+     * Gère le cas où le profil du secouriste ne serait pas trouvé en base de données.
+     */
     private void loadUserData() {
         if (compte.getIdSecouriste() != null) {
             try {
-                // MODIFIÉ : On appelle directement getSecouriste qui retourne un objet ou lève une exception.
                 Secouriste secouriste = secouristeMngt.getSecouriste(compte.getIdSecouriste());
                 this.currentUser = secouriste;
                 view.setSecouristeData(currentUser);
             } catch (EntityNotFoundException e) {
-                // MODIFIÉ : On gère l'exception si le secouriste n'est pas trouvé.
                 NotificationUtils.showError("Erreur critique", "Impossible de charger les données du secouriste associé à ce compte.");
                 System.err.println(e.getMessage());
             }
         }
     }
 
+    /**
+     * Gère la mise à jour des informations personnelles du secouriste.
+     * Récupère les données de la vue, met à jour l'objet Secouriste et appelle
+     * le service pour sauvegarder les modifications en base de données.
+     */
     private void handleUpdateInfo() {
         if (currentUser == null) {
             NotificationUtils.showError("Erreur", "Utilisateur non trouvé.");
@@ -81,7 +123,12 @@ public class UserParametresController {
             NotificationUtils.showError("Données invalides", e.getMessage());
         }
     }
-    
+
+    /**
+     * Gère la mise à jour du mot de passe de l'utilisateur.
+     * Valide les champs de mot de passe (non vide, longueur, correspondance)
+     * et appelle le service d'authentification pour effectuer le changement.
+     */
     private void handleUpdatePassword() {
         String newPassword = view.getNewPassword();
         String confirmPassword = view.getConfirmPassword();
@@ -90,7 +137,7 @@ public class UserParametresController {
             NotificationUtils.showError("Champ invalide", "Le nouveau mot de passe ne peut pas être vide.");
             return;
         }
-        
+
         if (newPassword.length() < 6) {
             NotificationUtils.showWarning("Mot de passe trop court", "Le mot de passe doit contenir au moins 6 caractères.");
             return;
