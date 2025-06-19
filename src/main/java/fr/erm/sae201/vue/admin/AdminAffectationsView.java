@@ -3,9 +3,9 @@ package fr.erm.sae201.vue.admin;
 import fr.erm.sae201.controleur.admin.AdminAffectationsController;
 import fr.erm.sae201.metier.persistence.CompteUtilisateur;
 import fr.erm.sae201.metier.persistence.DPS;
-// --- CORRECTION DES IMPORTS ---
+
 import fr.erm.sae201.metier.service.ModelesAlgorithme.AffectationResultat;
-import fr.erm.sae201.metier.service.ModelesAlgorithme.Poste; // <-- IMPORT MANQUANT
+
 import fr.erm.sae201.vue.MainApp;
 import fr.erm.sae201.vue.base.BaseView;
 import javafx.beans.value.ChangeListener;
@@ -16,7 +16,13 @@ import javafx.geometry.Pos;
 import javafx.scene.Node;
 import javafx.scene.control.*;
 import javafx.scene.layout.*;
+
+import java.time.format.DateTimeFormatter;
 import java.util.List;
+import java.util.Locale;
+
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
 
 public class AdminAffectationsView extends BaseView {
 
@@ -25,7 +31,7 @@ public class AdminAffectationsView extends BaseView {
     private Label dpsDetailsLabel;
     private VBox propositionContainer;
     private Button runExhaustiveButton, runGloutonButton, saveChangesButton;
-    private ProgressIndicator loadingIndicator;
+    private ImageView loadingGifView;
 
     public AdminAffectationsView(MainApp navigator, CompteUtilisateur compte) {
         super(navigator, compte, "Affectations");
@@ -34,63 +40,104 @@ public class AdminAffectationsView extends BaseView {
 
     @Override
     protected Node createCenterContent() {
+        // --- CONTENEUR PRINCIPAL ---
         SplitPane splitPane = new SplitPane();
-        splitPane.getStyleClass().add("admin-content-container");
+        // NOUVEAU : On utilise une classe spécifique pour cette vue
+        splitPane.getStyleClass().add("affectations-view-container");
 
+        // --- PANNEAU DE GAUCHE ---
         VBox leftPanel = new VBox(10);
+        leftPanel.getStyleClass().add("affectations-left-panel");
+        // Le padding est maintenant géré par le CSS, mais on peut le garder pour la
+        // structure
         leftPanel.setPadding(new Insets(10));
         leftPanel.getChildren().add(new Label("Choisir un dispositif :"));
+
         dpsListView = new ListView<>();
+        // Pas besoin de classe de style ici, elle est ciblée par son parent
+
         dpsListView.setCellFactory(param -> new ListCell<>() {
+
+            private final DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd MMMM yyyy", Locale.FRENCH);
+
             @Override
             protected void updateItem(DPS item, boolean empty) {
                 super.updateItem(item, empty);
                 if (empty || item == null) {
                     setText(null);
                 } else {
-                    setText(item.getSport().getNom() + " - " + item.getJournee().getDate());
+                    // Utilisation du formateur pour afficher la date.
+                    String formattedDate = item.getJournee().getDate().format(formatter);
+                    setText(item.getSport().getNom() + " - " + formattedDate);
                 }
             }
         });
         leftPanel.getChildren().add(dpsListView);
 
+        // --- PANNEAU DE DROITE ---
         rightPanel = new VBox(20);
+        rightPanel.getStyleClass().add("affectations-right-panel");
         rightPanel.setPadding(new Insets(20));
         rightPanel.setDisable(true);
 
-        dpsDetailsLabel = new Label("Veuillez sélectionner un dispositif dans la liste de gauche.");
-        dpsDetailsLabel.getStyleClass().add("admin-subtitle");
+        dpsDetailsLabel = new Label("Veuillez sélectionner un dispositif pour commencer.");
+        // Ajout d'une classe pour le texte placeholder
+        dpsDetailsLabel.getStyleClass().addAll("admin-subtitle", "placeholder-text");
 
+        // --- BOUTONS D'ALGORITHMES ---
         runExhaustiveButton = new Button("Approche Exhaustive");
-        runExhaustiveButton.getStyleClass().add("algo-button"); // Ajout d'une classe commune
+        // NOUVEAU : Classes de style pour les boutons
+        runExhaustiveButton.getStyleClass().addAll("algo-button", "exhaustive-button");
 
         runGloutonButton = new Button("Approche Gloutonne");
-        runGloutonButton.getStyleClass().addAll("algo-button", "glouton-button"); // Classe commune + classe spécifique
+        runGloutonButton.getStyleClass().addAll("algo-button", "glouton-button");
 
         HBox algoButtons = new HBox(20, runExhaustiveButton, runGloutonButton);
         algoButtons.setAlignment(Pos.CENTER);
 
+        // --- CONTENEUR DE LA PROPOSITION ---
         propositionContainer = new VBox(5);
+        propositionContainer.getStyleClass().add("affectations-proposition-container");
 
+        // NOUVEAU : ScrollPane avec sa classe de style
+        ScrollPane propositionScrollPane = new ScrollPane(propositionContainer);
+        propositionScrollPane.getStyleClass().add("affectations-proposition-scroll-pane");
+        propositionScrollPane.setFitToWidth(true);
+        // La hauteur est maintenant gérée par le CSS, mais on peut garder une
+        // prefHeight
+        propositionScrollPane.setPrefHeight(250);
+
+        // --- BOUTON DE SAUVEGARDE ---
         saveChangesButton = new Button("Valider et Enregistrer");
         saveChangesButton.getStyleClass().add("save-button");
         HBox saveBox = new HBox(saveChangesButton);
         saveBox.setAlignment(Pos.CENTER_RIGHT);
 
-        ScrollPane propositionScrollPane = new ScrollPane(propositionContainer);
-        propositionScrollPane.setFitToWidth(true);
-        propositionScrollPane.setPrefHeight(200);
-
         rightPanel.getChildren().addAll(dpsDetailsLabel, algoButtons, new Separator(),
                 new Label("Proposition d'affectation :"), propositionScrollPane, saveBox);
 
+        // --- GESTION DU CHARGEMENT ---
         StackPane rightStack = new StackPane(rightPanel);
-        loadingIndicator = new ProgressIndicator();
-        loadingIndicator.setVisible(false);
-        rightStack.getChildren().add(loadingIndicator);
+
+        // Crée une instance de l'image à partir de votre fichier GIF
+        // Assurez-vous que le chemin est correct.
+        Image loadingImage = new Image(getClass().getResourceAsStream("/images/loading1.gif"));
+
+        // Crée un ImageView pour afficher l'image
+        loadingGifView = new ImageView(loadingImage);
+
+        // Optionnel : redimensionner le GIF s'il est trop grand
+        loadingGifView.setFitWidth(80);
+        loadingGifView.setFitHeight(80);
+        loadingGifView.setPreserveRatio(true);
+
+        loadingGifView.setVisible(false); // Caché par défaut
+
+        // Ajoute le GIF au StackPane, il sera centré par défaut.
+        rightStack.getChildren().add(loadingGifView);
 
         splitPane.getItems().addAll(leftPanel, rightStack);
-        splitPane.setDividerPositions(0.3);
+        splitPane.setDividerPositions(0.35);
 
         return splitPane;
     }
@@ -136,9 +183,15 @@ public class AdminAffectationsView extends BaseView {
     }
 
     public void showLoading(boolean isLoading) {
-        loadingIndicator.setVisible(isLoading);
+    if (loadingGifView != null) {
+        loadingGifView.setVisible(isLoading);
+    }
+    
+    if (rightPanel != null) {
+        rightPanel.setOpacity(isLoading ? 0.5 : 1.0);
         rightPanel.setDisable(isLoading);
     }
+}
 
     public void setAlgoButtonsDisabled(boolean disabled) {
         runExhaustiveButton.setDisable(disabled);

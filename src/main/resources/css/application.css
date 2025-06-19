@@ -1622,36 +1622,173 @@ Styles pour les Vues Administrateur
 .day-header-label.today-header-label {
     -fx-text-fill: #1976D2;
 }
+/* ==========================================================================
+   ==                  STYLES POUR LA VUE ADMIN AFFECTATIONS               ==
+   ========================================================================== */
 
-/*
-Partie graphes
-*/
+/* --- Conteneur principal (SplitPane) --- */
+.affectations-view-container {
+    -fx-background-color: transparent;
+    -fx-padding: 0;
+    /* Arrondi implicite via les panneaux enfants */
+}
 
-.algo-button {
-    -fx-background-color: #5A5A5A; /* Fond gris foncé neutre */
+/* Barre de séparation du SplitPane */
+.split-pane.affectations-view-container > .split-pane-divider {
+    -fx-background-color: #555555;
+    -fx-padding: 0 1px;
+}
+
+/* --- Panneau de Gauche (Liste des DPS) --- */
+.affectations-left-panel {
+    -fx-background-color: #2B2B2B;
+    -fx-padding: 20px;
+    -fx-spacing: 15px;
+    -fx-background-radius: 12px 0 0 12px; /* Coins arrondis à gauche */
+}
+
+/* Titre du panneau de gauche */
+.affectations-left-panel > .label {
+    -fx-font-size: 16px;
+    -fx-font-weight: bold;
+    -fx-text-fill: white;
+}
+
+/* ListView dans le panneau de gauche */
+.affectations-left-panel .list-view {
+    -fx-background-color: #3C3F41;
+    -fx-border-color: #555555;
+    -fx-border-radius: 6px;
+    -fx-background-radius: 6px;
+}
+
+/* Cellules de la ListView */
+.affectations-left-panel .list-cell {
+    -fx-background-color: transparent;
+    -fx-text-fill: #EAEAEA;
+    -fx-font-size: 14px;
+    -fx-padding: 12px 15px;
+    -fx-border-color: transparent transparent #4a4747 transparent;
+    -fx-border-width: 1px;
+}
+.affectations-left-panel .list-cell:hover {
+    -fx-background-color: rgba(115, 116, 116, 0.2);
+}
+.affectations-left-panel .list-cell:selected {
+    -fx-background-color: #737474;
     -fx-text-fill: white;
     -fx-font-weight: bold;
+}
+
+
+/* --- Panneau de Droite (Détails et Actions) --- */
+.affectations-right-panel {
+    -fx-background-color: #363434;
+    -fx-padding: 25px 30px;
+    -fx-spacing: 20px;
+    -fx-background-radius: 0 12px 12px 0; /* Coins arrondis à droite */
+}
+
+/* Titre dynamique du panneau de droite */
+.affectations-right-panel .admin-subtitle {
+    -fx-font-size: 20px;
+    -fx-font-weight: bold;
+    -fx-text-fill: white;
+    -fx-text-alignment: center;
+}
+
+/* Texte placeholder du panneau de droite */
+.affectations-right-panel .placeholder-text {
+    -fx-font-size: 16px;
+    -fx-text-fill: #80848E;
+}
+
+/* Label "Proposition d'affectation :" */
+.affectations-right-panel > .label {
     -fx-font-size: 14px;
-    -fx-padding: 10px 20px;
+    -fx-font-weight: bold;
+    -fx-text-fill: #b2bec3;
+}
+
+/* Séparateur horizontal */
+.affectations-right-panel .separator .line {
+    -fx-border-color: #4a4747;
+}
+
+
+/* --- Zone de Proposition (ScrollPane) --- */
+.affectations-proposition-scroll-pane {
+    -fx-background-color: #2B2B2B;
+    -fx-background-radius: 8px;
+    -fx-border-color: #555555;
+    -fx-border-radius: 8px;
+    -fx-padding: 15px; /* Un peu plus de padding intérieur */
+    -fx-min-height: 250px;
+}
+
+/* On s'assure que le contenu du ScrollPane est aussi transparent */
+.affectations-proposition-scroll-pane .viewport {
+    -fx-background-color: transparent;
+}
+
+/* Texte des propositions à l'intérieur du ScrollPane */
+.affectations-proposition-container {
+    -fx-spacing: 8px;
+}
+.affectations-proposition-container .label {
+    -fx-font-size: 15px;
+    -fx-text-fill: #EAEAEA;
+    -fx-font-weight: normal;
+}
+.affectations-proposition-container .label:empty {
+    -fx-font-style: italic;
+    -fx-text-fill: #80848E;
+}
+
+/* --- Styles pour les Boutons --- */
+
+/* Style commun pour les boutons d'algo DANS la vue d'affectations */
+.affectations-view-container .algo-button {
+    -fx-pref-width: 200px;
+    -fx-pref-height: 40px;
+    -fx-font-size: 14px;
+    -fx-font-weight: bold;
     -fx-background-radius: 8px;
     -fx-cursor: hand;
+    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.3), 5, 0, 1, 2);
+}
+.affectations-view-container .algo-button:disabled {
+    -fx-opacity: 0.6;
 }
 
-.algo-button:hover {
-    -fx-background-color: #6E6E6E; /* Un peu plus clair au survol */
+/* Style du bouton exhaustif DANS la vue d'affectations */
+.affectations-view-container .exhaustive-button {
+    -fx-background-color: #5A5A5A;
+    -fx-text-fill: white;
+}
+.affectations-view-container .exhaustive-button:hover {
+    -fx-background-color: #6E6E6E;
 }
 
-/* Style spécifique pour le bouton Glouton pour le différencier */
-.glouton-button {
-    -fx-background-color: #007AFF; /* Bleu pour le distinguer */
+/* Style du bouton glouton DANS la vue d'affectations */
+.affectations-view-container .glouton-button {
+    -fx-background-color: #007AFF;
+    -fx-text-fill: white;
 }
-.glouton-button:hover {
+.affectations-view-container .glouton-button:hover {
     -fx-background-color: #0056b3;
 }
 
-/* Style pour les boutons quand ils sont désactivés */
-.algo-button:disabled {
-    -fx-background-color: #404249;
-    -fx-text-fill: #80848E;
-    -fx-opacity: 0.7;
+/* Style du bouton de sauvegarde VERT DANS la vue d'affectations */
+.affectations-view-container .save-button {
+    -fx-background-color: #2E7D32; /* Vert */
+    -fx-text-fill: white;
+    -fx-font-size: 15px;
+    -fx-font-weight: bold;
+    -fx-background-radius: 8px;
+    -fx-padding: 10px 25px;
+    -fx-cursor: hand;
+}
+.affectations-view-container .save-button:hover {
+    -fx-background-color: #388E3C;
 }
