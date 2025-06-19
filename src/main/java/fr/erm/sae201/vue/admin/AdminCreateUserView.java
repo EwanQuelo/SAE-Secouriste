@@ -19,27 +19,53 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+/**
+ * Vue pour la création d'un nouvel utilisateur (secouriste) par un administrateur.
+ * <p>
+ * Cette vue présente un formulaire divisé en deux sections : les informations
+ * personnelles et la sélection des compétences. Elle gère également la logique
+ * de dépendance entre les compétences cochées (un prérequis est automatiquement
+ * coché si une compétence supérieure est sélectionnée).
+ * </p>
+ *
+ * @author Ewan QUELO
+ * @author Raphael MILLE
+ * @author Matheo BIET
+ * @version 1.0
+ */
 public class AdminCreateUserView extends BaseView {
 
     private TextField prenomField, nomField, emailField, telField, adresseField;
     private PasswordField passwordField;
     private DatePicker dateNaissancePicker;
+    /** Conteneur pour les cases à cocher des compétences. */
     private VBox competencesContainer;
     private Button saveButton, cancelButton;
+    /** Map liant chaque compétence à sa case à cocher pour un accès facile. */
     private final Map<Competence, CheckBox> competenceCheckBoxes = new HashMap<>();
     private final CompteUtilisateur adminCompte;
 
+    /**
+     * Constructeur de la vue de création d'utilisateur.
+     *
+     * @param navigator   Le navigateur principal.
+     * @param adminCompte Le compte de l'administrateur connecté.
+     */
     public AdminCreateUserView(MainApp navigator, CompteUtilisateur adminCompte) {
         super(navigator, adminCompte, "Utilisateurs");
         this.adminCompte = adminCompte;
         new AdminCreateUserController(this, navigator);
     }
 
+    /**
+     * Crée le contenu central de la vue, qui est un formulaire de création.
+     *
+     * @return Le nœud racine du contenu.
+     */
     @Override
     protected Node createCenterContent() {
         VBox mainContainer = new VBox(25);
         mainContainer.setPadding(new Insets(30));
-        // On réutilise la même classe CSS que la vue de modification
         mainContainer.getStyleClass().add("admin-form-container"); 
         mainContainer.setAlignment(Pos.TOP_CENTER);
 
@@ -64,6 +90,11 @@ public class AdminCreateUserView extends BaseView {
         return wrapper;
     }
 
+    /**
+     * Crée le panneau contenant les champs d'informations personnelles de l'utilisateur.
+     *
+     * @return Un nœud contenant le formulaire des informations personnelles.
+     */
     private Node createUserInfoPanel() {
         VBox container = new VBox(20);
         container.getStyleClass().add("settings-section");
@@ -103,7 +134,6 @@ public class AdminCreateUserView extends BaseView {
         dateNaissancePicker = new DatePicker();
         grid.add(dateNaissancePicker, 1, 6);
         
-        // Appliquer le style à tous les champs
         prenomField.getStyleClass().add("settings-input");
         nomField.getStyleClass().add("settings-input");
         emailField.getStyleClass().add("settings-input");
@@ -117,6 +147,11 @@ public class AdminCreateUserView extends BaseView {
         return container;
     }
 
+    /**
+     * Crée le panneau contenant la liste des compétences à assigner.
+     *
+     * @return Un nœud contenant la sélection des compétences.
+     */
     private Node createCompetencesPanel() {
         VBox container = new VBox(15);
         container.getStyleClass().add("settings-section");
@@ -137,6 +172,11 @@ public class AdminCreateUserView extends BaseView {
         return container;
     }
 
+    /**
+     * Crée la barre de boutons contenant "Annuler" et "Créer l'utilisateur".
+     *
+     * @return Un HBox contenant les boutons d'action.
+     */
     private HBox createButtonBar() {
         HBox buttonBar = new HBox(20);
         buttonBar.setAlignment(Pos.CENTER_RIGHT);
@@ -152,7 +192,11 @@ public class AdminCreateUserView extends BaseView {
         return buttonBar;
     }
 
-    // Méthodes pour le contrôleur
+    /**
+     * Peuple la liste des compétences avec des cases à cocher.
+     *
+     * @param allCompetences La liste de toutes les compétences disponibles.
+     */
     public void populateCompetences(List<Competence> allCompetences) {
         competencesContainer.getChildren().clear();
         competenceCheckBoxes.clear();
@@ -169,6 +213,11 @@ public class AdminCreateUserView extends BaseView {
         }
     }
 
+    /**
+     * Met à jour l'état des cases à cocher en fonction des dépendances.
+     * Si une compétence est sélectionnée, tous ses prérequis sont automatiquement
+     * sélectionnés et désactivés pour empêcher l'utilisateur de les décocher.
+     */
     private void updateCompetenceDependencies() {
         Set<Competence> allRequiredPrerequisites = new HashSet<>();
         for (Map.Entry<Competence, CheckBox> entry : competenceCheckBoxes.entrySet()) {
@@ -190,18 +239,62 @@ public class AdminCreateUserView extends BaseView {
         }
     }
     
+    /**
+     * Retourne le compte de l'administrateur actuellement connecté.
+     * @return Le compte administrateur.
+     */
     public CompteUtilisateur getCompte() { return this.adminCompte; }
+    /**
+     * Retourne le prénom saisi dans le champ de texte.
+     * @return Le prénom.
+     */
     public String getPrenom() { return prenomField.getText(); }
+    /**
+     * Retourne le nom saisi dans le champ de texte.
+     * @return Le nom.
+     */
     public String getNom() { return nomField.getText(); }
+    /**
+     * Retourne l'email saisi dans le champ de texte.
+     * @return L'email.
+     */
     public String getEmail() { return emailField.getText(); }
+    /**
+     * Retourne le mot de passe saisi dans le champ de texte.
+     * @return Le mot de passe.
+     */
     public String getPassword() { return passwordField.getText(); }
+    /**
+     * Retourne le téléphone saisi dans le champ de texte.
+     * @return Le téléphone.
+     */
     public String getTel() { return telField.getText(); }
+    /**
+     * Retourne l'adresse saisie dans le champ de texte.
+     * @return L'adresse.
+     */
     public String getAdresse() { return adresseField.getText(); }
+    /**
+     * Retourne la date de naissance sélectionnée.
+     * @return La date de naissance.
+     */
     public LocalDate getDateNaissance() { return dateNaissancePicker.getValue(); }
+    /**
+     * Retourne la map des compétences et de leurs cases à cocher associées.
+     * @return La map des compétences.
+     */
     public Map<Competence, CheckBox> getCompetenceCheckBoxes() {
         return competenceCheckBoxes;
     }
     
+    /**
+     * Définit l'action pour le bouton de sauvegarde.
+     * @param event Le gestionnaire d'événement.
+     */
     public void setSaveButtonAction(EventHandler<ActionEvent> event) { saveButton.setOnAction(event); }
+    /**
+     * Définit l'action pour le bouton d'annulation.
+     * @param event Le gestionnaire d'événement.
+     */
     public void setCancelButtonAction(EventHandler<ActionEvent> event) { cancelButton.setOnAction(event); }
 }

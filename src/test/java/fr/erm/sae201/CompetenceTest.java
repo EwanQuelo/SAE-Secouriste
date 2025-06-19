@@ -11,11 +11,9 @@ import static org.junit.Assert.*;
 /**
  * Classe de test pour la classe de persistance Competence.
  * Suit un format spécifique avec des méthodes de test principales
- * et des méthodes d'aide pour chaque cas. (VERSION CORRIGÉE)
+ * et des méthodes d'aide pour chaque cas.
  */
 public class CompetenceTest {
-
-    // --- Tests pour le Constructeur et setIntitule ---
 
     @Test
     public void testSetIntitule() {
@@ -97,10 +95,9 @@ public class CompetenceTest {
         testCasAddPrerequisite(new Competence("Java"), 1, null);
 
         System.out.println("Cas limite :");
-        // Ajout d'une compétence déjà présente (le set ne doit pas changer de taille)
         Competence c = new Competence("Data Science");
         c.addPrerequisite(new Competence("SQL"));
-        c.addPrerequisite(new Competence("SQL")); // Ajout du doublon
+        c.addPrerequisite(new Competence("SQL")); 
         assertEquals("L'ajout d'un doublon ne doit pas changer la taille du set.", 1, c.getPrerequisites().size());
 
         System.out.println("Cas erreur :");

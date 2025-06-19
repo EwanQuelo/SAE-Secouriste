@@ -2,7 +2,7 @@
 package fr.erm.sae201.vue.admin;
 
 import fr.erm.sae201.controleur.admin.AdminVisualiserController;
-import fr.erm.sae201.controleur.admin.AdminVisualiserController.DpsStatusInfo; // IMPORTANT
+import fr.erm.sae201.controleur.admin.AdminVisualiserController.DpsStatusInfo;
 import fr.erm.sae201.metier.persistence.CompteUtilisateur;
 import fr.erm.sae201.metier.persistence.DPS;
 import fr.erm.sae201.vue.MainApp;
@@ -23,6 +23,16 @@ import java.util.List;
 import java.util.Locale;
 import java.util.function.Consumer;
 
+/**
+ * La vue de visualisation sous forme de calendrier hebdomadaire pour les administrateurs.
+ * Elle affiche les Dispositifs Prévisionnels de Secours (DPS) sur une grille temporelle,
+ * indiquant leur état d'affectation (complet, en cours, non pourvu) par un code couleur.
+ *
+ * @author Ewan QUELO
+ * @author Raphael MILLE
+ * @author Matheo BIET
+ * @version 1.0
+ */
 public class AdminVisualiserView extends BaseView {
 
     private VBox mainContainer;
@@ -32,15 +42,32 @@ public class AdminVisualiserView extends BaseView {
     private static final int END_HOUR = 24;
     private static final double HOUR_HEIGHT = 45.0;
 
+    /**
+     * Construit la vue de visualisation.
+     *
+     * @param navigator L'instance principale de l'application pour la navigation.
+     * @param compte    Le compte de l'administrateur connecté.
+     */
     public AdminVisualiserView(MainApp navigator, CompteUtilisateur compte) {
         super(navigator, compte, "Visualiser");
         new AdminVisualiserController(this, navigator, compte);
     }
 
+    /**
+     * Définit le gestionnaire d'événements à appeler lors d'un changement de semaine.
+     *
+     * @param handler Le Consumer qui sera exécuté, recevant -1 pour la semaine précédente
+     *                et 1 pour la semaine suivante.
+     */
     public void setWeekChangeHandler(Consumer<Integer> handler) {
         this.weekChangeHandler = handler;
     }
 
+    /**
+     * Crée et retourne le contenu central de la vue, qui est le conteneur principal du calendrier.
+     *
+     * @return Le nœud (Node) racine du contenu de la vue.
+     */
     @Override
     protected Node createCenterContent() {
         mainContainer = new VBox(10);
@@ -48,6 +75,12 @@ public class AdminVisualiserView extends BaseView {
         return mainContainer;
     }
 
+    /**
+     * Peuple l'ensemble de la vue du calendrier avec les données pour une semaine donnée.
+     *
+     * @param currentWeekStart La date du premier jour (lundi) de la semaine à afficher.
+     * @param dpsStatusList    La liste des DPS et de leur statut d'affectation pour cette semaine.
+     */
     public void populateCalendar(LocalDate currentWeekStart, List<DpsStatusInfo> dpsStatusList) {
         mainContainer.getChildren().clear();
 
@@ -66,6 +99,13 @@ public class AdminVisualiserView extends BaseView {
         mainContainer.getChildren().addAll(weekNavigationBar, scrollPane);
     }
     
+    /**
+     * Crée la barre de navigation en haut du calendrier, avec les boutons pour changer de semaine
+     * et les en-têtes des jours.
+     *
+     * @param currentWeekStart La date du premier jour de la semaine affichée.
+     * @return Un GridPane représentant la barre de navigation.
+     */
     private GridPane createWeekNavigationBar(LocalDate currentWeekStart) {
         GridPane navGrid = new GridPane();
         navGrid.getStyleClass().add("week-nav-grid");
@@ -131,6 +171,11 @@ public class AdminVisualiserView extends BaseView {
         return navGrid;
     }
 
+    /**
+     * Crée la grille principale du calendrier avec les colonnes pour l'échelle de temps et les sept jours.
+     *
+     * @return Un GridPane initialisé pour le calendrier.
+     */
     private GridPane createCalendarGrid() {
         GridPane grid = new GridPane();
         grid.getStyleClass().add("calendar-grid");
@@ -147,6 +192,12 @@ public class AdminVisualiserView extends BaseView {
         return grid;
     }
 
+    /**
+     * Remplit la grille du calendrier avec les labels d'heures et les événements DPS.
+     *
+     * @param calendarGrid    La grille à remplir.
+     * @param dpsStatusList   La liste des DPS à afficher.
+     */
     private void populateCalendarGrid(GridPane calendarGrid, List<DpsStatusInfo> dpsStatusList) {
         calendarGrid.getChildren().clear();
         calendarGrid.getRowConstraints().clear();
@@ -214,22 +265,27 @@ public class AdminVisualiserView extends BaseView {
         }
     }
     
+    /**
+     * Crée un nœud visuel pour un événement DPS, avec un style dépendant de son statut d'affectation.
+     *
+     * @param statusInfo Les informations du DPS, y compris le nombre de secouristes requis et assignés.
+     * @return Un nœud (Node) représentant l'événement à afficher dans le calendrier.
+     */
     private Node createDpsNode(DpsStatusInfo statusInfo) {
         VBox eventBox = new VBox(2);
         DPS dps = statusInfo.dps();
         int assigned = statusInfo.assigned();
         int required = statusInfo.required();
 
-        // **MODIFICATION CLÉ** : On applique une classe de base et une classe de statut
-        eventBox.getStyleClass().add("admin-cal-event-box"); // Classe de base
+        eventBox.getStyleClass().add("admin-cal-event-box");
         
-        if (required > 0) { // On colore seulement si du personnel est requis
+        if (required > 0) {
             if (assigned == 0) {
-                eventBox.getStyleClass().add("status-empty"); // Classe pour le rouge
+                eventBox.getStyleClass().add("status-empty");
             } else if (assigned < required) {
-                eventBox.getStyleClass().add("status-in-progress"); // Classe pour le orange
-            } else { // assigned >= required
-                eventBox.getStyleClass().add("status-complete"); // Classe pour le bleu
+                eventBox.getStyleClass().add("status-in-progress");
+            } else {
+                eventBox.getStyleClass().add("status-complete");
             }
         }
         

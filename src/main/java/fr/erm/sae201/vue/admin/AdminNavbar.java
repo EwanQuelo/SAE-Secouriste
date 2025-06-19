@@ -13,10 +13,27 @@ import javafx.scene.image.ImageView;
 import javafx.scene.layout.*;
 import javafx.scene.shape.Circle;
 
+/**
+ * La barre de navigation horizontale affichée en haut des vues de l'interface d'administration.
+ * Elle contient les liens de navigation vers les différentes sections (Accueil, Dispositifs, etc.),
+ * ainsi que les informations de l'utilisateur connecté et un bouton d'accès aux paramètres.
+ *
+ * @author Ewan QUELO
+ * @author Raphael MILLE
+ * @author Matheo BIET
+ * @version 1.0
+ */
 public class AdminNavbar extends HBox {
 
     private final SecouristeDAO secouristeDAO = new SecouristeDAO();
 
+    /**
+     * Construit la barre de navigation de l'administrateur.
+     *
+     * @param navigator L'instance principale de l'application, utilisée pour la navigation entre les vues.
+     * @param compte Le compte de l'administrateur actuellement connecté.
+     * @param activeViewName Le nom de la vue actuellement active, pour mettre en surbrillance le bouton correspondant.
+     */
     public AdminNavbar(MainApp navigator, CompteUtilisateur compte, String activeViewName) {
         super(20);
         this.getStyleClass().add("navbar");
@@ -24,12 +41,21 @@ public class AdminNavbar extends HBox {
 
         HBox navLinks = createNavLinks(navigator, compte, activeViewName);
         Region spacer = new Region();
+        // Espace flexible pour pousser les informations utilisateur vers la droite de la barre.
         HBox.setHgrow(spacer, Priority.ALWAYS);
         HBox userInfo = createUserInfo(navigator, compte);
 
         this.getChildren().addAll(navLinks, spacer, userInfo);
     }
 
+    /**
+     * Crée le conteneur avec les boutons de navigation vers les différentes sections de l'administration.
+     *
+     * @param navigator L'objet MainApp pour gérer les actions de navigation.
+     * @param compte Le compte de l'utilisateur connecté.
+     * @param activeViewName Le nom de la vue active pour le style du bouton.
+     * @return Un HBox contenant tous les boutons de navigation.
+     */
     private HBox createNavLinks(MainApp navigator, CompteUtilisateur compte, String activeViewName) {
         HBox navLinks = new HBox(15);
         navLinks.setAlignment(Pos.CENTER_LEFT);
@@ -52,11 +78,17 @@ public class AdminNavbar extends HBox {
         Button visualiserBtn = createNavButton("Visualiser", "Visualiser".equals(activeViewName));
         visualiserBtn.setOnAction(e -> navigator.showAdminVisualiserView(compte));
         
-        // Ajout du nouveau bouton à la barre de navigation
         navLinks.getChildren().addAll(accueilBtn, dispositifBtn, utilisateursBtn, competencesBtn, affectationsBtn, visualiserBtn);
         return navLinks;
     }
 
+    /**
+     * Crée un bouton de navigation avec un style de base et un style "actif" si nécessaire.
+     *
+     * @param name Le texte à afficher sur le bouton.
+     * @param isActive Un booléen indiquant si le bouton doit avoir le style actif.
+     * @return Le bouton (Button) créé.
+     */
     private Button createNavButton(String name, boolean isActive) {
         Button navButton = new Button(name);
         navButton.getStyleClass().add("nav-button");
@@ -65,6 +97,15 @@ public class AdminNavbar extends HBox {
         }
         return navButton;
     }
+    
+    /**
+     * Crée le conteneur affichant les informations de l'utilisateur (nom, rôle),
+     * son image de profil et un bouton de paramètres.
+     *
+     * @param navigator L'objet MainApp pour gérer la navigation.
+     * @param compte Le compte de l'utilisateur connecté.
+     * @return Un HBox contenant les informations de l'utilisateur.
+     */
     private HBox createUserInfo(MainApp navigator, CompteUtilisateur compte) {
         HBox userInfo = new HBox(15);
         userInfo.setAlignment(Pos.CENTER_RIGHT);
@@ -76,16 +117,14 @@ public class AdminNavbar extends HBox {
         settingsButton.setGraphic(settingsIcon);
         settingsButton.getStyleClass().add("settings-button");
         
-        // --- LA MODIFICATION CRUCIALE EST ICI ---
-        // On appelle la nouvelle méthode pour les paramètres de l'admin
         settingsButton.setOnAction(e -> navigator.showAdminParametresView(compte));
         
-        // Le reste de la méthode ne change pas
         Secouriste secouriste = null;
         if (compte.getIdSecouriste() != null) {
             secouriste = secouristeDAO.findByID(compte.getIdSecouriste());
         }
 
+        // Si l'administrateur n'a pas de profil secouriste associé, un nom par défaut est utilisé.
         String nomComplet = secouriste != null ? secouriste.getPrenom() + " " + secouriste.getNom() : "Super Utilisateur";
         String role = "Administrateur";
 

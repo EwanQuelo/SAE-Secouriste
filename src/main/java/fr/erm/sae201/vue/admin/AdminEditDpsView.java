@@ -1,14 +1,13 @@
 package fr.erm.sae201.vue.admin;
 
 import fr.erm.sae201.controleur.admin.AdminEditDpsController;
-import fr.erm.sae201.metier.persistence.Competence; // NOUVEAU
+import fr.erm.sae201.metier.persistence.Competence;
 import fr.erm.sae201.metier.persistence.CompteUtilisateur;
 import fr.erm.sae201.metier.persistence.DPS;
 import fr.erm.sae201.metier.persistence.Site;
 import fr.erm.sae201.metier.persistence.Sport;
 import fr.erm.sae201.vue.MainApp;
 import fr.erm.sae201.vue.base.BaseView;
-import fr.erm.sae201.vue.admin.CompetenceRequirementControl; // NOUVEAU
 import javafx.collections.FXCollections;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
@@ -19,11 +18,21 @@ import javafx.scene.control.*;
 import javafx.scene.layout.*;
 
 import java.time.LocalDate;
-import java.util.HashMap; // NOUVEAU
+import java.util.HashMap;
 import java.util.List;
-import java.util.Map; // NOUVEAU
+import java.util.Map;
 import java.util.Optional;
 
+/**
+ * La vue pour la création ou la modification d'un Dispositif Prévisionnel de Secours (DPS).
+ * Elle présente un formulaire pour saisir les informations du DPS (site, sport, date, horaires)
+ * ainsi qu'une section pour définir les besoins en compétences (nombre de secouristes par compétence).
+ *
+ * @author Ewan QUELO
+ * @author Raphael MILLE
+ * @author Matheo BIET
+ * @version 1.0
+ */
 public class AdminEditDpsView extends BaseView {
 
     private final CompteUtilisateur compte;
@@ -35,15 +44,27 @@ public class AdminEditDpsView extends BaseView {
     private Label titleLabel;
     private Button addSiteButton, addSportButton;
 
-    // NOUVEAU : Conteneur pour les besoins en compétences
     private VBox requirementsContainer;
 
+    /**
+     * Constructeur de la vue d'édition de DPS.
+     * Initialise les composants de la vue et lie celle-ci à son contrôleur.
+     *
+     * @param navigator L'instance principale de l'application pour la navigation.
+     * @param compte Le compte de l'utilisateur actuellement connecté.
+     * @param dpsToEdit Le DPS à modifier. Si null, la vue est en mode création.
+     */
     public AdminEditDpsView(MainApp navigator, CompteUtilisateur compte, DPS dpsToEdit) {
         super(navigator, compte, "Dispositifs");
         this.compte = compte;
         new AdminEditDpsController(this, navigator, dpsToEdit);
     }
 
+    /**
+     * Crée et retourne le contenu central de la vue.
+     *
+     * @return Le nœud (Node) contenant le formulaire principal et la section des compétences.
+     */
     @Override
     protected Node createCenterContent() {
         VBox formContainer = new VBox(20);
@@ -57,16 +78,21 @@ public class AdminEditDpsView extends BaseView {
         mainSplit.setAlignment(Pos.TOP_LEFT);
 
         Node mainForm = createMainForm();
-        Node requirementsForm = createRequirementsForm(); // Pas de changement ici
+        Node requirementsForm = createRequirementsForm();
 
         mainSplit.getChildren().addAll(mainForm, requirementsForm);
-        
+
         HBox buttonBar = createButtonBar();
 
         formContainer.getChildren().addAll(titleLabel, mainSplit, buttonBar);
         return formContainer;
     }
 
+    /**
+     * Crée la partie principale du formulaire pour les détails du DPS.
+     *
+     * @return Le nœud (Node) contenant les champs pour le site, le sport, la date et les horaires.
+     */
     private Node createMainForm() {
         GridPane formGrid = new GridPane();
         formGrid.setHgap(10);
@@ -98,46 +124,55 @@ public class AdminEditDpsView extends BaseView {
         formGrid.add(new Label("Heure de début (HH:MM) :"), 0, 3);
         HBox startTimeBox = new HBox(5);
         startTimeBox.setAlignment(Pos.CENTER_LEFT);
-        startHourField = new TextField(); startHourField.setPromptText("HH");
-        startMinuteField = new TextField(); startMinuteField.setPromptText("MM");
+        startHourField = new TextField();
+        startHourField.setPromptText("HH");
+        startMinuteField = new TextField();
+        startMinuteField.setPromptText("MM");
         startTimeBox.getChildren().addAll(startHourField, new Label(":"), startMinuteField);
         formGrid.add(startTimeBox, 1, 3);
 
         formGrid.add(new Label("Heure de fin (HH:MM) :"), 0, 4);
         HBox endTimeBox = new HBox(5);
         endTimeBox.setAlignment(Pos.CENTER_LEFT);
-        endHourField = new TextField(); endHourField.setPromptText("HH");
-        endMinuteField = new TextField(); endMinuteField.setPromptText("MM");
+        endHourField = new TextField();
+        endHourField.setPromptText("HH");
+        endMinuteField = new TextField();
+        endMinuteField.setPromptText("MM");
         endTimeBox.getChildren().addAll(endHourField, new Label(":"), endMinuteField);
         formGrid.add(endTimeBox, 1, 4);
 
         return formGrid;
     }
 
-    // NOUVELLE MÉTHODE pour créer la section des compétences
+    /**
+     * Crée la section du formulaire dédiée à la définition des besoins en compétences.
+     *
+     * @return Le nœud (Node) contenant la liste des contrôles pour chaque compétence.
+     */
     private Node createRequirementsForm() {
         VBox container = new VBox(15);
         HBox.setHgrow(container, Priority.ALWAYS);
-        // === MODIFICATION CLÉ : On applique la classe CSS au conteneur principal de droite ===
-        container.getStyleClass().add("requirements-panel"); 
+        container.getStyleClass().add("requirements-panel");
 
         Label reqTitle = new Label("Besoins en Compétences");
         reqTitle.getStyleClass().add("section-title");
 
         requirementsContainer = new VBox(10);
-        // On retire le style du conteneur intérieur pour le mettre sur le parent
-        // requirementsContainer.getStyleClass().add("requirements-box"); // SUPPRIMÉ
 
         ScrollPane scrollPane = new ScrollPane(requirementsContainer);
         scrollPane.setFitToWidth(true);
-        scrollPane.setPrefHeight(250); 
+        scrollPane.setPrefHeight(250);
         scrollPane.getStyleClass().add("content-scroll-pane");
 
         container.getChildren().addAll(reqTitle, scrollPane);
         return container;
     }
-    
-    // NOUVELLE MÉTHODE pour les boutons
+
+    /**
+     * Crée la barre de boutons "Enregistrer" et "Annuler".
+     *
+     * @return Le conteneur (HBox) avec les boutons d'action.
+     */
     private HBox createButtonBar() {
         HBox buttonBar = new HBox(20);
         buttonBar.setAlignment(Pos.CENTER_RIGHT);
@@ -149,20 +184,27 @@ public class AdminEditDpsView extends BaseView {
         return buttonBar;
     }
 
-    // --- Méthodes pour que le contrôleur manipule la vue ---
-    
-    // NOUVEAU : Peuple la liste des besoins en compétences
+    /**
+     * Peuple la liste des besoins en compétences dans l'interface.
+     *
+     * @param allCompetences La liste de toutes les compétences disponibles.
+     * @param existingRequirements Une map des compétences déjà requises et leur nombre pour le DPS en cours d'édition.
+     */
     public void populateRequirements(List<Competence> allCompetences, Map<Competence, Integer> existingRequirements) {
         requirementsContainer.getChildren().clear();
         for (Competence competence : allCompetences) {
-            // Récupère le besoin existant pour cette compétence, ou 0 s'il n'y en a pas.
+            // Utilise getOrDefault pour fournir une valeur de 0 si la compétence n'est pas encore requise.
             int initialValue = existingRequirements.getOrDefault(competence, 0);
             CompetenceRequirementControl control = new CompetenceRequirementControl(competence, initialValue);
             requirementsContainer.getChildren().add(control);
         }
     }
 
-    // NOUVEAU : Récupère les valeurs saisies par l'utilisateur
+    /**
+     * Récupère les besoins en compétences saisis par l'utilisateur.
+     *
+     * @return Une map associant chaque compétence au nombre de secouristes requis.
+     */
     public Map<Competence, Integer> getCompetenceRequirements() {
         Map<Competence, Integer> requirements = new HashMap<>();
         for (Node node : requirementsContainer.getChildren()) {
@@ -173,8 +215,20 @@ public class AdminEditDpsView extends BaseView {
         return requirements;
     }
 
-    public CompteUtilisateur getCompte() { return this.compte; }
+    /**
+     * Retourne le compte de l'utilisateur connecté.
+     *
+     * @return Le compte utilisateur.
+     */
+    public CompteUtilisateur getCompte() {
+        return this.compte;
+    }
 
+    /**
+     * Affiche une boîte de dialogue pour créer un nouveau site.
+     *
+     * @return Un Optional contenant le nouveau Site s'il a été créé, sinon un Optional vide.
+     */
     public Optional<Site> showCreateSiteDialog() {
         Dialog<Site> dialog = new Dialog<>();
         dialog.setTitle("Créer un nouveau Site");
@@ -185,25 +239,42 @@ public class AdminEditDpsView extends BaseView {
         grid.setHgap(10);
         grid.setVgap(10);
         grid.setPadding(new Insets(20, 150, 10, 10));
-        TextField codeField = new TextField(); codeField.setPromptText("Ex: CRCHV");
-        TextField nomField = new TextField(); nomField.setPromptText("Ex: Courchevel");
-        TextField lonField = new TextField(); lonField.setPromptText("Ex: 6.6335");
-        TextField latField = new TextField(); latField.setPromptText("Ex: 45.4153");
-        grid.add(new Label("Code:"), 0, 0); grid.add(codeField, 1, 0);
-        grid.add(new Label("Nom:"), 0, 1); grid.add(nomField, 1, 1);
-        grid.add(new Label("Longitude:"), 0, 2); grid.add(lonField, 1, 2);
-        grid.add(new Label("Latitude:"), 0, 3); grid.add(latField, 1, 3);
+        TextField codeField = new TextField();
+        codeField.setPromptText("Ex: CRCHV");
+        TextField nomField = new TextField();
+        nomField.setPromptText("Ex: Courchevel");
+        TextField lonField = new TextField();
+        lonField.setPromptText("Ex: 6.6335");
+        TextField latField = new TextField();
+        latField.setPromptText("Ex: 45.4153");
+        grid.add(new Label("Code:"), 0, 0);
+        grid.add(codeField, 1, 0);
+        grid.add(new Label("Nom:"), 0, 1);
+        grid.add(nomField, 1, 1);
+        grid.add(new Label("Longitude:"), 0, 2);
+        grid.add(lonField, 1, 2);
+        grid.add(new Label("Latitude:"), 0, 3);
+        grid.add(latField, 1, 3);
         dialog.getDialogPane().setContent(grid);
         dialog.setResultConverter(dialogButton -> {
             if (dialogButton == createButtonType) {
                 try {
-                    return new Site(codeField.getText(), nomField.getText(), Float.parseFloat(lonField.getText()), Float.parseFloat(latField.getText()));
-                } catch (Exception e) { return null; }
+                    return new Site(codeField.getText(), nomField.getText(), Float.parseFloat(lonField.getText()),
+                            Float.parseFloat(latField.getText()));
+                } catch (Exception e) {
+                    return null;
+                }
             }
             return null;
         });
         return dialog.showAndWait();
     }
+
+    /**
+     * Affiche une boîte de dialogue pour créer un nouveau sport.
+     *
+     * @return Un Optional contenant le nouveau Sport s'il a été créé, sinon un Optional vide.
+     */
     public Optional<Sport> showCreateSportDialog() {
         Dialog<Sport> dialog = new Dialog<>();
         dialog.setTitle("Créer un nouveau Sport");
@@ -211,11 +282,17 @@ public class AdminEditDpsView extends BaseView {
         ButtonType createButtonType = new ButtonType("Créer", ButtonBar.ButtonData.OK_DONE);
         dialog.getDialogPane().getButtonTypes().addAll(createButtonType, ButtonType.CANCEL);
         GridPane grid = new GridPane();
-        grid.setHgap(10); grid.setVgap(10); grid.setPadding(new Insets(20, 150, 10, 10));
-        TextField codeField = new TextField(); codeField.setPromptText("Ex: SKI-DH");
-        TextField nomField = new TextField(); nomField.setPromptText("Ex: Ski Alpin - Descente");
-        grid.add(new Label("Code:"), 0, 0); grid.add(codeField, 1, 0);
-        grid.add(new Label("Nom:"), 0, 1); grid.add(nomField, 1, 1);
+        grid.setHgap(10);
+        grid.setVgap(10);
+        grid.setPadding(new Insets(20, 150, 10, 10));
+        TextField codeField = new TextField();
+        codeField.setPromptText("Ex: SKI-DH");
+        TextField nomField = new TextField();
+        nomField.setPromptText("Ex: Ski Alpin - Descente");
+        grid.add(new Label("Code:"), 0, 0);
+        grid.add(codeField, 1, 0);
+        grid.add(new Label("Nom:"), 0, 1);
+        grid.add(nomField, 1, 1);
         dialog.getDialogPane().setContent(grid);
         dialog.setResultConverter(dialogButton -> {
             if (dialogButton == createButtonType) {
@@ -225,10 +302,17 @@ public class AdminEditDpsView extends BaseView {
         });
         return dialog.showAndWait();
     }
+
+    /**
+     * Remplit la liste déroulante des sites avec les données fournies.
+     *
+     * @param sites La liste des sites à afficher.
+     */
     public void populateSiteComboBox(List<Site> sites) {
         Site selected = siteComboBox.getValue();
         siteComboBox.setItems(FXCollections.observableArrayList(sites));
-        if (selected != null) siteComboBox.setValue(selected);
+        if (selected != null)
+            siteComboBox.setValue(selected);
         siteComboBox.setCellFactory(param -> new ListCell<>() {
             @Override
             protected void updateItem(Site item, boolean empty) {
@@ -244,10 +328,17 @@ public class AdminEditDpsView extends BaseView {
             }
         });
     }
+
+    /**
+     * Remplit la liste déroulante des sports avec les données fournies.
+     *
+     * @param sports La liste des sports à afficher.
+     */
     public void populateSportComboBox(List<Sport> sports) {
         Sport selected = sportComboBox.getValue();
         sportComboBox.setItems(FXCollections.observableArrayList(sports));
-        if (selected != null) sportComboBox.setValue(selected);
+        if (selected != null)
+            sportComboBox.setValue(selected);
         sportComboBox.setCellFactory(param -> new ListCell<>() {
             @Override
             protected void updateItem(Sport item, boolean empty) {
@@ -263,7 +354,21 @@ public class AdminEditDpsView extends BaseView {
             }
         });
     }
-    public void setFormTitle(String title) { titleLabel.setText(title); }
+
+    /**
+     * Définit le titre du formulaire.
+     *
+     * @param title Le titre à afficher.
+     */
+    public void setFormTitle(String title) {
+        titleLabel.setText(title);
+    }
+
+    /**
+     * Pré-remplit les champs du formulaire avec les données d'un DPS existant.
+     *
+     * @param dps Le DPS dont les données sont utilisées pour remplir le formulaire.
+     */
     public void setDpsData(DPS dps) {
         siteComboBox.setValue(dps.getSite());
         sportComboBox.setValue(dps.getSport());
@@ -273,15 +378,103 @@ public class AdminEditDpsView extends BaseView {
         endHourField.setText(String.format("%02d", dps.getHoraireFin()[0]));
         endMinuteField.setText(String.format("%02d", dps.getHoraireFin()[1]));
     }
-    public Site getSelectedSite() { return siteComboBox.getValue(); }
-    public Sport getSelectedSport() { return sportComboBox.getValue(); }
-    public LocalDate getSelectedDate() { return datePicker.getValue(); }
-    public String getStartHour() { return startHourField.getText(); }
-    public String getStartMinute() { return startMinuteField.getText(); }
-    public String getEndHour() { return endHourField.getText(); }
-    public String getEndMinute() { return endMinuteField.getText(); }
-    public void setSaveButtonAction(EventHandler<ActionEvent> event) { saveButton.setOnAction(event); }
-    public void setCancelButtonAction(EventHandler<ActionEvent> event) { cancelButton.setOnAction(event); }
-    public void setAddSiteAction(EventHandler<ActionEvent> event) { addSiteButton.setOnAction(event); }
-    public void setAddSportAction(EventHandler<ActionEvent> event) { addSportButton.setOnAction(event); }
+
+    /**
+     * Récupère le site sélectionné dans la liste déroulante.
+     *
+     * @return Le site sélectionné.
+     */
+    public Site getSelectedSite() {
+        return siteComboBox.getValue();
+    }
+
+    /**
+     * Récupère le sport sélectionné dans la liste déroulante.
+     *
+     * @return Le sport sélectionné.
+     */
+    public Sport getSelectedSport() {
+        return sportComboBox.getValue();
+    }
+
+    /**
+     * Récupère la date sélectionnée dans le sélecteur de date.
+     *
+     * @return La date sélectionnée.
+     */
+    public LocalDate getSelectedDate() {
+        return datePicker.getValue();
+    }
+
+    /**
+     * Récupère l'heure de début saisie.
+     *
+     * @return La chaîne de caractères de l'heure de début.
+     */
+    public String getStartHour() {
+        return startHourField.getText();
+    }
+
+    /**
+     * Récupère les minutes de début saisies.
+     *
+     * @return La chaîne de caractères des minutes de début.
+     */
+    public String getStartMinute() {
+        return startMinuteField.getText();
+    }
+
+    /**
+     * Récupère l'heure de fin saisie.
+     *
+     * @return La chaîne de caractères de l'heure de fin.
+     */
+    public String getEndHour() {
+        return endHourField.getText();
+    }
+
+    /**
+     * Récupère les minutes de fin saisies.
+     *
+     * @return La chaîne de caractères des minutes de fin.
+     */
+    public String getEndMinute() {
+        return endMinuteField.getText();
+    }
+
+    /**
+     * Associe une action au bouton d'enregistrement.
+     *
+     * @param event Le gestionnaire d'événement à exécuter lors du clic.
+     */
+    public void setSaveButtonAction(EventHandler<ActionEvent> event) {
+        saveButton.setOnAction(event);
+    }
+
+    /**
+     * Associe une action au bouton d'annulation.
+     *
+     * @param event Le gestionnaire d'événement à exécuter lors du clic.
+     */
+    public void setCancelButtonAction(EventHandler<ActionEvent> event) {
+        cancelButton.setOnAction(event);
+    }
+
+    /**
+     * Associe une action au bouton d'ajout de site.
+     *
+     * @param event Le gestionnaire d'événement à exécuter lors du clic.
+     */
+    public void setAddSiteAction(EventHandler<ActionEvent> event) {
+        addSiteButton.setOnAction(event);
+    }
+
+    /**
+     * Associe une action au bouton d'ajout de sport.
+     *
+     * @param event Le gestionnaire d'événement à exécuter lors du clic.
+     */
+    public void setAddSportAction(EventHandler<ActionEvent> event) {
+        addSportButton.setOnAction(event);
+    }
 }

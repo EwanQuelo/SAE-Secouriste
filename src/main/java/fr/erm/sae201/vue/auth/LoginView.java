@@ -14,6 +14,16 @@ import org.controlsfx.control.Notifications;
 
 import fr.erm.sae201.utils.RessourceLoader;
 
+/**
+ * La vue de l'interface utilisateur pour l'écran de connexion.
+ * Elle présente des champs pour l'e-mail et le mot de passe, des boutons pour
+ * la connexion et l'inscription, ainsi qu'un lien pour la réinitialisation du mot de passe.
+ *
+ * @author Ewan QUELO
+ * @author Raphael MILLE
+ * @author Matheo BIET
+ * @version 1.0
+ */
 public class LoginView {
 
     private StackPane rootPane;
@@ -23,10 +33,16 @@ public class LoginView {
     private Button signupButton;
     private Hyperlink forgotPasswordLink;
 
+    /**
+     * Construit la vue de connexion en initialisant ses composants graphiques.
+     */
     public LoginView() {
         createView();
     }
 
+    /**
+     * Crée et assemble tous les éléments graphiques de la vue.
+     */
     private void createView() {
         rootPane = new StackPane();
         rootPane.getStyleClass().add("login-root");
@@ -94,6 +110,10 @@ public class LoginView {
         // --- Fin de la Section Commune ---
     }
 
+    /**
+     * Affiche une notification d'information à l'utilisateur.
+     * La notification apparaît en bas à droite de l'écran et disparaît après 3 secondes.
+     */
     public void sendNotif() {
         Notifications.create()
             .title("Application SECOURS")
@@ -104,11 +124,39 @@ public class LoginView {
             
     }
 
-    // Getters pour le contrôleur
+    /**
+     * Retourne le conteneur racine de cette vue.
+     * @return Le StackPane racine.
+     */
     public StackPane getView() { return rootPane; }
+    
+    /**
+     * Récupère l'adresse e-mail saisie par l'utilisateur.
+     * @return L'adresse e-mail.
+     */
     public String getEmail() { return emailField.getText(); }
+    
+    /**
+     * Récupère le mot de passe saisi par l'utilisateur.
+     * @return Le mot de passe.
+     */
     public String getPassword() { return passwordField.getText(); }
+    
+    /**
+     * Retourne le bouton de connexion.
+     * @return Le bouton (Button) de connexion.
+     */
     public Button getLoginButton() { return loginButton; }
+    
+    /**
+     * Retourne le bouton d'inscription.
+     * @return Le bouton (Button) d'inscription.
+     */
     public Button getSignupButton() { return signupButton; }
+    
+    /**
+     * Retourne l'hyperlien pour la réinitialisation du mot de passe.
+     * @return L'hyperlien (Hyperlink).
+     */
     public Hyperlink getForgotPasswordLink() { return forgotPasswordLink; }
 }

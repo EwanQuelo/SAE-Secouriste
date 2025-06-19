@@ -27,6 +27,17 @@ import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.Locale;
 
+/**
+ * La vue du tableau de bord principal pour un utilisateur secouriste.
+ * Elle se compose de deux parties : un panneau d'emploi du temps journalier à gauche,
+ * qui affiche les affectations sous forme de blocs sur une chronologie, et un panneau
+ * de carte interactive à droite, qui géolocalise les sites des affectations.
+ *
+ * @author Ewan QUELO
+ * @author Raphael MILLE
+ * @author Matheo BIET
+ * @version 1.0
+ */
 public class SecouristeDashboard extends BaseView {
 
     private WebEngine webEngine;
@@ -38,17 +49,34 @@ public class SecouristeDashboard extends BaseView {
     
     private final double HOUR_HEIGHT = 80.0;
     private final int START_HOUR = 8;
-    private final int END_HOUR = 18; // Adjusted for more realistic work day
+    private final int END_HOUR = 18;
 
+    /**
+     * Construit le tableau de bord du secouriste.
+     *
+     * @param navigator L'instance principale de l'application pour la navigation.
+     * @param compte Le compte de l'utilisateur secouriste connecté.
+     */
     public SecouristeDashboard(MainApp navigator, CompteUtilisateur compte) {
         super(navigator, compte, "Accueil");
         new SecouristeDashboardController(this, compte);
     }
 
+    /**
+     * Lie la vue à son contrôleur.
+     *
+     * @param controller Le contrôleur à associer à cette vue.
+     */
     public void setController(SecouristeDashboardController controller) {
         this.controller = controller;
     }
 
+    /**
+     * Crée et retourne le contenu central de la vue, qui est une HBox
+     * contenant le panneau de l'emploi du temps et le panneau de la carte.
+     *
+     * @return Le nœud (Node) principal du contenu de la vue.
+     */
     @Override
     protected Node createCenterContent() {
         HBox mainContainer = new HBox(20);
@@ -62,6 +90,11 @@ public class SecouristeDashboard extends BaseView {
         return mainContainer;
     }
 
+    /**
+     * Crée le panneau de gauche affichant l'emploi du temps du jour.
+     *
+     * @return Un nœud (Node) représentant le panneau de l'emploi du temps.
+     */
     private Node createSchedulePanel() {
         VBox schedulePanel = new VBox(0);
         schedulePanel.getStyleClass().add("schedule-panel-card"); 
@@ -101,6 +134,11 @@ public class SecouristeDashboard extends BaseView {
         return schedulePanel;
     }
 
+    /**
+     * Crée le panneau de droite affichant la carte interactive.
+     *
+     * @return Un nœud (Node) représentant le panneau de la carte.
+     */
     private Node createMapPanel() {
         VBox mapCard = new VBox(0);
         mapCard.getStyleClass().add("map-card");
@@ -112,7 +150,7 @@ public class SecouristeDashboard extends BaseView {
         webEngine = webView.getEngine();
         mapContainer.getChildren().add(webView);
 
-        mapFooterLabel = new Label("Chargement des affectations..."); // Default text
+        mapFooterLabel = new Label("Chargement des affectations...");
         mapFooterLabel.getStyleClass().add("map-footer-label");
         HBox mapFooter = new HBox(mapFooterLabel);
         mapFooter.getStyleClass().add("map-footer");
@@ -124,15 +162,19 @@ public class SecouristeDashboard extends BaseView {
         return mapCard;
     }
     
+    /**
+     * Peuple l'emploi du temps avec les affectations pour une date donnée.
+     *
+     * @param dailyAssignments La liste des affectations du jour.
+     * @param date La date à afficher.
+     */
     public void populateSchedule(List<Affectation> dailyAssignments, LocalDate date) {
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("EEEE d MMMM", Locale.FRENCH);
         String formattedDate = date.format(formatter);
         dateHeaderLabel.setText(formattedDate.substring(0, 1).toUpperCase() + formattedDate.substring(1));
         
-        // Clear old appointments and the "no assignment" label
         timelinePane.getChildren().removeIf(node -> node.getStyleClass().contains("timeline-appointment-box") || "no-assignment-label".equals(node.getId()));
         
-        // Clear any previous current-time line
         timelinePane.getChildren().removeIf(node -> "current-time-line".equals(node.getId()));
 
         if (dailyAssignments.isEmpty()) {
@@ -162,7 +204,7 @@ public class SecouristeDashboard extends BaseView {
             String subtitle = dps.getSite().getNom();
             String time = String.format("%02d:%02d - %02d:%02d", startH, startM, endH, endM);
             Node appointmentNode = createAppointmentBox(title, subtitle, time);
-            appointmentNode.getStyleClass().add("timeline-appointment-box"); // Add style class to identify for clearing
+            appointmentNode.getStyleClass().add("timeline-appointment-box");
 
             AnchorPane.setTopAnchor(appointmentNode, topOffset);
             AnchorPane.setLeftAnchor(appointmentNode, 60.0);
@@ -173,21 +215,27 @@ public class SecouristeDashboard extends BaseView {
             timelinePane.getChildren().add(appointmentNode);
         }
         
-        // CORRECTION: Add current time line only if the displayed date is today
         if (date.equals(LocalDate.now())) {
             double nowInMinutes = (LocalTime.now().getHour() - START_HOUR) * 60 + LocalTime.now().getMinute();
             double currentTimeOffset = nowInMinutes * (HOUR_HEIGHT / 60.0);
-            // Only draw if within the visible hours
             if (currentTimeOffset >= 0 && currentTimeOffset < (END_HOUR - START_HOUR + 1) * HOUR_HEIGHT) {
                 Line currentTimeLine = new Line(0, currentTimeOffset, 280, currentTimeOffset);
                 currentTimeLine.setStroke(Color.RED);
                 currentTimeLine.setStrokeWidth(2.0);
-                currentTimeLine.setId("current-time-line"); // ID for easy removal
+                currentTimeLine.setId("current-time-line");
                 timelinePane.getChildren().add(currentTimeLine);
             }
         }
     }
 
+    /**
+     * Crée une boîte visuelle pour une affectation dans la chronologie.
+     *
+     * @param title Le titre principal de l'affectation.
+     * @param subtitle Le sous-titre (généralement le lieu).
+     * @param time La plage horaire.
+     * @return Un nœud (Node) représentant la boîte de l'affectation.
+     */
     private Node createAppointmentBox(String title, String subtitle, String time) {
         VBox box = new VBox(2);
         box.setPadding(new Insets(8, 8, 8, 8));
@@ -207,11 +255,18 @@ public class SecouristeDashboard extends BaseView {
         return box;
     }
     
-    // CORRECTION: Public method to allow the controller to set the map footer text
+    /**
+     * Met à jour le texte du pied de page de la carte.
+     *
+     * @param text Le texte à afficher.
+     */
     public void setMapFooterText(String text) {
         mapFooterLabel.setText(text);
     }
     
+    /**
+     * Configure le moteur web pour charger la carte et gérer les états de chargement.
+     */
     private void setupWebEngine() {
         webEngine.getLoadWorker().stateProperty().addListener((obs, oldState, newState) -> {
             if (newState == Worker.State.SUCCEEDED) {
@@ -233,6 +288,11 @@ public class SecouristeDashboard extends BaseView {
         }
     }
 
+    /**
+     * Ajoute un marqueur sur la carte pour une affectation donnée.
+     *
+     * @param affectation L'affectation à localiser sur la carte.
+     */
     public void addMarkerToMap(Affectation affectation) {
         Site site = affectation.getDps().getSite();
         String popupText = String.format("<b>%s</b><br>%s",
@@ -248,14 +308,29 @@ public class SecouristeDashboard extends BaseView {
         executeMapScript(script);
     }
     
+    /**
+     * Centre la carte sur une coordonnée géographique spécifique avec un niveau de zoom.
+     *
+     * @param lat La latitude du centre.
+     * @param lon La longitude du centre.
+     * @param zoom Le niveau de zoom (plus le nombre est élevé, plus le zoom est proche).
+     */
     public void centerMap(double lat, double lon, int zoom) {
         executeMapScript(String.format(Locale.US, "flyTo(%f, %f, %d);", lat, lon, zoom));
     }
 
+    /**
+     * Efface tous les marqueurs actuellement affichés sur la carte.
+     */
     public void clearMapMarkers() {
         executeMapScript("clearAllMarkers();");
     }
 
+    /**
+     * Affiche un message d'erreur dans le panneau de l'emploi du temps.
+     *
+     * @param message Le message d'erreur à afficher.
+     */
     public void showError(String message) {
         timelinePane.getChildren().clear();
         Label errorLabel = new Label(message);
@@ -265,7 +340,13 @@ public class SecouristeDashboard extends BaseView {
         timelinePane.getChildren().add(errorLabel);
     }
     
+    /**
+     * Exécute un script JavaScript sur le moteur web de la carte de manière sécurisée.
+     *
+     * @param script Le script JavaScript à exécuter.
+     */
     private void executeMapScript(String script) {
+        // S'assure que le script est exécuté sur le thread de l'application JavaFX pour éviter les erreurs.
         if (isMapReady && Platform.isFxApplicationThread()) {
             webEngine.executeScript(script);
         } else if (isMapReady) {

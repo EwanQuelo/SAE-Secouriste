@@ -1,23 +1,17 @@
-/* --- Barre de Navigation --- */
 .navbar {
-    -fx-background-color: #363434; /* Noir/gris très sombre et semi-transparent */
+    -fx-background-color: #363434;
     -fx-background-radius: 12;
-    -fx-padding: 8px 20px; /* Augmentation du padding horizontal */
+    -fx-padding: 8px 20px;
     -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.5), 10, 0, 0, 5);
     -fx-border-color: rgba(255, 255, 255, 0.1);
     -fx-border-width: 1px;
     -fx-border-radius: 12;
 }
-
-/* --- Séparateur dans la Navbar --- */
 .navbar .separator .line {
-    -fx-border-color: rgba(255, 255, 255, 0.2); /* Couleur de la ligne */
+    -fx-border-color: rgba(255, 255, 255, 0.2);
     -fx-border-style: solid;
-    -fx-border-width: 0 0 0 1px; /* Ligne verticale à gauche */
+    -fx-border-width: 0 0 0 1px;
 }
-
-
-/* --- Boutons de Navigation --- */
 .nav-button {
     -fx-background-color: transparent;
     -fx-text-fill: #dfe6e9;
@@ -25,52 +19,41 @@
     -fx-font-weight: bold;
     -fx-padding: 8px 12px;
     -fx-background-radius: 8;
-    -fx-border-color: transparent; /* Bordure transparente par défaut */
+    -fx-border-color: transparent;
     -fx-border-width: 0 0 2px 0;
     -fx-cursor: hand;
 }
-
 .nav-button:hover {
     -fx-text-fill: white;
 }
-
-/* MODIFIÉ : Style pour le bouton de la vue active (soulignement) */
 .nav-button-active {
-    -fx-border-color: white; /* Couleur du soulignement */
+    -fx-border-color: white;
     -fx-text-fill: white;
 }
-
-/* --- Informations Utilisateur (droite) --- */
 .user-info-text {
     -fx-font-size: 14px;
     -fx-font-weight: bold;
     -fx-text-fill: white;
 }
-
 .user-info-role {
     -fx-font-size: 12px;
-    -fx-text-fill: #b2bec3; /* Gris clair */
+    -fx-text-fill: #b2bec3;
 }
-
 .settings-button {
     -fx-background-color: transparent;
     -fx-padding: 5px;
-    -fx-background-radius: 50%; /* pour faire un cercle */
+    -fx-background-radius: 50%;
     -fx-cursor: hand;
 }
-
 .settings-button:hover {
     -fx-background-color: rgba(255, 255, 255, 0.2);
 }
-
-/* --- Panneau de contenu central --- */
 .center-content-panel {
-    -fx-background-color: rgba(255, 255, 255, 0.9); /* Blanc semi-transparent */
+    -fx-background-color: rgba(255, 255, 255, 0.9);
     -fx-background-radius: 10;
     -fx-padding: 30px;
     -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.2), 15, 0, 0, 5);
 }
-
 .assignment-card {
     -fx-background-color: #f9f9f9;
     -fx-border-color: #e0e0e0;
@@ -78,58 +61,39 @@
     -fx-border-radius: 4px;
     -fx-background-radius: 4px;
     -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.05), 5, 0, 1, 2);
-    -fx-cursor: hand; /* Changes cursor to a hand on hover */
+    -fx-cursor: hand;
     -fx-transition: -fx-background-color 0.2s;
 }
-
 .assignment-card:hover {
-    -fx-background-color: #e8f0fe; /* A light blue to indicate selection */
+    -fx-background-color: #e8f0fe;
     -fx-border-color: #a6c5f7;
 }
-
-
-/* ==========================================================================
-   Styles pour la Page Paramètres - Version Finale Cohérente
-   ========================================================================== */
-
-/* Conteneur principal : inspiré de .login-box et .navbar */
 .form-container {
-    -fx-background-color:#363434; 
+    -fx-background-color:#363434;
     -fx-padding: 30px 40px;
-    -fx-background-radius: 12px; /* Comme la navbar */
-    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.5), 10, 0, 0, 5); /* Comme la navbar */
+    -fx-background-radius: 12px;
+    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.5), 10, 0, 0, 5);
     -fx-max-width: 550px;
-    
 }
-
-/* Titre principal "Paramètres du compte" : inspiré de .title-label */
 .form-title {
     -fx-font-size: 28px;
     -fx-font-weight: bold;
-    -fx-fill: white; /* C'est cette ligne qui met le texte en blanc */
-    -fx-padding-bottom: 20px; /* Ajoute un peu d'espace en dessous */
+    -fx-fill: white;
+    -fx-padding-bottom: 20px;
 }
-
-/* Titre de chaque section : texte de la navbar */
 .settings-section .section-title {
     -fx-font-size: 18px;
     -fx-font-weight: bold;
-    -fx-text-fill: #dfe6e9; /* Couleur texte principal navbar */
+    -fx-text-fill: #dfe6e9;
 }
-
-/* Texte d'information principal (l'adresse email) */
 .settings-section .info-text-main {
     -fx-font-size: 14px;
     -fx-text-fill: white;
 }
-
-/* Texte d'information secondaire ("ne peut pas être modifiée") */
 .settings-section .info-text-secondary {
     -fx-font-size: 12px;
-    -fx-text-fill: #b2bec3; /* Couleur texte secondaire navbar */
+    -fx-text-fill: #b2bec3;
 }
-
-/* Sépare visuellement les sections de paramètres */
 .settings-section {
     -fx-border-color: transparent transparent rgba(255, 255, 255, 0.15) transparent;
     -fx-border-width: 1px;
@@ -137,27 +101,22 @@
     -fx-spacing: 10px;
     -fx-max-width: 400px;
 }
-
-/* Champs de saisie : inspiré de .login-input */
 .settings-input {
-    -fx-background-color: #A9A9A9; /* Fond gris clair du login */
-    -fx-text-fill: #333333; /* Texte foncé du login */
-    -fx-prompt-text-fill: #666666; /* Placeholder du login */
+    -fx-background-color: #A9A9A9;
+    -fx-text-fill: #333333;
+    -fx-prompt-text-fill: #666666;
     -fx-font-size: 14px;
-    -fx-background-radius: 8px; /* Arrondi cohérent */
+    -fx-background-radius: 8px;
     -fx-border-radius: 8px;
     -fx-pref-height: 40px;
     -fx-border-width: 0;
 }
-
 .settings-input:focused {
     -fx-border-color: white;
     -fx-border-width: 1.5px;
 }
-
-/* Bouton principal pour enregistrer : inspiré de .login-button */
 .save-button {
-    -fx-background-color: #5A5A5A; /* Couleur du login-button */
+    -fx-background-color: #5A5A5A;
     -fx-text-fill: white;
     -fx-font-size: 15px;
     -fx-font-weight: bold;
@@ -166,42 +125,30 @@
     -fx-padding: 0 25px;
     -fx-cursor: hand;
 }
-
 .save-button:hover {
-    -fx-background-color: #6B6B6B; /* Couleur hover du login-button */
+    -fx-background-color: #6B6B6B;
 }
-
-/* Bouton de déconnexion : inspiré de .forgot-password-link */
 .logout-button {
     -fx-background-color: transparent;
-    -fx-text-fill: #b2bec3; /* Texte secondaire navbar */
+    -fx-text-fill: #b2bec3;
     -fx-font-size: 14px;
     -fx-underline: false;
     -fx-cursor: hand;
 }
-
 .logout-button:hover {
     -fx-underline: true;
     -fx-text-fill: white;
-}/* ==========================================================================
-   Styles pour la Vue Calendrier (Version Nettoyée)
-   ========================================================================== */
-
-/* Conteneur principal qui englobe tout le calendrier */
+}
 .calendar-container {
-    -fx-background-color: #363434; /* Fond général sombre */
+    -fx-background-color: #363434;
     -fx-padding: 15px;
     -fx-background-radius: 12px;
 }
-
-/* Grille de navigation en haut (flèches, mois, jours) */
 .week-nav-grid {
     -fx-alignment: center;
-    -fx-padding: 0 0 15px 0; /* Espace sous la barre de navigation */
-    -fx-vgap: 5px; /* Espace vertical entre le mois et les jours */
+    -fx-padding: 0 0 15px 0;
+    -fx-vgap: 5px;
 }
-
-/* Boutons flèches de navigation */
 .week-nav-button {
     -fx-background-color: transparent;
     -fx-padding: 4px 8px;
@@ -215,15 +162,11 @@
     -fx-background-color: #404249;
     -fx-text-fill: #007AFF;
 }
-
-/* Label "Mois Année" */
 .month-year-label {
     -fx-font-size: 18px;
     -fx-font-weight: bold;
     -fx-text-fill: white;
 }
-
-/* Boutons pour chaque jour de la semaine */
 .day-header-button {
     -fx-background-color: transparent;
     -fx-text-fill: #80848E;
@@ -240,16 +183,12 @@
     -fx-background-color: #404249;
 }
 .day-header-button.today-header-button {
-    -fx-background-color: #007AFF; /* Changé pour un bleu plus vif */
+    -fx-background-color: #007AFF;
     -fx-text-fill: white;
 }
 .day-header-button.today-header-button:hover {
     -fx-background-color: #0056b3;
 }
-
-/* --- Grille Principale du Calendrier --- */
-
-/* ScrollPane qui contient la grille */
 .calendar-scroll-pane {
     -fx-background-color: transparent;
     -fx-border-color: transparent;
@@ -257,28 +196,19 @@
 .calendar-scroll-pane .viewport {
     -fx-background-color: transparent;
 }
-
-/* Grille elle-même */
 .calendar-grid {
     -fx-padding: 10px 0 0 0;
 }
-
-/* Labels des heures (08h, 09h...) */
 .time-label {
     -fx-text-fill: #80848E;
     -fx-font-size: 13px;
     -fx-padding: 0 10px 0 0;
 }
-
-/* Cellules de fond de la grille, pour les lignes */
 .grid-cell {
     -fx-border-color: #404249;
     -fx-border-width: 1px 0 0 1px;
     -fx-min-height: 40px;
 }
-
-/* --- Événements (Affectations) --- */
-
 .event-box {
     -fx-background-color: #0078D7;
     -fx-background-radius: 8px;
@@ -294,9 +224,6 @@
     -fx-text-fill: #E0E0E0;
     -fx-font-size: 11px;
 }
-
-/* --- Barre de défilement personnalisée --- */
-
 .calendar-scroll-pane .scroll-bar:vertical {
     -fx-background-color: #2c2c2e;
     -fx-pref-width: 10px;
@@ -318,26 +245,16 @@
     -fx-shape: " ";
     -fx-padding: 0;
 }
-
-
 .dispo-button {
-    -fx-background-color: #404249; /* Un gris qui se démarque un peu */
+    -fx-background-color: #404249;
     -fx-padding: 8px;
-    -fx-background-radius: 50%; /* Bouton rond */
+    -fx-background-radius: 50%;
     -fx-cursor: hand;
     -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.3), 5, 0, 1, 1);
 }
-
 .dispo-button:hover {
-    -fx-background-color: #585a61; /* Plus clair au survol */
+    -fx-background-color: #585a61;
 }
-
-
-
-/* STYLE POUR LA PARTIE EDIT DES DISPOS */
-/* ==========================================================================
-   Styles pour la Vue Disponibilités (UserDispoView)
-   ========================================================================== */
 .dispo-container {
     -fx-background-color: #363434;
     -fx-padding: 20px;
@@ -358,47 +275,35 @@
     -fx-text-fill: #80848E;
     -fx-padding: 10px;
 }
-
 .dispo-day-button {
-    -fx-font-size: 14px; /* Un peu plus petit pour rentrer */
+    -fx-font-size: 14px;
     -fx-background-color: #404249;
     -fx-text-fill: #E0E0E0;
-    -fx-min-width: 80px; /* On réduit aussi un peu la largeur */
-    
-    /* --- CORRECTION PRINCIPALE : On réduit la hauteur --- */
-    -fx-min-height: 60px; /* Était à 80px, on passe à 60px. Ajustez si besoin. */
-    
+    -fx-min-width: 80px;
+    -fx-min-height: 60px;
     -fx-background-radius: 8px;
     -fx-cursor: hand;
     -fx-border-width: 2px;
     -fx-border-color: transparent;
 }
 .dispo-day-button:hover {
-    -fx-border-color: white; /* Bordure blanche au survol */
+    -fx-border-color: white;
 }
-
-/* Style pour un jour déjà disponible */
 .dispo-day-button.dispo-available {
-    -fx-background-color: #2E7D32; /* Vert foncé */
+    -fx-background-color: #2E7D32;
     -fx-text-fill: white;
 }
-/* Style pour un jour qu'on vient de rendre disponible */
 .dispo-day-button.dispo-to-add {
-    -fx-background-color: #66BB6A; /* Vert clair */
+    -fx-background-color: #66BB6A;
     -fx-text-fill: black;
 }
-/* Style pour un jour qu'on vient de rendre indisponible */
 .dispo-day-button.dispo-to-remove {
-    -fx-background-color: #D32F2F; /* Rouge */
+    -fx-background-color: #D32F2F;
     -fx-text-fill: white;
 }
-
 .action-button-bar {
     -fx-padding: 25px 0 10px 0;
 }
-
-
-
 .dispo-button {
     -fx-background-color: transparent;
     -fx-padding: 8px;
@@ -406,33 +311,20 @@
     -fx-cursor: hand;
     -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.3), 5, 0, 1, 1);
 }
-
-
 .pencil-icon {
-    -fx-stroke: white; /* Couleur du trait du crayon */
+    -fx-stroke: white;
     -fx-stroke-width: 1.5;
 }
-
 .dispo-button:hover .pencil-icon {
-    -fx-stroke: #007AFF; /* Le crayon devient bleu au survol */
+    -fx-stroke: #007AFF;
 }
-
 .empty-day-button {
     -fx-background-color: transparent;
     -fx-cursor: default;
 }
-
 .empty-day-button:hover {
-    -fx-border-color: transparent; /* S'assure qu'il n'y a pas d'effet de survol */
+    -fx-border-color: transparent;
 }
-
-/* ==========================================================================
-Styles pour les Vues Administrateur
-========================================================================== */
-/* PARTIE DPS */
-/* DANS VOTRE FICHIER application.css */
-
-/* Styles pour les Vues Administrateur */
 .admin-content-container {
     -fx-background-color: transparent;
     -fx-padding: 25px;
@@ -489,58 +381,41 @@ Styles pour les Vues Administrateur
     -fx-font-size: 16px;
     -fx-text-fill: #80848E;
 }
-/*DPS MODIFIER */
-/* ==========================================================================
-   Styles pour le Formulaire de Création Admin (Version Finale)
-   ========================================================================== */
-
-/* Conteneur principal du formulaire */
 .admin-form-container {
-    -fx-max-width: 750px; /* Votre nouvelle largeur */
-    -fx-background-color: rgba(45, 52, 54, 0.95); /* Fond sombre, presque opaque */
+    -fx-max-width: 750px;
+    -fx-background-color: rgba(45, 52, 54, 0.95);
     -fx-padding: 30px;
     -fx-background-radius: 12px;
     -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.4), 15, 0, 0, 5);
 }
-
-/* Titre "Créer un nouveau Dispositif" */
 .admin-title {
     -fx-font-size: 22px;
     -fx-font-weight: bold;
     -fx-text-fill: white;
     -fx-padding: 0 0 20px 0;
 }
-
-/* Labels à côté des champs (ex: "Site de l'épreuve :") */
 .admin-form-container .label {
     -fx-font-size: 16px;
     -fx-text-fill: #E0E0E0;
     -fx-font-weight: normal;
 }
-
-/* --- Style commun pour les champs de saisie --- */
 .admin-combo-box, .admin-date-picker, .admin-form-container .text-field {
-    -fx-background-color: #5A5A5A; /* Gris foncé pour les champs */
+    -fx-background-color: #5A5A5A;
     -fx-background-radius: 8px;
     -fx-border-radius: 8px;
     -fx-pref-height: 40px;
     -fx-border-color: transparent;
     -fx-font-size: 14px;
 }
-
-/* Texte à l'intérieur des champs */
 .admin-combo-box .list-cell, .admin-date-picker .text-field, .admin-form-container .text-field {
     -fx-text-fill: white;
 }
 .admin-form-container .text-field {
     -fx-prompt-text-fill: #b2bec3;
 }
-
-/* Flèche des ComboBox */
 .admin-combo-box .arrow {
     -fx-background-color: white;
 }
-/* Bouton du DatePicker */
 .admin-date-picker .arrow-button {
     -fx-background-color: #5A5A5A;
     -fx-background-radius: 0 8px 8px 0;
@@ -548,25 +423,18 @@ Styles pour les Vues Administrateur
 .admin-date-picker .arrow-button .arrow {
     -fx-background-color: white;
 }
-
-/* Mise en surbrillance au focus */
 .admin-combo-box:focused,
 .admin-date-picker:focused,
 .admin-form-container .text-field:focused {
     -fx-border-color: #00A3FF;
     -fx-border-width: 1.5px;
 }
-
-/* Champ texte spécifique pour les heures et minutes */
 .admin-form-container .text-field {
     -fx-pref-width: 70px;
     -fx-alignment: center;
 }
-
-/* --- Boutons d'action --- */
-
 .save-button {
-    -fx-background-color: #525252; /* Vert foncé */
+    -fx-background-color: #525252;
     -fx-text-fill: white;
     -fx-font-weight: bold;
     -fx-font-size: 16px;
@@ -577,9 +445,8 @@ Styles pour les Vues Administrateur
 .save-button:hover {
     -fx-background-color: #808080;
 }
-
 .cancel-button {
-    -fx-background-color: #5A5A5A; /* Gris foncé, comme les champs */
+    -fx-background-color: #5A5A5A;
     -fx-text-fill: #E0E0E0;
     -fx-font-weight: bold;
     -fx-font-size: 16px;
@@ -590,89 +457,63 @@ Styles pour les Vues Administrateur
 .cancel-button:hover {
     -fx-background-color: #6E6E6E;
 }
-
-/* --- Styles spécifiques et corrigés pour ComboBox --- */
-
-/* Style du bouton du ComboBox (la partie visible quand il est fermé) */
 .admin-combo-box > .list-cell {
-    -fx-background-color: transparent; /* Fond transparent */
-    -fx-text-fill: white; /* Texte blanc pour l'élément sélectionné */
+    -fx-background-color: transparent;
+    -fx-text-fill: white;
 }
-
-/* Style de la liste déroulante qui apparaît */
 .admin-combo-box .combo-box-popup .list-view {
-    -fx-background-color: white; /* Fond blanc pour la liste */
-    -fx-border-color: #00A3FF; /* Bordure bleue */
+    -fx-background-color: white;
+    -fx-border-color: #00A3FF;
     -fx-border-width: 1px;
 }
-
-/* Style de chaque cellule dans la liste déroulante */
 .admin-combo-box .combo-box-popup .list-cell {
-    -fx-text-fill: #333333; /* Texte foncé sur fond blanc */
-    -fx-background-color: white; /* Fond blanc */
+    -fx-text-fill: #333333;
+    -fx-background-color: white;
 }
-
-/* Style d'une cellule survolée par la souris */
 .admin-combo-box .combo-box-popup .list-cell:hover {
-    -fx-background-color: #00A3FF; /* Fond bleu au survol */
-    -fx-text-fill: white; /* Texte blanc au survol */
+    -fx-background-color: #00A3FF;
+    -fx-text-fill: white;
 }
-
-/* Style d'une cellule qui est sélectionnée */
 .admin-combo-box .combo-box-popup .list-cell:selected {
-    -fx-background-color: #0078D7; /* Fond bleu plus foncé pour la sélection */
+    -fx-background-color: #0078D7;
     -fx-text-fill: white;
 }
 .delete-button {
-    -fx-background-color: transparent; /* Fond du bouton rendu transparent */
-    -fx-padding: 5px; /* Un peu de padding pour agrandir la zone de clic */
+    -fx-background-color: transparent;
+    -fx-padding: 5px;
     -fx-cursor: hand;
 }
-
 .delete-icon {
-    -fx-stroke: #80848E;       /* Couleur du trait de l'icône (gris neutre) */
-    -fx-stroke-width: 1.5;     /* Épaisseur du trait */
-    -fx-fill: transparent;     /* On s'assure qu'il n'y a pas de remplissage */
+    -fx-stroke: #80848E;
+    -fx-stroke-width: 1.5;
+    -fx-fill: transparent;
 }
-
-/* Au survol du bouton, l'icône change de couleur */
 .delete-button:hover .delete-icon {
-    -fx-stroke: #D32F2F; /* Le trait de l'icône devient rouge vif */
+    -fx-stroke: #D32F2F;
 }
-
 .edit-button {
     -fx-background-color: transparent;
     -fx-padding: 5px;
     -fx-cursor: hand;
 }
-
-/* Icône de crayon */
 .edit-icon {
-    -fx-stroke: #80848E; /* Gris neutre par défaut */
+    -fx-stroke: #80848E;
     -fx-stroke-width: 1.5;
     -fx-fill: transparent;
 }
-
-/* Au survol du bouton, l'icône devient bleue */
 .edit-button:hover .edit-icon {
     -fx-stroke: #007AFF;
 }
-
-
-
-/* --- Admin User Management View --- */
 .admin-user-management-panel {
-    -fx-background-color: #2D3748; /* Fond principal sombre */
+    -fx-background-color: #2D3748;
     -fx-background-radius: 12px;
     -fx-padding: 20px;
 }
-
 .admin-user-title {
     -fx-font-size: 18px;
     -fx-font-weight: bold;
     -fx-text-fill: white;
 }
-
 .user-count-badge {
     -fx-background-color: #4A5568;
     -fx-text-fill: white;
@@ -680,7 +521,6 @@ Styles pour les Vues Administrateur
     -fx-font-size: 12px;
     -fx-background-radius: 8px;
 }
-
 .search-bar {
     -fx-background-color: #4A5568;
     -fx-text-fill: white;
@@ -689,7 +529,6 @@ Styles pour les Vues Administrateur
     -fx-border-color: transparent;
     -fx-font-size: 14px;
 }
-
 .filter-button {
     -fx-background-color: white;
     -fx-text-fill: #2D3748;
@@ -697,59 +536,47 @@ Styles pour les Vues Administrateur
     -fx-background-radius: 8px;
     -fx-cursor: hand;
 }
-
 .admin-user-scroll-pane {
     -fx-background: transparent;
     -fx-background-color: transparent;
     -fx-padding: 0;
 }
-
 .admin-user-scroll-pane .viewport {
     -fx-background-color: transparent;
 }
-
-/* --- Style de chaque ligne d'utilisateur --- */
 .user-row {
     -fx-padding: 12px 10px;
     -fx-border-color: #4A5568;
-    -fx-border-width: 0 0 1px 0; /* Bordure inférieure */
+    -fx-border-width: 0 0 1px 0;
 }
-
 .user-initials-circle {
     -fx-fill: #4A5568;
 }
-
 .user-initials {
     -fx-font-size: 12px;
     -fx-font-weight: bold;
     -fx-text-fill: white;
 }
-
 .user-name {
     -fx-text-fill: white;
     -fx-font-weight: 500;
 }
-
 .user-handle {
-    -fx-text-fill: #A0AEC0; /* Gris clair */
+    -fx-text-fill: #A0AEC0;
     -fx-font-size: 12px;
 }
-
 .last-connection-badge {
-    -fx-background-color: rgba(49, 151, 149, 0.2); /* Fond vert transparent */
-    -fx-text-fill: #38B2AC; /* Texte vert */
+    -fx-background-color: rgba(49, 151, 149, 0.2);
+    -fx-text-fill: #38B2AC;
     -fx-padding: 4px 8px;
     -fx-background-radius: 12px;
     -fx-font-size: 12px;
     -fx-font-weight: 500;
 }
-
 .user-email {
     -fx-text-fill: #A0AEC0;
     -fx-font-size: 14px;
 }
-
-/* --- Style des tags de compétence --- */
 .competence-tag {
     -fx-padding: 3px 10px;
     -fx-background-radius: 12px;
@@ -760,24 +587,20 @@ Styles pour les Vues Administrateur
 .tag-green { -fx-background-color: #38A169; -fx-text-fill: white; }
 .tag-red { -fx-background-color: #E53E3E; -fx-text-fill: white; }
 .tag-orange { -fx-background-color: #DD6B20; -fx-text-fill: white; }
-
-/* --- Style des boutons d'action --- */
 .action-icon-button {
     -fx-background-color: transparent;
     -fx-padding: 5px;
     -fx-cursor: hand;
 }
 .svg-icon {
-    -fx-fill: #A0AEC0; /* Couleur de l'icône */
-    -fx-stroke: #A0AEC0; /* Couleur du contour de l'icône */
+    -fx-fill: #A0AEC0;
+    -fx-stroke: #A0AEC0;
     -fx-stroke-width: 1.5;
 }
 .action-icon-button:hover .svg-icon {
     -fx-fill: white;
     -fx-stroke: white;
 }
-
-/* --- Style de la pagination --- */
 .pagination-button {
     -fx-background-color: transparent;
     -fx-text-fill: #A0AEC0;
@@ -794,7 +617,6 @@ Styles pour les Vues Administrateur
     -fx-opacity: 0.5;
     -fx-cursor: default;
 }
-
 .page-number-button {
     -fx-background-color: transparent;
     -fx-text-fill: #A0AEC0;
@@ -808,43 +630,29 @@ Styles pour les Vues Administrateur
 .page-number-button:hover {
     -fx-background-color: #4A5568;
 }
-
 .page-number-active {
-    -fx-background-color: #3182CE; /* Bleu */
+    -fx-background-color: #3182CE;
     -fx-text-fill: white;
     -fx-font-weight: bold;
 }
 .page-number-active:hover {
-    -fx-background-color: #2c73b8; /* Bleu un peu plus foncé au survol */
+    -fx-background-color: #2c73b8;
 }
-
-
-
-
-/* ========================================================================== */
-/* ==                        ADMIN FORM & EDIT VIEW                        == */
-/* ========================================================================== */
-
-/* Le conteneur principal de la vue d'édition. C'est notre sélecteur parent unique. */
 .admin-form-container {
-    -fx-max-width: 950px; /* Fenêtre plus large */
-    -fx-background-color: rgba(45, 55, 72, 0.85); /* Fond bleu-gris foncé et opaque */
+    -fx-max-width: 950px;
+    -fx-background-color: rgba(45, 55, 72, 0.85);
     -fx-background-radius: 20px;
     -fx-border-color: rgba(255, 255, 255, 0.15);
     -fx-border-radius: 20px;
     -fx-border-width: 1px;
     -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.4), 25, 0, 0, 0);
 }
-
-/* MODIFIÉ : Ajout du sélecteur parent pour un ciblage unique */
 .admin-form-container .admin-title {
     -fx-font-size: 22px;
     -fx-font-weight: bold;
     -fx-text-fill: #e5e7eb;
     -fx-padding: 0 0 10px 0;
 }
-
-/* MODIFIÉ : Ajout du sélecteur parent */
 .admin-form-container .settings-section {
     -fx-background-color: rgba(255, 255, 255, 0.04);
     -fx-background-radius: 12px;
@@ -853,21 +661,15 @@ Styles pour les Vues Administrateur
     -fx-border-width: 1px;
     -fx-padding: 25px;
 }
-
-/* MODIFIÉ : Cible uniquement les labels DANS une settings-section DANS le formulaire admin */
 .admin-form-container .settings-section .label {
     -fx-text-fill: #cbd5e1;
     -fx-font-weight: 500;
     -fx-font-size: 14px;
 }
-
-/* MODIFIÉ : Cible uniquement les titres de section DANS le formulaire admin */
 .admin-form-container .section-title {
     -fx-text-fill: white !important;
     -fx-font-weight: bold !important;
 }
-
-/* MODIFIÉ : Cible uniquement les champs de saisie DANS le formulaire admin */
 .admin-form-container .settings-input {
     -fx-pref-width: 300px;
     -fx-font-size: 14px;
@@ -880,20 +682,14 @@ Styles pour les Vues Administrateur
     -fx-padding: 10px 12px;
     -fx-alignment: center-left;
 }
-
-/* MODIFIÉ : Ajout du sélecteur parent */
 .admin-form-container .settings-input:focused {
     -fx-border-color: #3b82f6;
     -fx-effect: dropshadow(gaussian, rgba(59, 130, 246, 0.4), 8, 0, 0, 0);
 }
-
-/* MODIFIÉ : Ajout du sélecteur parent */
 .admin-form-container .settings-input:readonly,
 .admin-form-container .settings-input:editable:false {
     -fx-opacity: 0.7;
 }
-
-/* MODIFIÉ : Cible uniquement les DatePicker DANS le formulaire admin */
 .admin-form-container .date-picker.settings-input .text-field {
     -fx-background-color: transparent;
 }
@@ -904,8 +700,6 @@ Styles pour les Vues Administrateur
 .admin-form-container .date-picker.settings-input .arrow-button .arrow {
     -fx-background-color: white;
 }
-
-/* MODIFIÉ : Cible uniquement les CheckBox DANS le formulaire admin */
 .admin-form-container .competence-checkbox {
     -fx-font-size: 15px;
     -fx-text-fill: #e5e7eb;
@@ -931,12 +725,6 @@ Styles pour les Vues Administrateur
     -fx-shape: "M7.6,13.4 L4.6,10.4 L3,12 L7.6,16.6 L17,7.2 L15.4,5.6 Z";
     -fx-background-color: white;
 }
-
-/* ========================================================================== */
-/* ==                         BUTTONS (SAVE/CANCEL)                        == */
-/* ========================================================================== */
-
-/* MODIFIÉ : Cible uniquement le bouton "save" DANS le formulaire admin */
 .admin-form-container .save-button {
     -fx-background-color: #3b82f6;
     -fx-text-fill: white;
@@ -950,8 +738,6 @@ Styles pour les Vues Administrateur
 .admin-form-container .save-button:hover {
     -fx-background-color: #2563eb;
 }
-
-/* MODIFIÉ : Cible uniquement le bouton "cancel" DANS le formulaire admin */
 .admin-form-container .cancel-button {
     -fx-background-color: #64748b;
     -fx-text-fill: white;
@@ -964,18 +750,9 @@ Styles pour les Vues Administrateur
 .admin-form-container .cancel-button:hover {
     -fx-background-color: #475569;
 }
-
-
-
-
-/* ========================================================================== */
-/* ==                  NEW STYLES FOR USER PARAMETRES VIEW                 == */
-/* ========================================================================== */
-
-/* This is the main container for the user settings view. */
 .user-settings-view {
-    -fx-max-width: 900px; /* Uses more horizontal space */
-    -fx-background-color: rgba(30, 41, 59, 0.9); /* A modern, dark blue-gray */
+    -fx-max-width: 900px;
+    -fx-background-color: rgba(30, 41, 59, 0.9);
     -fx-background-radius: 20px;
     -fx-border-color: rgba(255, 255, 255, 0.1);
     -fx-border-radius: 20px;
@@ -983,67 +760,52 @@ Styles pour les Vues Administrateur
     -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.4), 25, 0, 0, 0);
     -fx-padding: 40px;
 }
-
-/* Scoped title style for the user settings page */
 .user-settings-view .form-title {
     -fx-font-size: 26px;
     -fx-fill: white;
     -fx-font-weight: bold;
 }
-
-/* This styles the two "cards" for Personal Info and Security */
 .user-settings-view .settings-section {
-    -fx-background-color: rgba(255, 255, 255, 0.05); /* Subtle inner background */
+    -fx-background-color: rgba(255, 255, 255, 0.05);
     -fx-background-radius: 12px;
     -fx-border-color: rgba(255, 255, 255, 0.1);
     -fx-border-radius: 12px;
     -fx-padding: 25px;
-    -fx-spacing: 15px; /* Space between elements inside the card */
+    -fx-spacing: 15px;
 }
-
-/* Scoped style for the title of each card */
 .user-settings-view .section-title {
     -fx-text-fill: white;
     -fx-font-weight: bold;
     -fx-font-size: 18px;
-    -fx-border-color: transparent transparent #3b82f6 transparent; /* Blue underline */
+    -fx-border-color: transparent transparent #3b82f6 transparent;
     -fx-border-width: 2px;
     -fx-padding-bottom: 8px;
 }
-
-/* Scoped style for all labels next to input fields */
 .user-settings-view .label {
-    -fx-text-fill: #cbd5e1; /* Light gray-blue text */
+    -fx-text-fill: #cbd5e1;
     -fx-font-weight: 500;
     -fx-font-size: 14px;
 }
-
-/* Scoped style for all input fields */
 .user-settings-view .settings-input {
     -fx-font-size: 14px;
     -fx-background-color: rgba(0, 0, 0, 0.2);
     -fx-text-fill: white;
-    -fx-prompt-text-fill: #94a3b8; /* Lighter prompt text */
+    -fx-prompt-text-fill: #94a3b8;
     -fx-border-color: rgba(255, 255, 255, 0.2);
     -fx-border-radius: 8px;
     -fx-background-radius: 8px;
     -fx-padding: 10px 12px;
 }
-
 .user-settings-view .settings-input:focused {
-    -fx-border-color: #3b82f6; /* Blue highlight on focus */
+    -fx-border-color: #3b82f6;
     -fx-effect: dropshadow(gaussian, rgba(59, 130, 246, 0.4), 8, 0, 0, 0);
 }
-
-/* Specific style for the non-editable email field */
 .user-settings-view .disabled-input {
     -fx-opacity: 0.6;
     -fx-cursor: not-allowed;
 }
-
-/* Scoped style for the save buttons */
 .user-settings-view .save-button {
-    -fx-background-color: #2563eb; /* A nice blue */
+    -fx-background-color: #2563eb;
     -fx-text-fill: white;
     -fx-font-weight: bold;
     -fx-background-radius: 8px;
@@ -1051,27 +813,21 @@ Styles pour les Vues Administrateur
     -fx-cursor: hand;
     -fx-font-size: 14px;
 }
-
 .user-settings-view .save-button:hover {
-    -fx-background-color: #3b82f6; /* Lighter blue on hover */
+    -fx-background-color: #3b82f6;
 }
-
-/* Scoped style for the logout button */
 .user-settings-view .logout-button {
     -fx-background-color: transparent;
-    -fx-text-fill: #9ca3af; /* Gray, less prominent */
+    -fx-text-fill: #9ca3af;
     -fx-font-size: 14px;
     -fx-underline: false;
     -fx-cursor: hand;
     -fx-font-weight: bold;
 }
-
 .user-settings-view .logout-button:hover {
     -fx-underline: true;
-    -fx-text-fill: #ef4444; /* Red on hover for a "danger" feel */
+    -fx-text-fill: #ef4444;
 }
-
-/* Scoped style for DatePicker specifically */
 .user-settings-view .date-picker.settings-input .text-field {
     -fx-background-color: transparent;
     -fx-text-fill: white;
@@ -1083,21 +839,14 @@ Styles pour les Vues Administrateur
 .user-settings-view .date-picker.settings-input .arrow-button .arrow {
     -fx-background-color: white;
 }
-
-/* ========================================================================== */
-/* ==                 STYLES POUR LA VUE "MES COMPÉTENCES"                 == */
-/* ========================================================================== */
-
 .competences-view-container {
     -fx-background-color: rgba(30, 41, 59, 0.9);
     -fx-background-radius: 20px;
     -fx-padding: 30px;
 }
-
 .competences-grid {
     -fx-padding: 20px;
 }
-
 .competence-card {
     -fx-background-color: rgba(255, 255, 255, 0.05);
     -fx-background-radius: 12px;
@@ -1108,57 +857,43 @@ Styles pour les Vues Administrateur
     -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.2), 10, 0, 0, 3);
     -fx-transition: all 0.3s ease-in-out;
 }
-
 .competence-card:hover {
-    -fx-border-color: #3b82f6; /* Bordure bleue au survol */
-    -fx-background-color: rgba(59, 130, 246, 0.1); /* Fond bleu très léger */
+    -fx-border-color: #3b82f6;
+    -fx-background-color: rgba(59, 130, 246, 0.1);
     -fx-effect: dropshadow(gaussian, rgba(59, 130, 246, 0.4), 15, 0, 0, 0);
 }
-
 .competence-icon {
     -fx-stroke-width: 2;
-    -fx-stroke: #3b82f6; /* Trait de l'icône en bleu */
-    -fx-scale-x: 3.5; /* Agrandit l'icône */
+    -fx-stroke: #3b82f6;
+    -fx-scale-x: 3.5;
     -fx-scale-y: 3.5;
 }
-
 .competence-name {
     -fx-font-size: 16px;
     -fx-font-weight: bold;
-    -fx-text-fill: #e5e7eb; /* Gris très clair */
+    -fx-text-fill: #e5e7eb;
 }
-
 .empty-message-label {
     -fx-font-size: 18px;
-    -fx-text-fill: #9ca3af; /* Gris clair */
+    -fx-text-fill: #9ca3af;
     -fx-padding: 50px;
     -fx-alignment: center;
 }
-
-/* ========================================================================== */
-/* ==       STYLES POUR LA VUE "MES COMPÉTENCES" (Version Finale Corrigée) == */
-/* ========================================================================== */
-
 .competences-view-container {
-    -fx-background-color: #363434; 
+    -fx-background-color: #363434;
     -fx-background-radius: 20px;
     -fx-padding: 30px;
 }
-
-/* TITRE AMÉLIORÉ : blanc, plus grand et avec une ombre pour le relief */
 .competences-view-container .form-title {
-    -fx-text-fill: white; /* LA CORRECTION */
+    -fx-text-fill: white;
     -fx-font-weight: bold;
     -fx-font-size: 32px;
     -fx-padding: 0 0 25px 0;
     -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.5), 5, 0, 0, 2);
 }
-
 .competences-grid {
     -fx-padding: 20px;
 }
-
-/* Le reste des styles ne change pas */
 .competence-card {
     -fx-background-color: rgba(100, 116, 139, 0.2);
     -fx-background-radius: 16px;
@@ -1168,22 +903,18 @@ Styles pour les Vues Administrateur
     -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.2), 10, 0, 0, 3);
     -fx-transition: all 0.2s ease-in-out;
 }
-
 .competence-card:hover {
     -fx-border-color: rgba(255, 255, 255, 0.4);
     -fx-background-color: rgba(100, 116, 139, 0.3);
 }
-
 .competence-icon-stack {
     -fx-pref-width: 60px;
     -fx-pref-height: 60px;
     -fx-alignment: center;
 }
-
 .competence-icon-circle {
     -fx-fill: black;
 }
-
 .competence-icon-checkmark {
     -fx-stroke: #4c8bf5;
     -fx-stroke-width: 5;
@@ -1192,138 +923,89 @@ Styles pour les Vues Administrateur
     -fx-scale-x: 1.5;
     -fx-scale-y: 1.5;
 }
-
 .competence-name {
     -fx-font-size: 18px;
     -fx-font-weight: bold;
     -fx-text-fill: #dfe6e9;
 }
-
 .empty-message-label {
     -fx-font-size: 18px;
     -fx-text-fill: #9ca3af;
     -fx-padding: 50px;
     -fx-alignment: center;
 }
-
-
-/* ============================================= */
-/*          STYLE DU DASHBOARD ADMIN             */
-/* ============================================= */
-
-/* Conteneur pour un panneau de graphique */
 .dashboard-chart-panel {
-    -fx-background-color: #2B2B2B; /* Fond sombre, identique au calendrier */
+    -fx-background-color: #2B2B2B;
     -fx-background-radius: 12px;
     -fx-padding: 20px;
     -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.4), 10, 0, 0, 5);
 }
-
-/* Titre principal d'un graphique (ex: "Compétences les plus maîtrisées") */
 .chart-title {
     -fx-text-fill: #EAEAEA;
     -fx-font-size: 1.4em;
     -fx-font-weight: bold;
 }
-
-/* --- Style commun aux deux graphiques --- */
-
-/* Fond de la zone de dessin du graphique */
 .chart-plot-background {
-    -fx-background-color: #3C3F41; /* Un gris très foncé mais distinct du panneau */
+    -fx-background-color: #3C3F41;
     -fx-background-radius: 6px;
 }
-
-/* --- Style des axes (pour le BarChart) --- */
-
-/* Lignes des axes X et Y */
 .axis {
-    -fx-border-color: #616161 transparent transparent transparent; /* Ligne de l'axe X */
+    -fx-border-color: #616161 transparent transparent transparent;
 }
 .axis:vertical {
-    -fx-border-color: transparent #616161 transparent transparent; /* Ligne de l'axe Y */
+    -fx-border-color: transparent #616161 transparent transparent;
 }
-
-/* Etiquettes des graduations sur les axes (ex: "PSE1", "10", "12") */
 .axis .tick-label {
-    -fx-fill: #CCCCCC; /* Texte des étiquettes en gris clair */
+    -fx-fill: #CCCCCC;
     -fx-font-size: 1.0em;
     -fx-padding: 5px;
 }
-
-/* Titre de l'axe (ex: "Nombre de secouristes") */
 .axis-label {
-    -fx-text-fill: #A9A9A9; /* Titre d'axe plus discret */
+    -fx-text-fill: #A9A9A9;
     -fx-font-size: 1.1em;
 }
-
-/* Lignes de la grille de fond */
 .chart-vertical-grid-lines,
 .chart-horizontal-grid-lines {
-    -fx-stroke: #555555; /* Lignes de grille sombres et discrètes */
-    -fx-stroke-dash-array: 2 4; /* Lignes en pointillés */
+    -fx-stroke: #555555;
+    -fx-stroke-dash-array: 2 4;
 }
-
-/* --- Style des barres (BarChart) --- */
 .chart-bar {
-    -fx-bar-fill: #1E90FF; /* Bleu roi vibrant */
+    -fx-bar-fill: #1E90FF;
     -fx-background-radius: 3;
 }
 .chart-bar:hover {
-    -fx-bar-fill: #46a4ff; /* Couleur plus claire au survol */
+    -fx-bar-fill: #46a4ff;
 }
-
-
-/* --- Style du diagramme circulaire (PieChart) --- */
-
-/* Etiquettes sur les parts du diagramme (les rend blanches, grasses et plus grosses) */
-/* CORRECTION : Le sélecteur correct est .chart-pie-label */
 .chart-pie-label {
     -fx-fill: white;
     -fx-font-weight: bold;
     -fx-font-size: 1.2em;
 }
-
-/* Lignes reliant les étiquettes aux parts */
 .pie-label-line {
     -fx-stroke: #B0B0B0;
     -fx-stroke-width: 1px;
 }
-
-/* Etiquettes dans la légende */
 .chart-legend .label {
     -fx-text-fill: #EAEAEA;
     -fx-font-size: 1.1em;
 }
-
-/* Conteneur de la légende */
 .chart-legend {
     -fx-background-color: transparent;
 }
-
-/* Change les couleurs par défaut des parts du diagramme pour plus de contraste */
 .default-color0.chart-pie { -fx-pie-color: #1E90FF; }
-.default-color1.chart-pie { -fx-pie-color: #2ECC71; } /* Vert plus vif */
+.default-color1.chart-pie { -fx-pie-color: #2ECC71; }
 .default-color2.chart-pie { -fx-pie-color: #F1C40F; }
 .default-color3.chart-pie { -fx-pie-color: #E74C3C; }
 .default-color4.chart-pie { -fx-pie-color: #9B59B6; }
 .default-color5.chart-pie { -fx-pie-color: #3498DB; }
-
-
-/* ============================================= */
-/*          STYLES FOR USER DASHBOARD            */
-/* ============================================= */
-
-/* Left Panel: Schedule Card */
 .schedule-panel-card {
-    -fx-background-color: #1F2937; /* Dark Gray */
+    -fx-background-color: #1F2937;
     -fx-background-radius: 12;
     -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.15), 20, 0.2, 0, 4);
     -fx-border-color: #374151;
     -fx-border-width: 1;
     -fx-border-radius: 12;
 }
-
 .schedule-header {
     -fx-font-size: 16px;
     -fx-font-weight: bold;
@@ -1331,112 +1013,87 @@ Styles pour les Vues Administrateur
     -fx-padding: 15px;
     -fx-alignment: center;
     -fx-background-color: #374151;
-    -fx-background-radius: 12 12 0 0; /* Rounded corners on top */
+    -fx-background-radius: 12 12 0 0;
 }
-
 .schedule-scroll-pane {
     -fx-background: transparent;
     -fx-background-color: transparent;
     -fx-border-color: transparent;
 }
-
 .timeline-hour-label {
-    -fx-text-fill: #9CA3AF; /* Light gray text */
+    -fx-text-fill: #9CA3AF;
     -fx-font-size: 11px;
 }
-
 .timeline-half-hour-line {
-    -fx-stroke: #374151; /* Faint line color */
+    -fx-stroke: #374151;
     -fx-stroke-dash-array: 2 4;
 }
-
 .timeline-appointment-box {
-    -fx-background-color: #3B82F6; /* Blue background */
+    -fx-background-color: #3B82F6;
     -fx-background-radius: 6;
     -fx-border-color: #2563EB;
-    -fx-border-width: 0 0 0 4; /* Left border accent */
+    -fx-border-width: 0 0 0 4;
 }
-
 .appointment-title {
     -fx-text-fill: white;
     -fx-font-weight: bold;
     -fx-font-size: 13px;
 }
-
 .appointment-subtitle {
-    -fx-text-fill: #D1D5DB; /* Lighter gray for subtitle */
+    -fx-text-fill: #D1D5DB;
     -fx-font-size: 11px;
 }
-
-/* Right Panel: Map Card */
 .map-card {
-    -fx-background-color: #111827; /* Dark background for the card itself */
+    -fx-background-color: #111827;
     -fx-background-radius: 12;
     -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.15), 20, 0.2, 0, 4);
     -fx-border-color: #374151;
     -fx-border-width: 1;
     -fx-border-radius: 12;
-    -fx-padding: 8px; /* Padding inside the card, around the map and footer */
+    -fx-padding: 8px;
 }
-
-/* The webview itself should have rounded corners to fit inside the card */
 .map-card .stack-pane {
     -fx-background-radius: 8;
     -fx-border-radius: 8;
-    -fx-background-color: grey; /* Fallback color while map loads */
+    -fx-background-color: grey;
 }
 .map-card .web-view {
     -fx-background-radius: 8;
 }
-
-
 .map-footer {
     -fx-background-color: #111827;
-    /* Footer no longer needs rounding, as it's part of the card */
-    -fx-background-radius: 0; 
+    -fx-background-radius: 0;
     -fx-padding: 12px;
 }
-
 .map-footer-label {
     -fx-font-size: 14px;
     -fx-font-weight: bold;
     -fx-text-fill: white;
 }
-
-/* ==========================================================================
-   ==        STYLES POUR LA VUE ADMIN "GESTION DES COMPÉTENCES"         ==
-   ========================================================================== */
-
-/* On cible la carte UNIQUEMENT si elle est dans le conteneur admin */
 .admin-competences-container .competence-card {
-    -fx-background-color: #2B2B2B; /* Fond sombre et opaque */
+    -fx-background-color: #2B2B2B;
     -fx-padding: 20px;
     -fx-background-radius: 12px;
-    -fx-border-color: rgba(255, 255, 255, 0.1); /* Bordure initiale discrète */
+    -fx-border-color: rgba(255, 255, 255, 0.1);
     -fx-border-width: 1.5px;
     -fx-border-radius: 12px;
     -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.4), 10, 0, 0, 3);
-    -fx-transition: border-color 0.2s ease-out, -fx-effect 0.2s ease-out; 
+    -fx-transition: border-color 0.2s ease-out, -fx-effect 0.2s ease-out;
 }
-
-/* Le survol s'applique aussi UNIQUEMENT dans le conteneur admin */
 .admin-competences-container .competence-card:hover {
-    -fx-border-color: #3b82f6; /* La bordure devient bleue */
+    -fx-border-color: #3b82f6;
     -fx-effect: dropshadow(gaussian, rgba(59, 130, 246, 0.5), 15, 0, 0, 0);
 }
-
 .admin-competences-container .competence-card-title {
     -fx-font-size: 18px;
     -fx-font-weight: bold;
     -fx-text-fill: white;
 }
-
 .admin-competences-container .prerequisites-list-label {
     -fx-font-size: 14px;
     -fx-text-fill: #b2bec3;
     -fx-padding: 10px 0 5px 0;
 }
-
 .admin-competences-container .prerequisite-tag {
     -fx-background-color: #4A5568;
     -fx-text-fill: white;
@@ -1445,30 +1102,18 @@ Styles pour les Vues Administrateur
     -fx-padding: 4px 8px;
     -fx-background-radius: 12px;
 }
-
-/* AJOUTEZ CECI DANS LA SECTION CSS POUR ADMIN COMPETENCES */
-
 .admin-competences-container .prerequisite-none {
     -fx-font-size: 13px;
     -fx-font-style: italic;
-    -fx-text-fill: white; /* Met le texte en blanc */
+    -fx-text-fill: white;
 }
-
-/* ==========================================================================
-   ==        CORRECTIF POUR LE FOND BLANC DANS LES FORMULAIRES ADMIN     ==
-   ========================================================================== */
-
-/* Cible le ScrollPane dans les conteneurs de formulaire admin */
 .admin-form-container .scroll-pane {
     -fx-background: transparent;
     -fx-background-color: transparent;
 }
-
 .admin-form-container .scroll-pane .viewport {
     -fx-background-color: transparent;
 }
-
-/* Style optionnel pour la barre de défilement pour qu'elle soit assortie */
 .admin-form-container .scroll-pane .scroll-bar:vertical {
     -fx-background-color: rgba(0,0,0,0.2);
     -fx-pref-width: 10px;
@@ -1490,41 +1135,25 @@ Styles pour les Vues Administrateur
     -fx-shape: " ";
     -fx-padding: 0;
 }
-
-/* ... (tous vos styles existants) ... */
-
-/*
- * ===============================================
- * Style pour le panneau d'édition des dispositifs
- * ===============================================
- */
-
-/* Conteneur principal de la section des besoins (le panneau de droite) */
 .requirements-panel {
-    -fx-background-color: rgba(18, 26, 41, 0.7); /* Fond sombre semi-transparent, comme le reste */
+    -fx-background-color: rgba(18, 26, 41, 0.7);
     -fx-padding: 20px;
     -fx-background-radius: 8px;
     -fx-border-radius: 8px;
-    -fx-border-color: rgba(255, 255, 255, 0.2); /* Bordure subtile */
+    -fx-border-color: rgba(255, 255, 255, 0.2);
     -fx-border-width: 1px;
     -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.5), 10, 0, 0, 2);
 }
-
-/* Le titre "Besoins en Compétences" doit être lisible */
 .requirements-panel .section-title {
     -fx-text-fill: white;
-    -fx-border-color: #4A90E2; /* Bleu clair pour la ligne */
+    -fx-border-color: #4A90E2;
     -fx-border-width: 0 0 2 0;
     -fx-padding-bottom: 5px;
 }
-
-/* Rendre le fond du ScrollPane transparent pour voir le fond du panneau */
 .requirements-panel .scroll-pane,
 .requirements-panel .scroll-pane .viewport {
     -fx-background-color: transparent;
 }
-
-/* Style de la barre de défilement pour qu'elle soit discrète */
 .requirements-panel .scroll-bar:vertical {
     -fx-background-color: transparent;
     -fx-pref-width: 8;
@@ -1536,35 +1165,22 @@ Styles pour les Vues Administrateur
 .requirements-panel .scroll-bar:vertical .track {
     -fx-background-color: transparent;
 }
-
-
-/* Style pour chaque ligne (Label + Spinner) */
 .competence-requirement-control {
     -fx-padding: 5px 0;
 }
-
-/* Style pour le nom de la compétence (CE, CO, etc.) */
 .competence-requirement-label {
     -fx-font-size: 14px;
-    -fx-text-fill: #EAEAEA; /* Texte gris clair, pas blanc pur */
+    -fx-text-fill: #EAEAEA;
     -fx-font-family: 'Segoe UI', sans-serif;
 }
-
-/*
- * Style complexe pour le Spinner pour qu'il s'intègre au thème sombre
- */
-
-/* Le champ de texte du Spinner */
 .requirements-panel .spinner .text-field {
-    -fx-background-color: rgba(0, 0, 0, 0.3); /* Fond noir très transparent */
+    -fx-background-color: rgba(0, 0, 0, 0.3);
     -fx-border-color: rgba(255, 255, 255, 0.2);
     -fx-border-radius: 3;
     -fx-background-insets: 0;
-    -fx-text-fill: white; /* Texte en blanc */
+    -fx-text-fill: white;
     -fx-font-size: 14px;
 }
-
-/* Les boutons fléchés du Spinner */
 .requirements-panel .spinner .arrow-button {
     -fx-background-color: rgba(255, 255, 255, 0.1);
     -fx-background-radius: 3;
@@ -1572,97 +1188,70 @@ Styles pour les Vues Administrateur
 .requirements-panel .spinner .arrow-button:hover {
     -fx-background-color: rgba(255, 255, 255, 0.2);
 }
-
-/* La forme de la flèche elle-même */
 .requirements-panel .spinner .arrow {
-    -fx-background-color: white; /* Flèches blanches pour la visibilité */
+    -fx-background-color: white;
     -fx-padding: 4px;
 }
-
-/* === Admin Weekly Calendar === */
 .admin-event-box {
     -fx-background-color: white;
     -fx-border-radius: 4px;
     -fx-background-radius: 4px;
     -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.12), 4, 0, 1, 2);
-    -fx-border-width: 0 0 0 4px; /* Left border for color coding */
-    -fx-border-color: #B0BEC5; /* Default border color */
+    -fx-border-width: 0 0 0 4px;
+    -fx-border-color: #B0BEC5;
 }
-
 .admin-event-title {
     -fx-font-size: 11px;
     -fx-font-weight: bold;
     -fx-text-fill: #212121;
 }
-
 .admin-event-count {
     -fx-font-size: 10px;
     -fx-text-fill: #424242;
 }
-
 .admin-event-box.event-complete {
-    -fx-border-color: #4CAF50; /* Green */
+    -fx-border-color: #4CAF50;
 }
-
 .admin-event-box.event-in-progress {
-    -fx-border-color: #FFC107; /* Amber */
+    -fx-border-color: #FFC107;
 }
-
 .admin-event-box.event-empty {
-    -fx-border-color: #F44336; /* Red */
+    -fx-border-color: #F44336;
 }
-
 .day-header-label {
     -fx-font-size: 13px;
     -fx-font-weight: bold;
     -fx-text-fill: #424242;
     -fx-padding: 8px 0;
 }
-
 .day-header-label.today-header-label {
     -fx-text-fill: #1976D2;
 }
-/* ==========================================================================
-   ==                  STYLES POUR LA VUE ADMIN AFFECTATIONS               ==
-   ========================================================================== */
-
-/* --- Conteneur principal (SplitPane) --- */
 .affectations-view-container {
     -fx-background-color: transparent;
     -fx-padding: 0;
-    /* Arrondi implicite via les panneaux enfants */
 }
-
-/* Barre de séparation du SplitPane */
 .split-pane.affectations-view-container > .split-pane-divider {
     -fx-background-color: #555555;
     -fx-padding: 0 1px;
 }
-
-/* --- Panneau de Gauche (Liste des DPS) --- */
 .affectations-left-panel {
     -fx-background-color: #2B2B2B;
     -fx-padding: 20px;
     -fx-spacing: 15px;
-    -fx-background-radius: 12px 0 0 12px; /* Coins arrondis à gauche */
+    -fx-background-radius: 12px 0 0 12px;
 }
-
-/* Titre du panneau de gauche */
 .affectations-left-panel > .label {
     -fx-font-size: 16px;
     -fx-font-weight: bold;
     -fx-text-fill: white;
 }
-
-/* ListView dans le panneau de gauche */
 .affectations-left-panel .list-view {
     -fx-background-color: #3C3F41;
     -fx-border-color: #555555;
     -fx-border-radius: 6px;
     -fx-background-radius: 6px;
 }
-
-/* Cellules de la ListView */
 .affectations-left-panel .list-cell {
     -fx-background-color: transparent;
     -fx-text-fill: #EAEAEA;
@@ -1679,59 +1268,41 @@ Styles pour les Vues Administrateur
     -fx-text-fill: white;
     -fx-font-weight: bold;
 }
-
-
-/* --- Panneau de Droite (Détails et Actions) --- */
 .affectations-right-panel {
     -fx-background-color: #363434;
     -fx-padding: 25px 30px;
     -fx-spacing: 20px;
-    -fx-background-radius: 0 12px 12px 0; /* Coins arrondis à droite */
+    -fx-background-radius: 0 12px 12px 0;
 }
-
-/* Titre dynamique du panneau de droite */
 .affectations-right-panel .admin-subtitle {
     -fx-font-size: 20px;
     -fx-font-weight: bold;
     -fx-text-fill: white;
     -fx-text-alignment: center;
 }
-
-/* Texte placeholder du panneau de droite */
 .affectations-right-panel .placeholder-text {
     -fx-font-size: 16px;
     -fx-text-fill: #80848E;
 }
-
-/* Label "Proposition d'affectation :" */
 .affectations-right-panel > .label {
     -fx-font-size: 14px;
     -fx-font-weight: bold;
     -fx-text-fill: #b2bec3;
 }
-
-/* Séparateur horizontal */
 .affectations-right-panel .separator .line {
     -fx-border-color: #4a4747;
 }
-
-
-/* --- Zone de Proposition (ScrollPane) --- */
 .affectations-proposition-scroll-pane {
     -fx-background-color: #2B2B2B;
     -fx-background-radius: 8px;
     -fx-border-color: #555555;
     -fx-border-radius: 8px;
-    -fx-padding: 15px; /* Un peu plus de padding intérieur */
+    -fx-padding: 15px;
     -fx-min-height: 250px;
 }
-
-/* On s'assure que le contenu du ScrollPane est aussi transparent */
 .affectations-proposition-scroll-pane .viewport {
     -fx-background-color: transparent;
 }
-
-/* Texte des propositions à l'intérieur du ScrollPane */
 .affectations-proposition-container {
     -fx-spacing: 8px;
 }
@@ -1744,10 +1315,6 @@ Styles pour les Vues Administrateur
     -fx-font-style: italic;
     -fx-text-fill: #80848E;
 }
-
-/* --- Styles pour les Boutons --- */
-
-/* Style commun pour les boutons d'algo DANS la vue d'affectations */
 .affectations-view-container .algo-button {
     -fx-pref-width: 200px;
     -fx-pref-height: 40px;
@@ -1760,8 +1327,6 @@ Styles pour les Vues Administrateur
 .affectations-view-container .algo-button:disabled {
     -fx-opacity: 0.6;
 }
-
-/* Style du bouton exhaustif DANS la vue d'affectations */
 .affectations-view-container .exhaustive-button {
     -fx-background-color: #5A5A5A;
     -fx-text-fill: white;
@@ -1769,8 +1334,6 @@ Styles pour les Vues Administrateur
 .affectations-view-container .exhaustive-button:hover {
     -fx-background-color: #6E6E6E;
 }
-
-/* Style du bouton glouton DANS la vue d'affectations */
 .affectations-view-container .glouton-button {
     -fx-background-color: #007AFF;
     -fx-text-fill: white;
@@ -1778,10 +1341,8 @@ Styles pour les Vues Administrateur
 .affectations-view-container .glouton-button:hover {
     -fx-background-color: #0056b3;
 }
-
-/* Style du bouton de sauvegarde VERT DANS la vue d'affectations */
 .affectations-view-container .save-button {
-    -fx-background-color: #2E7D32; /* Vert */
+    -fx-background-color: #2E7D32;
     -fx-text-fill: white;
     -fx-font-size: 15px;
     -fx-font-weight: bold;
@@ -1792,65 +1353,43 @@ Styles pour les Vues Administrateur
 .affectations-view-container .save-button:hover {
     -fx-background-color: #388E3C;
 }
-
-/* ==========================================================================
-   ==        STYLES POUR LE CALENDRIER ADMIN "VISUALISER"                  ==
-   ========================================================================== */
-
-/* Style de base commun à tous les événements du calendrier admin */
 .admin-cal-event-box {
     -fx-background-radius: 6px;
     -fx-padding: 6px 8px;
     -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.3), 5, 0, 1, 1);
-    -fx-background-color: #5A5A5A; /* Gris neutre par défaut si aucun personnel requis */
+    -fx-background-color: #5A5A5A;
 }
-
-/* Statut 1 : Incomplet (Orange) */
 .admin-cal-event-box.status-in-progress {
-    -fx-background-color: #F97316; /* Orange vibrant */
+    -fx-background-color: #F97316;
 }
-
-/* Statut 2 : Vide (Rouge) */
 .admin-cal-event-box.status-empty {
-    -fx-background-color: #EF4444; /* Rouge "danger" */
+    -fx-background-color: #EF4444;
 }
-
-/* Statut 3 : Complet (Bleu, inspiré du calendrier utilisateur) */
 .admin-cal-event-box.status-complete {
-    -fx-background-color: #3b82f6; /* Bleu moderne et lisible */
+    -fx-background-color: #3b82f6;
 }
-
-
-/* --- Styles pour le texte A L'INTERIEUR des boîtes d'événement --- */
-/* Ces styles s'appliquent à tous les statuts pour garantir la lisibilité */
-
 .admin-cal-event-box .event-title {
     -fx-text-fill: white;
     -fx-font-weight: bold;
     -fx-font-size: 13px;
 }
-
 .admin-cal-event-box .event-subtitle {
-    -fx-text-fill: #E0E0E0; /* Gris très clair pour le sous-titre */
+    -fx-text-fill: #E0E0E0;
     -fx-font-size: 11px;
 }
-
-/* Style pour le texte "X / Y assigné(s)" */
 .admin-cal-event-box .event-info {
     -fx-text-fill: white;
     -fx-font-size: 11px;
-    -fx-font-weight: bold; /* On met le compteur en gras */
-    -fx-font-style: normal; /* On retire l'italique */
+    -fx-font-weight: bold;
+    -fx-font-style: normal;
     -fx-padding-top: 4px;
 }
-
 .icon-button {
     -fx-background-color: transparent;
     -fx-padding: 6px;
     -fx-cursor: hand;
-    -fx-background-radius: 50%; /* Arrondi pour un effet circulaire au survol */
+    -fx-background-radius: 50%;
 }
-
 .icon-button:hover {
     -fx-background-color: rgba(255, 255, 255, 0.15);
 }

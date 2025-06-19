@@ -10,9 +10,19 @@ import javafx.scene.image.ImageView;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
-import javafx.scene.text.TextAlignment; // Import TextAlignment
+import javafx.scene.text.TextAlignment;
 import fr.erm.sae201.utils.RessourceLoader;
 
+/**
+ * La vue de l'interface utilisateur pour l'écran de réinitialisation du mot de passe.
+ * Cette vue apparaît après que l'utilisateur a validé le code de vérification. Elle lui
+ * permet de saisir et de confirmer un nouveau mot de passe.
+ *
+ * @author Ewan QUELO
+ * @author Raphael MILLE
+ * @author Matheo BIET
+ * @version 1.0
+ */
 public class ResetPasswordView {
 
     private StackPane rootPane;
@@ -22,10 +32,16 @@ public class ResetPasswordView {
     private Hyperlink loginLink;
     private Hyperlink signupLink;
 
+    /**
+     * Construit la vue de réinitialisation de mot de passe en initialisant ses composants graphiques.
+     */
     public ResetPasswordView() {
         createView();
     }
 
+    /**
+     * Crée et assemble tous les éléments graphiques de la vue.
+     */
     private void createView() {
         rootPane = new StackPane();
         rootPane.getStyleClass().add("login-root");
@@ -47,7 +63,6 @@ public class ResetPasswordView {
         Label titleLabel = new Label("RÉINITIALISER LE MOT DE PASSE");
         titleLabel.getStyleClass().add("title-label");
         
-        // MODIFIED: Ensure the title wraps and is centered if it's too long
         titleLabel.setWrapText(true);
         titleLabel.setTextAlignment(TextAlignment.CENTER);
 
@@ -91,11 +106,39 @@ public class ResetPasswordView {
         StackPane.setAlignment(mainContent, Pos.CENTER);
     }
     
-    // Getters remain unchanged
+    /**
+     * Retourne le conteneur racine de cette vue.
+     * @return Le StackPane racine.
+     */
     public StackPane getView() { return rootPane; }
+    
+    /**
+     * Récupère le nouveau mot de passe saisi par l'utilisateur.
+     * @return Le nouveau mot de passe.
+     */
     public String getNewPassword() { return newPasswordField.getText(); }
+    
+    /**
+     * Récupère le mot de passe de confirmation saisi par l'utilisateur.
+     * @return Le mot de passe de confirmation.
+     */
     public String getConfirmPassword() { return confirmPasswordField.getText(); }
+    
+    /**
+     * Retourne le bouton de validation du nouveau mot de passe.
+     * @return Le bouton (Button) "Valider".
+     */
     public Button getValidateButton() { return validateButton; }
+    
+    /**
+     * Retourne l'hyperlien pour revenir à la page de connexion.
+     * @return L'hyperlien (Hyperlink) "Connexion".
+     */
     public Hyperlink getLoginLink() { return loginLink; }
+    
+    /**
+     * Retourne l'hyperlien pour revenir à la page d'inscription.
+     * @return L'hyperlien (Hyperlink) "Inscription".
+     */
     public Hyperlink getSignupLink() { return signupLink; }
 }

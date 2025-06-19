@@ -1,6 +1,6 @@
 package fr.erm.sae201.vue.admin;
 
-import fr.erm.sae201.controleur.admin.AdminParametresController; // Le nouveau contrôleur
+import fr.erm.sae201.controleur.admin.AdminParametresController;
 import fr.erm.sae201.metier.persistence.CompteUtilisateur;
 import fr.erm.sae201.metier.service.AuthService;
 import fr.erm.sae201.vue.MainApp;
@@ -17,23 +17,42 @@ import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.scene.text.Text;
 
-// Remplacez le contenu de votre AdminParametresView.java par ceci
+/**
+ * La vue des paramètres pour le compte administrateur.
+ * Cette vue permet à l'administrateur de visualiser son adresse e-mail, de modifier son mot de passe
+ * et de se déconnecter de l'application.
+ *
+ * @author Ewan QUELO
+ * @author Raphael MILLE
+ * @author Matheo BIET
+ * @version 1.0
+ */
 public class AdminParametresView extends BaseView {
 
     private PasswordField newPasswordField, confirmPasswordField;
     private Button savePasswordButton, logoutButton;
-    private Label emailLabel; // Pour afficher l'email
+    private Label emailLabel;
 
+    /**
+     * Construit la vue des paramètres de l'administrateur.
+     *
+     * @param navigator L'instance principale de l'application pour la navigation.
+     * @param compte Le compte de l'administrateur connecté.
+     * @param authService Le service d'authentification pour gérer les opérations liées au compte.
+     */
     public AdminParametresView(MainApp navigator, CompteUtilisateur compte, AuthService authService) {
-        // Le titre de la vue dans la navbar reste "Accueil" ou ce que vous préférez
+        // Le nom de la vue "Accueil" est utilisé pour la gestion du style "actif" dans la barre de navigation.
         super(navigator, compte, "Accueil");
-        // On crée le contrôleur spécifique à l'admin
         new AdminParametresController(this, navigator, compte, authService);
     }
 
+    /**
+     * Crée et retourne le contenu central de la vue.
+     *
+     * @return Le nœud (Node) contenant les sections de paramètres.
+     */
     @Override
     protected Node createCenterContent() {
-        // On utilise la classe CSS originale pour garder le même style
         VBox container = new VBox(40);
         container.getStyleClass().add("form-container");
         container.setAlignment(Pos.CENTER);
@@ -52,6 +71,11 @@ public class AdminParametresView extends BaseView {
         return container;
     }
 
+    /**
+     * Crée la section affichant l'adresse e-mail du compte administrateur.
+     *
+     * @return Un VBox contenant les éléments d'information du compte.
+     */
     private VBox createEmailInfoSection() {
         VBox sectionContainer = new VBox(5);
         sectionContainer.getStyleClass().add("settings-section");
@@ -62,7 +86,7 @@ public class AdminParametresView extends BaseView {
         Label emailTitle = new Label("Compte Administrateur:");
         emailTitle.getStyleClass().add("section-title");
 
-        emailLabel = new Label(); // Le contrôleur remplira ceci
+        emailLabel = new Label();
         emailLabel.getStyleClass().add("info-text-main");
 
         emailLine.getChildren().addAll(emailTitle, emailLabel);
@@ -70,6 +94,11 @@ public class AdminParametresView extends BaseView {
         return sectionContainer;
     }
 
+    /**
+     * Crée la section permettant à l'administrateur de modifier son mot de passe.
+     *
+     * @return Un VBox contenant les champs de mot de passe et le bouton de sauvegarde.
+     */
     private VBox createPasswordSection() {
         VBox box = new VBox(10);
         box.getStyleClass().add("settings-section");
@@ -97,23 +126,47 @@ public class AdminParametresView extends BaseView {
         return box;
     }
 
-    // Getters et Setters pour le contrôleur
+    /**
+     * Définit l'e-mail à afficher dans le libellé d'information.
+     *
+     * @param email L'adresse e-mail de l'administrateur.
+     */
     public void setEmail(String email) {
         emailLabel.setText(email);
     }
 
+    /**
+     * Récupère le nouveau mot de passe saisi par l'utilisateur.
+     *
+     * @return Le nouveau mot de passe.
+     */
     public String getNewPassword() {
         return newPasswordField.getText();
     }
 
+    /**
+     * Récupère le mot de passe de confirmation saisi.
+     *
+     * @return Le mot de passe de confirmation.
+     */
     public String getConfirmPassword() {
         return confirmPasswordField.getText();
     }
 
+    /**
+     * Associe une action au bouton d'enregistrement du mot de passe.
+     *
+     * @param handler Le gestionnaire d'événement à exécuter lors du clic.
+     */
     public void setSavePasswordButtonAction(EventHandler<ActionEvent> handler) {
         savePasswordButton.setOnAction(handler);
     }
 
+    /**
+     * Associe une action au bouton de déconnexion.
+     *
+     * @param handler Le gestionnaire d'événement à exécuter lors du clic.
+     */
     public void setLogoutButtonAction(EventHandler<ActionEvent> handler) {
         logoutButton.setOnAction(handler);
     }

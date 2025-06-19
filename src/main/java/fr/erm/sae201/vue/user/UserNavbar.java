@@ -13,10 +13,28 @@ import javafx.scene.layout.*;
 import javafx.scene.shape.Circle;
 import javafx.scene.shape.SVGPath;
 
+/**
+ * La barre de navigation horizontale affichée en haut des vues de l'interface secouriste.
+ * Elle contient les liens de navigation vers les différentes sections (Accueil, Calendrier, etc.),
+ * un bouton d'accès à la gestion des disponibilités (uniquement sur la vue Calendrier),
+ * ainsi que les informations de l'utilisateur connecté et un bouton d'accès aux paramètres.
+ *
+ * @author Ewan QUELO
+ * @author Raphael MILLE
+ * @author Matheo BIET
+ * @version 1.0
+ */
 public class UserNavbar extends HBox {
 
     private final SecouristeDAO secouristeDAO = new SecouristeDAO();
 
+    /**
+     * Construit la barre de navigation du secouriste.
+     *
+     * @param navigator      L'instance principale de l'application, utilisée pour la navigation entre les vues.
+     * @param compte         Le compte de l'utilisateur actuellement connecté.
+     * @param activeViewName Le nom de la vue actuellement active, pour mettre en surbrillance le bouton correspondant.
+     */
     public UserNavbar(MainApp navigator, CompteUtilisateur compte, String activeViewName) {
         super(20);
         this.getStyleClass().add("navbar");
@@ -24,7 +42,8 @@ public class UserNavbar extends HBox {
 
         HBox navLinks = createNavLinks(navigator, compte, activeViewName);
 
-        // pour le crayon modifier les disponibilités
+        // Ajoute conditionnellement le bouton "Modifier disponibilités" si l'utilisateur est sur la vue "Calendrier".
+        // C'est un choix de conception pour lier la vue de consultation (Calendrier) à la vue d'édition (Disponibilités).
         if ("Calendrier".equals(activeViewName)) {
             Button dispoButton = createDispoButton(navigator, compte);
             navLinks.getChildren().add(dispoButton);
@@ -39,6 +58,14 @@ public class UserNavbar extends HBox {
         this.getChildren().addAll(navLinks, spacer, userInfo);
     }
 
+    /**
+     * Crée le conteneur avec les boutons de navigation principaux.
+     *
+     * @param navigator      L'objet MainApp pour gérer les actions de navigation.
+     * @param compte         Le compte de l'utilisateur connecté.
+     * @param activeViewName Le nom de la vue active pour le style du bouton.
+     * @return Un HBox contenant les boutons de navigation.
+     */
     private HBox createNavLinks(MainApp navigator, CompteUtilisateur compte, String activeViewName) {
         HBox navLinks = new HBox(15);
         navLinks.setAlignment(Pos.CENTER_LEFT);
@@ -59,6 +86,13 @@ public class UserNavbar extends HBox {
         return navLinks;
     }
 
+    /**
+     * Crée un bouton de navigation avec un style de base et un style "actif" si nécessaire.
+     *
+     * @param name      Le texte à afficher sur le bouton.
+     * @param isActive  Un booléen indiquant si le bouton doit avoir le style actif.
+     * @return Le bouton (Button) créé.
+     */
     private Button createNavButton(String name, boolean isActive) {
         Button navButton = new Button(name);
         navButton.getStyleClass().add("nav-button");
@@ -68,21 +102,34 @@ public class UserNavbar extends HBox {
         return navButton;
     }
 
+    /**
+     * Crée le bouton spécial (icône crayon) pour accéder à la page de gestion des disponibilités.
+     *
+     * @param navigator L'objet MainApp pour gérer la navigation.
+     * @param compte    Le compte de l'utilisateur connecté.
+     * @return Le bouton (Button) créé avec son icône.
+     */
     private Button createDispoButton(MainApp navigator, CompteUtilisateur compte) {
-    Button dispoButton = new Button();
+        Button dispoButton = new Button();
 
-    // On dessine le crayon directement en code, pas besoin de fichier image.
-    SVGPath pencilIcon = new SVGPath();
-    pencilIcon.setContent("M16.862 4.487l1.687-1.688a1.875 1.875 0 112.652 2.652L10.582 16.07a4.5 4.5 0 01-1.897 1.13l-2.685.8.8-2.685a4.5 4.5 0 011.13-1.897l8.932-8.931zm0 0L19.5 7.125M18 14v4.75A2.25 2.25 0 0115.75 21H5.25A2.25 2.25 0 013 18.75V8.25A2.25 2.25 0 015.25 6H10");
-    pencilIcon.getStyleClass().add("pencil-icon");
-    dispoButton.setGraphic(pencilIcon);
-    dispoButton.getStyleClass().add("dispo-button");
-    
-    dispoButton.setOnAction(e -> navigator.showUserDispoView(compte));
-    
-    return dispoButton;
-}
+        SVGPath pencilIcon = new SVGPath();
+        pencilIcon.setContent("M16.862 4.487l1.687-1.688a1.875 1.875 0 112.652 2.652L10.582 16.07a4.5 4.5 0 01-1.897 1.13l-2.685.8.8-2.685a4.5 4.5 0 011.13-1.897l8.932-8.931zm0 0L19.5 7.125M18 14v4.75A2.25 2.25 0 0115.75 21H5.25A2.25 2.25 0 013 18.75V8.25A2.25 2.25 0 015.25 6H10");
+        pencilIcon.getStyleClass().add("pencil-icon");
+        dispoButton.setGraphic(pencilIcon);
+        dispoButton.getStyleClass().add("dispo-button");
+        
+        dispoButton.setOnAction(e -> navigator.showUserDispoView(compte));
+        
+        return dispoButton;
+    }
 
+    /**
+     * Crée le conteneur affichant les informations de l'utilisateur (nom, rôle, image) et un bouton de paramètres.
+     *
+     * @param navigator L'objet MainApp pour gérer la navigation.
+     * @param compte    Le compte de l'utilisateur connecté.
+     * @return Un HBox contenant les informations de l'utilisateur.
+     */
     private HBox createUserInfo(MainApp navigator, CompteUtilisateur compte) {
         HBox userInfo = new HBox(15);
         userInfo.setAlignment(Pos.CENTER_RIGHT);
@@ -92,6 +139,7 @@ public class UserNavbar extends HBox {
             secouriste = secouristeDAO.findByID(compte.getIdSecouriste());
         }
 
+        // Si le profil secouriste n'est pas trouvé, on utilise le login comme nom par défaut.
         String nomComplet = secouriste != null ? secouriste.getPrenom() + " " + secouriste.getNom() : compte.getLogin();
         String role = "Secouriste";
 
@@ -118,7 +166,6 @@ public class UserNavbar extends HBox {
         
         settingsButton.setOnAction(e -> navigator.showUserParametreView(compte));
 
-        // J'ai réorganisé l'ordre pour correspondre à votre screenshot
         userInfo.getChildren().addAll( textInfo, profilePic, settingsButton);
         return userInfo;
     }

@@ -14,8 +14,14 @@ import java.time.DateTimeException;
 import java.time.LocalDate;
 
 /**
- * Represents the user interface for the signup screen.
- * It provides fields for first name, last name, email, password, and date of birth.
+ * La vue de l'interface utilisateur pour l'écran d'inscription.
+ * Elle fournit un formulaire complet pour la création d'un nouveau compte,
+ * avec des champs pour le prénom, le nom, la date de naissance, l'e-mail et le mot de passe.
+ *
+ * @author Ewan QUELO
+ * @author Raphael MILLE
+ * @author Matheo BIET
+ * @version 1.0
  */
 public class SignupView {
 
@@ -30,10 +36,16 @@ public class SignupView {
     private ComboBox<Integer> monthComboBox;
     private ComboBox<Integer> yearComboBox;
 
+    /**
+     * Construit la vue d'inscription en initialisant ses composants graphiques.
+     */
     public SignupView() {
         createView();
     }
 
+    /**
+     * Crée et assemble tous les éléments graphiques de la vue.
+     */
     private void createView() {
         rootPane = new StackPane();
         rootPane.getStyleClass().add("login-root");
@@ -52,7 +64,6 @@ public class SignupView {
         formBox.setAlignment(Pos.CENTER);
         formBox.setMaxSize(420, 600);
 
-        // MODIFIED: Translated texts
         Label titleLabel = new Label("INSCRIPTION");
         titleLabel.getStyleClass().add("title-label");
 
@@ -85,6 +96,7 @@ public class SignupView {
         yearComboBox.setPromptText("Année");
         yearComboBox.getStyleClass().add("login-input");
         int currentYear = LocalDate.now().getYear();
+        // Le secouriste doit avoir au moins 18 ans pour s'inscrire.
         for (int i = currentYear - 18; i >= currentYear - 100; i--) {
             yearComboBox.getItems().add(i);
         }
@@ -134,15 +146,55 @@ public class SignupView {
         StackPane.setAlignment(mainContent, Pos.CENTER);
     }
 
-    // --- Getters for the controller ---
+    /**
+     * Retourne le conteneur racine de cette vue.
+     * @return Le StackPane racine.
+     */
     public StackPane getView() { return rootPane; }
+
+    /**
+     * Récupère l'adresse e-mail saisie par l'utilisateur.
+     * @return L'adresse e-mail.
+     */
     public String getEmail() { return emailField.getText(); }
+
+    /**
+     * Récupère le mot de passe saisi par l'utilisateur.
+     * @return Le mot de passe.
+     */
     public String getPassword() { return passwordField.getText(); }
+
+    /**
+     * Récupère le prénom saisi par l'utilisateur.
+     * @return Le prénom.
+     */
     public String getFirstName() { return firstNameField.getText(); }
+
+    /**
+     * Récupère le nom de famille saisi par l'utilisateur.
+     * @return Le nom de famille.
+     */
     public String getLastName() { return lastNameField.getText(); }
+
+    /**
+     * Retourne le bouton d'inscription.
+     * @return Le bouton (Button) d'inscription.
+     */
     public Button getSignupButton() { return signupButton; }
+
+    /**
+     * Retourne l'hyperlien pour revenir à la page de connexion.
+     * @return L'hyperlien (Hyperlink).
+     */
     public Hyperlink getLoginLink() { return loginLink; }
     
+    /**
+     * Construit un objet LocalDate à partir des valeurs sélectionnées dans les ComboBox.
+     * Retourne null si un des champs n'est pas rempli ou si la date est invalide
+     * (par exemple, 30 février).
+     *
+     * @return Un objet LocalDate représentant la date de naissance, ou null en cas d'erreur.
+     */
     public LocalDate getDateOfBirth() {
         Integer day = dayComboBox.getValue();
         Integer month = monthComboBox.getValue();
@@ -155,6 +207,7 @@ public class SignupView {
         try {
             return LocalDate.of(year, month, day);
         } catch (DateTimeException e) {
+            // Cette exception est levée pour les dates invalides comme le 30 février.
             System.err.println("Invalid date selected: " + e.getMessage());
             return null;
         }

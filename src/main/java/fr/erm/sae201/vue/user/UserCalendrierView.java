@@ -20,29 +20,55 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
 
+/**
+ * La vue du calendrier hebdomadaire pour l'utilisateur secouriste.
+ * Elle affiche les affectations de l'utilisateur sur une grille temporelle,
+ * permettant une navigation par semaine pour visualiser l'emploi du temps passé et futur.
+ *
+ * @author Ewan QUELO
+ * @author Raphael MILLE
+ * @author Matheo BIET
+ * @version 1.0
+ */
 public class UserCalendrierView extends BaseView {
 
+    /** Le compte de l'utilisateur secouriste actuellement connecté. */
     private final CompteUtilisateur compte;
+    /** Le DAO pour accéder aux données des affectations. */
     private final AffectationDAO affectationDAO;
+    /** La date du premier jour (lundi) de la semaine actuellement affichée. */
     private LocalDate currentWeekStart;
+    /** Le conteneur principal de la vue du calendrier. */
     private VBox mainContainer;
 
+    /** Heure de début de l'affichage du calendrier (8h). */
     private static final int START_HOUR = 8;
+    /** Heure de fin de l'affichage du calendrier (24h). */
     private static final int END_HOUR = 24;
     
-    // NOUVEAU : Constante pour la hauteur d'une heure en pixels.
-    // Cela nous donne une base de calcul : 60 pixels/heure = 1 pixel/minute.
+    /** Hauteur en pixels pour représenter une heure, créant un ratio de 1 pixel par minute. */
     private static final double HOUR_HEIGHT = 60.0;
 
+    /**
+     * Construit la vue du calendrier pour le secouriste.
+     *
+     * @param navigator L'instance principale de l'application pour la navigation.
+     * @param compte Le compte de l'utilisateur connecté.
+     */
     public UserCalendrierView(MainApp navigator, CompteUtilisateur compte) {
         super(navigator, compte, "Calendrier");
         this.compte = compte;
         this.affectationDAO = new AffectationDAO();
-        // Date de départ arbitraire pour l'exemple
+        // Initialise la vue sur la semaine en cours, en se calant sur le lundi.
         this.currentWeekStart = LocalDate.now().with(DayOfWeek.MONDAY);
         populateCalendar();
     }
 
+    /**
+     * Crée et retourne le contenu central de la vue, qui est le conteneur principal du calendrier.
+     *
+     * @return Le nœud (Node) racine du contenu de la vue.
+     */
     @Override
     protected Node createCenterContent() {
         mainContainer = new VBox(10);
@@ -50,15 +76,26 @@ public class UserCalendrierView extends BaseView {
         return mainContainer;
     }
 
+    /**
+     * Déclenche le rafraîchissement complet de la vue du calendrier.
+     */
     private void populateCalendar() {
         refreshCalendarView();
     }
 
+    /**
+     * Gère la navigation entre les semaines.
+     *
+     * @param weeksToAdd Le nombre de semaines à ajouter (1 pour la suivante, -1 pour la précédente).
+     */
     private void changeWeek(int weeksToAdd) {
         currentWeekStart = currentWeekStart.plusWeeks(weeksToAdd);
         refreshCalendarView();
     }
 
+    /**
+     * Rafraîchit l'intégralité de l'affichage du calendrier en reconstruisant ses composants.
+     */
     private void refreshCalendarView() {
         mainContainer.getChildren().clear();
 
@@ -77,6 +114,11 @@ public class UserCalendrierView extends BaseView {
         mainContainer.getChildren().addAll(weekNavigationBar, scrollPane);
     }
 
+    /**
+     * Crée la barre de navigation en haut du calendrier avec les boutons et les jours.
+     *
+     * @return Un GridPane représentant la barre de navigation de la semaine.
+     */
     private GridPane createWeekNavigationBar() {
         GridPane navGrid = new GridPane();
         navGrid.getStyleClass().add("week-nav-grid");
@@ -138,6 +180,11 @@ public class UserCalendrierView extends BaseView {
         return navGrid;
     }
 
+    /**
+     * Crée la grille principale du calendrier avec les colonnes pour les heures et les jours.
+     *
+     * @return Un GridPane prêt à être peuplé.
+     */
     private GridPane createCalendarGrid() {
         GridPane grid = new GridPane();
         grid.getStyleClass().add("calendar-grid");
@@ -152,27 +199,26 @@ public class UserCalendrierView extends BaseView {
             grid.getColumnConstraints().add(dayColumn);
         }
         
-        // La colonne de droite n'est plus nécessaire car les flèches sont dans la barre de nav
-        // ColumnConstraints rightSpacerColumn = new ColumnConstraints();
-        // rightSpacerColumn.setPercentWidth(5);
-        // grid.getColumnConstraints().add(rightSpacerColumn);
-
         return grid;
     }
 
-    // MODIFIÉ : La logique de cette méthode est entièrement revue.
+    /**
+     * Peuple la grille du calendrier avec les affectations de l'utilisateur.
+     *
+     * @param calendarGrid La grille à remplir.
+     */
     private void populateCalendarGrid(GridPane calendarGrid) {
         calendarGrid.getChildren().clear();
         calendarGrid.getRowConstraints().clear();
 
-        // 1. Définir des contraintes de ligne pour une hauteur fixe par heure
+        // 1. Définir des contraintes de ligne pour une hauteur fixe par heure.
         for (int hour = START_HOUR; hour < END_HOUR; hour++) {
             RowConstraints rowConstraints = new RowConstraints(HOUR_HEIGHT);
             rowConstraints.setValignment(VPos.TOP);
             calendarGrid.getRowConstraints().add(rowConstraints);
         }
 
-        // 2. Créer les étiquettes d'heure et les lignes de fond de la grille (pour l'aspect visuel)
+        // 2. Créer les étiquettes d'heure et les cellules de fond.
         for (int hour = START_HOUR; hour < END_HOUR; hour++) {
             int row = hour - START_HOUR;
             Label timeLabel = new Label(String.format("%02dh", hour));
@@ -188,53 +234,46 @@ public class UserCalendrierView extends BaseView {
             }
         }
         
-        // 3. Créer une "toile" (AnchorPane) par jour pour y positionner les événements
+        // 3. Créer une "toile" (AnchorPane) par jour pour positionner les événements avec précision.
+        // Cette technique permet de superposer les événements sur la grille de fond.
         List<AnchorPane> dayPanes = new ArrayList<>();
         for (int day = 0; day < 7; day++) {
             AnchorPane dayPane = new AnchorPane();
-            // On ajoute ce panneau au-dessus des cellules de la grille, en le faisant s'étendre sur toutes les lignes
             calendarGrid.add(dayPane, day + 1, 0, 1, END_HOUR - START_HOUR);
             dayPanes.add(dayPane);
         }
 
-        // 4. Récupérer les affectations et les placer sur les "toiles"
+        // 4. Récupérer et placer les affectations sur les "toiles" correspondantes.
         LocalDate weekEnd = currentWeekStart.plusDays(6);
         List<Affectation> affectations = affectationDAO
                 .findAffectationsForSecouristeBetweenDates(compte.getIdSecouriste(), currentWeekStart, weekEnd);
 
         for (Affectation affectation : affectations) {
-            // Indice de la colonne (0=Lundi, ..., 6=Dimanche)
             int dayIndex = affectation.getDps().getJournee().getDate().getDayOfWeek().getValue() - 1;
             
-            if (dayIndex < 0 || dayIndex >= 7) continue; // Sécurité
+            if (dayIndex < 0 || dayIndex >= 7) continue;
 
             int startHour = affectation.getDps().getHoraireDepart()[0];
             int startMinute = affectation.getDps().getHoraireDepart()[1];
             int endHour = affectation.getDps().getHoraireFin()[0];
             int endMinute = affectation.getDps().getHoraireFin()[1];
             
-            // Ignorer les événements qui commencent en dehors de la plage visible
             if (startHour < START_HOUR) continue;
 
-            // Calcul du décalage vertical (Y) en pixels
             double startOffsetInMinutes = (startHour - START_HOUR) * 60 + startMinute;
-            double topOffset = startOffsetInMinutes * (HOUR_HEIGHT / 60.0); // 1 pixel par minute
+            double topOffset = startOffsetInMinutes * (HOUR_HEIGHT / 60.0);
 
-            // Calcul de la durée et de la hauteur du noeud en pixels
             double durationInMinutes = (endHour * 60 + endMinute) - (startHour * 60 + startMinute);
-            double eventNodeHeight = Math.max(15, durationInMinutes * (HOUR_HEIGHT / 60.0)); // Hauteur min de 15px
+            double eventNodeHeight = Math.max(15, durationInMinutes * (HOUR_HEIGHT / 60.0));
 
-            // Création du noeud graphique pour l'événement
             Node eventNode = createEventNode(affectation);
             
-            // Positionnement précis dans l'AnchorPane du jour correspondant
             AnchorPane targetDayPane = dayPanes.get(dayIndex);
             
             AnchorPane.setTopAnchor(eventNode, topOffset);
-            AnchorPane.setLeftAnchor(eventNode, 2.0);  // Petite marge à gauche
-            AnchorPane.setRightAnchor(eventNode, 2.0); // Petite marge à droite
+            AnchorPane.setLeftAnchor(eventNode, 2.0);
+            AnchorPane.setRightAnchor(eventNode, 2.0);
             
-            // Définir la hauteur de l'élément
             ((Region) eventNode).setPrefHeight(eventNodeHeight);
             ((Region) eventNode).setMinHeight(eventNodeHeight);
 
@@ -242,6 +281,12 @@ public class UserCalendrierView extends BaseView {
         }
     }
 
+    /**
+     * Crée la représentation graphique d'une affectation.
+     *
+     * @param affectation L'affectation à représenter.
+     * @return Un nœud (Node) contenant les détails de l'affectation.
+     */
     private Node createEventNode(Affectation affectation) {
         VBox eventBox = new VBox(2);
         eventBox.getStyleClass().add("event-box");

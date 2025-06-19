@@ -14,7 +14,14 @@ import javafx.scene.layout.VBox;
 import javafx.scene.text.TextAlignment;
 
 /**
- * Represents the user interface for the "Forgot Password" screen.
+ * La vue de l'interface utilisateur pour l'écran "Mot de passe oublié".
+ * Elle fournit un formulaire où l'utilisateur peut saisir son adresse e-mail pour
+ * initier le processus de réinitialisation de mot de passe.
+ *
+ * @author Ewan QUELO
+ * @author Raphael MILLE
+ * @author Matheo BIET
+ * @version 1.0
  */
 public class ForgotPasswordView {
 
@@ -22,12 +29,18 @@ public class ForgotPasswordView {
     private TextField emailField;
     private TextField codeField;
     private Button sendCodeButton;
-    private Hyperlink loginLink; // ADDED: Hyperlink to go back to login
+    private Hyperlink loginLink;
 
+    /**
+     * Construit la vue "Mot de passe oublié" en initialisant ses composants graphiques.
+     */
     public ForgotPasswordView() {
         createView();
     }
 
+    /**
+     * Crée et assemble tous les éléments graphiques de la vue.
+     */
     private void createView() {
         rootPane = new StackPane();
         rootPane.getStyleClass().add("login-root");
@@ -48,7 +61,6 @@ public class ForgotPasswordView {
 
         Label titleLabel = new Label("MOT DE PASSE OUBLIÉ");
         titleLabel.getStyleClass().add("title-label");
-        // MODIFIED: Allow text to wrap to a new line if it's too long
         titleLabel.setWrapText(true);
         titleLabel.setTextAlignment(TextAlignment.CENTER);
 
@@ -63,20 +75,20 @@ public class ForgotPasswordView {
         codeField = new TextField();
         codeField.setPromptText("Code reçu par email");
         codeField.getStyleClass().add("login-input");
+        // Le champ de code est initialement caché. Il n'apparaît que sur demande du contrôleur.
         codeField.setVisible(false);
         codeField.setManaged(false);
 
-        // ADDED: Create and style the login link
         loginLink = new Hyperlink("Retour à la connexion");
         loginLink.getStyleClass().add("forgot-password-link");
-        VBox.setMargin(loginLink, new Insets(10, 0, 0, 0)); // Add some top margin
+        VBox.setMargin(loginLink, new Insets(10, 0, 0, 0));
 
         formBox.getChildren().addAll(
                 titleLabel,
                 emailField,
                 sendCodeButton,
                 codeField,
-                loginLink // ADDED: Add the link to the form
+                loginLink
         );
 
         ImageView olympicRingsView = new ImageView(RessourceLoader.loadImage("olympic_rings.png"));
@@ -91,15 +103,42 @@ public class ForgotPasswordView {
         StackPane.setAlignment(mainContent, Pos.CENTER);
     }
     
+    /**
+     * Rend visible le champ de saisie du code de vérification.
+     * Cette méthode est typiquement appelée après que le code a été envoyé à l'utilisateur.
+     */
     public void showCodeField() {
         codeField.setVisible(true);
         codeField.setManaged(true);
     }
 
-    // Getters for the controller
+    /**
+     * Retourne le conteneur racine de cette vue.
+     * @return Le StackPane racine.
+     */
     public StackPane getView() { return rootPane; }
+
+    /**
+     * Récupère l'adresse e-mail saisie par l'utilisateur.
+     * @return L'adresse e-mail sous forme de chaîne de caractères.
+     */
     public String getEmail() { return emailField.getText(); }
+
+    /**
+     * Récupère le code de vérification saisi par l'utilisateur.
+     * @return Le code de vérification sous forme de chaîne de caractères.
+     */
     public String getCode() { return codeField.getText(); }
+
+    /**
+     * Retourne le bouton permettant d'envoyer le code de réinitialisation.
+     * @return Le bouton (Button) "Envoyer le code".
+     */
     public Button getSendCodeButton() { return sendCodeButton; }
-    public Hyperlink getLoginLink() { return loginLink; } // ADDED: Getter for the new link
+
+    /**
+     * Retourne l'hyperlien permettant de revenir à la page de connexion.
+     * @return L'hyperlien (Hyperlink) "Retour à la connexion".
+     */
+    public Hyperlink getLoginLink() { return loginLink; }
 }

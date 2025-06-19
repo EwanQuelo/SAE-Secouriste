@@ -19,6 +19,17 @@ import javafx.scene.layout.VBox;
 import javafx.scene.text.Text;
 import java.time.ZoneId;
 
+/**
+ * La vue des paramètres pour l'utilisateur secouriste.
+ * Elle est organisée en deux colonnes : l'une pour la modification des informations personnelles
+ * (nom, adresse, etc.) et l'autre pour les paramètres de sécurité (changement de mot de passe,
+ * consultation de l'e-mail). Un bouton de déconnexion est également présent.
+ *
+ * @author Ewan QUELO
+ * @author Raphael MILLE
+ * @author Matheo BIET
+ * @version 1.0
+ */
 public class UserParametresView extends BaseView {
 
     private TextField prenomField, nomField, emailField, telField, adresseField;
@@ -27,22 +38,32 @@ public class UserParametresView extends BaseView {
     private Button saveInfoButton, savePasswordButton, logoutButton;
     private final UserParametresController controller;
 
+    /**
+     * Construit la vue des paramètres de l'utilisateur.
+     *
+     * @param navigator L'instance principale de l'application pour la navigation.
+     * @param compte Le compte de l'utilisateur connecté.
+     * @param authService Le service d'authentification pour gérer les opérations liées au compte.
+     */
     public UserParametresView(MainApp navigator, CompteUtilisateur compte, AuthService authService) {
         super(navigator, compte, "Paramètres");
         this.controller = new UserParametresController(this, navigator, compte, authService);
     }
 
+    /**
+     * Crée et retourne le contenu central de la vue, structuré en deux colonnes.
+     *
+     * @return Le nœud (Node) contenant l'ensemble des panneaux de paramètres.
+     */
     @Override
     protected Node createCenterContent() {
         VBox container = new VBox(30);
-        // ADD THE UNIQUE CSS CLASS HERE
         container.getStyleClass().add("user-settings-view");
         container.setAlignment(Pos.TOP_CENTER);
 
         Text scenetitle = new Text("Paramètres du compte");
         scenetitle.getStyleClass().add("form-title");
 
-        // Use an HBox for the two-column layout
         HBox settingsColumns = new HBox(40);
         settingsColumns.setAlignment(Pos.TOP_CENTER);
 
@@ -60,6 +81,11 @@ public class UserParametresView extends BaseView {
         return container;
     }
 
+    /**
+     * Crée la section de gauche pour les informations personnelles.
+     *
+     * @return Un VBox contenant le formulaire des informations personnelles.
+     */
     private VBox createPersonalInfoSection() {
         VBox box = new VBox(20);
         box.getStyleClass().add("settings-section");
@@ -112,6 +138,11 @@ public class UserParametresView extends BaseView {
         return box;
     }
 
+    /**
+     * Crée la section de droite pour les paramètres de sécurité.
+     *
+     * @return Un VBox contenant le formulaire de sécurité.
+     */
     private VBox createSecuritySection() {
         VBox box = new VBox(20);
         box.getStyleClass().add("settings-section");
@@ -121,6 +152,7 @@ public class UserParametresView extends BaseView {
         title.getStyleClass().add("section-title");
 
         emailField = new TextField();
+        // L'email sert d'identifiant unique et ne doit pas être modifiable par l'utilisateur.
         emailField.setEditable(false);
         emailField.setFocusTraversable(false);
         emailField.getStyleClass().addAll("settings-input", "disabled-input");
@@ -147,7 +179,11 @@ public class UserParametresView extends BaseView {
         return box;
     }
 
-    // Getters and Setters remain the same, but for completeness:
+    /**
+     * Pré-remplit les champs du formulaire avec les données d'un secouriste.
+     *
+     * @param secouriste L'objet Secouriste dont les données doivent être affichées.
+     */
     public void setSecouristeData(Secouriste secouriste) {
         prenomField.setText(secouriste.getPrenom());
         nomField.setText(secouriste.getNom());
@@ -159,15 +195,63 @@ public class UserParametresView extends BaseView {
         }
     }
 
+    /**
+     * Retourne le prénom saisi.
+     * @return Le prénom.
+     */
     public String getPrenom() { return prenomField.getText(); }
+    
+    /**
+     * Retourne le nom saisi.
+     * @return Le nom.
+     */
     public String getNom() { return nomField.getText(); }
+    
+    /**
+     * Retourne le numéro de téléphone saisi.
+     * @return Le numéro de téléphone.
+     */
     public String getTel() { return telField.getText(); }
+    
+    /**
+     * Retourne l'adresse saisie.
+     * @return L'adresse.
+     */
     public String getAdresse() { return adresseField.getText(); }
+    
+    /**
+     * Retourne la date de naissance sélectionnée.
+     * @return La date de naissance.
+     */
     public java.time.LocalDate getDateNaissance() { return dateNaissancePicker.getValue(); }
+    
+    /**
+     * Retourne le nouveau mot de passe saisi.
+     * @return Le nouveau mot de passe.
+     */
     public String getNewPassword() { return newPasswordField.getText(); }
+    
+    /**
+     * Retourne le mot de passe de confirmation saisi.
+     * @return Le mot de passe de confirmation.
+     */
     public String getConfirmPassword() { return confirmPasswordField.getText(); }
 
+    /**
+     * Associe une action au bouton de sauvegarde des informations personnelles.
+     * @param handler Le gestionnaire d'événement.
+     */
     public void setSaveInfoButtonAction(EventHandler<ActionEvent> handler) { saveInfoButton.setOnAction(handler); }
+    
+    /**
+     * Associe une action au bouton de sauvegarde du mot de passe.
+     * @param handler Le gestionnaire d'événement.
+     */
     public void setSavePasswordButtonAction(EventHandler<ActionEvent> handler) { savePasswordButton.setOnAction(handler); }
+    
+    /**
+     * Associe une action au bouton de déconnexion.
+     * @param handler Le gestionnaire d'événement.
+     */
     public void setLogoutButtonAction(EventHandler<ActionEvent> handler) { logoutButton.setOnAction(handler); }
 }
