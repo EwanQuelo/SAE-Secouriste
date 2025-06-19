@@ -1,11 +1,9 @@
 package fr.erm.sae201.vue.admin;
 
 import fr.erm.sae201.controleur.admin.AdminAffectationsController;
+import fr.erm.sae201.metier.graphe.algorithme.ModelesAlgorithme.AffectationResultat;
 import fr.erm.sae201.metier.persistence.CompteUtilisateur;
 import fr.erm.sae201.metier.persistence.DPS;
-
-import fr.erm.sae201.metier.service.ModelesAlgorithme.AffectationResultat;
-
 import fr.erm.sae201.vue.MainApp;
 import fr.erm.sae201.vue.base.BaseView;
 import javafx.beans.value.ChangeListener;

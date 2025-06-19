@@ -1,11 +1,12 @@
-package fr.erm.sae201.metier.service;
+package fr.erm.sae201.metier.graphe.algorithme;
 
 import fr.erm.sae201.dao.AffectationDAO;
 import fr.erm.sae201.dao.DPSDAO;
 import fr.erm.sae201.dao.SecouristeDAO;
+import fr.erm.sae201.metier.graphe.algorithme.ModelesAlgorithme.AffectationResultat;
+import fr.erm.sae201.metier.graphe.algorithme.ModelesAlgorithme.Poste;
 import fr.erm.sae201.metier.persistence.*;
-import fr.erm.sae201.metier.service.ModelesAlgorithme.Poste;
-import fr.erm.sae201.metier.service.ModelesAlgorithme.AffectationResultat;
+import fr.erm.sae201.metier.service.ServiceCompetences;
 
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -80,7 +81,7 @@ public class ServiceAffectationGloutonne {
         return secouristesLibres;
     }
 
-    private boolean estApte(Secouriste secouriste, Poste poste) {
+    public boolean estApte(Secouriste secouriste, Poste poste) {
         return serviceCompetences.possedeCompetenceRequiseOuSuperieure(secouriste.getCompetences(), poste.competenceRequise());
     }
 

@@ -1,4 +1,4 @@
-package fr.erm.sae201.metier.service;
+package fr.erm.sae201.metier.graphe.algorithme;
 
 import fr.erm.sae201.metier.persistence.Competence;
 import fr.erm.sae201.metier.persistence.Secouriste;

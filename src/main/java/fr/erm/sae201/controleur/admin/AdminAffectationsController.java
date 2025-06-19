@@ -2,11 +2,11 @@ package fr.erm.sae201.controleur.admin;
 
 import fr.erm.sae201.dao.DPSDAO;
 import fr.erm.sae201.dao.AffectationDAO;
+import fr.erm.sae201.metier.graphe.algorithme.ServiceAffectationExhaustive;
+import fr.erm.sae201.metier.graphe.algorithme.ServiceAffectationGloutonne;
+import fr.erm.sae201.metier.graphe.algorithme.ModelesAlgorithme.AffectationResultat;
 import fr.erm.sae201.metier.persistence.Affectation;
 import fr.erm.sae201.metier.persistence.DPS;
-import fr.erm.sae201.metier.service.ModelesAlgorithme.AffectationResultat; // Import du record partagé
-import fr.erm.sae201.metier.service.ServiceAffectationExhaustive;
-import fr.erm.sae201.metier.service.ServiceAffectationGloutonne;
 import fr.erm.sae201.utils.NotificationUtils;
 import fr.erm.sae201.vue.MainApp;
 import fr.erm.sae201.vue.admin.AdminAffectationsView;
