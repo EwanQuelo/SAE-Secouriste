@@ -1,22 +1,23 @@
-// src/main/java/fr/erm/sae201/dao/AffectationDAO.java
 package fr.erm.sae201.dao;
 
 import fr.erm.sae201.metier.persistence.*;
 import java.sql.*;
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
-import java.time.LocalDate;
 
 /**
- * Data Access Object (DAO) for managing {@link Affectation} entities.
- * An {@link Affectation} represents the assignment of a {@link Secouriste}
- * with a specific {@link Competence} to a {@link DPS} (Dispositif Prévisionnel
- * de Secours).
- * This class handles database operations such as creating, retrieving, and
- * deleting affectations.
+ * DAO (Data Access Object) pour la gestion des entités Affectation.
+ * <p>
+ * Une affectation représente l'assignation d'un Secouriste avec une Compétence
+ * spécifique à un DPS (Dispositif Prévisionnel de Secours). Cette classe gère
+ * les opérations de base de données comme la création, la recherche et la suppression.
+ * </p>
  *
- * @author Ewan QUELO, Raphael MILLE, Matheo BIET
+ * @author Ewan QUELO
+ * @author Raphael MILLE
+ * @author Matheo BIET
  * @version 1.2
  */
 public class AffectationDAO extends DAO<Affectation> {
@@ -26,15 +27,11 @@ public class AffectationDAO extends DAO<Affectation> {
     private final CompetenceDAO competenceDAO = new CompetenceDAO();
 
     /**
-     * Retrieves all {@link Affectation} records from the database.
-     * For each record, it fetches the associated {@link DPS}, {@link Secouriste},
-     * and {@link Competence} objects using their respective DAOs.
-     * If any related entity cannot be found for a given record, that affectation
-     * will not be included in the returned list.
+     * Récupère toutes les affectations de la base de données.
+     * Pour chaque enregistrement, elle reconstruit l'objet Affectation complet
+     * en utilisant les DAOs correspondants.
      *
-     * @return A {@link List} of all {@link Affectation} objects. The list may be
-     *         empty
-     *         if no affectations are found or if an error occurs during retrieval.
+     * @return Une liste de toutes les affectations. La liste peut être vide.
      */
     @Override
     public List<Affectation> findAll() {
@@ -57,8 +54,9 @@ public class AffectationDAO extends DAO<Affectation> {
         return affectations;
     }
 
-            /**
-     * NOUVEAU: Compte le nombre d'affectations pour un DPS donné.
+    /**
+     * Compte le nombre d'affectations pour un DPS donné.
+     *
      * @param dpsId L'ID du DPS.
      * @return Le nombre d'affectations.
      */
@@ -77,15 +75,12 @@ public class AffectationDAO extends DAO<Affectation> {
         }
         return 0;
     }
-    
 
     /**
-     * Finds all {@link Affectation} records associated with a specific {@link DPS}.
+     * Recherche toutes les affectations associées à un DPS spécifique.
      *
-     * @param dpsId The ID of the {@link DPS} for which to find affectations.
-     * @return A {@link List} of {@link Affectation} objects for the given DPS ID.
-     *         The list may be empty if no affectations are found for this DPS or if
-     *         an error occurs.
+     * @param dpsId L'ID du DPS pour lequel trouver les affectations.
+     * @return Une liste d'objets Affectation. Peut être vide.
      */
     public List<Affectation> findAffectationsByDpsId(long dpsId) {
         List<Affectation> affectations = new ArrayList<>();
@@ -105,15 +100,10 @@ public class AffectationDAO extends DAO<Affectation> {
     }
 
     /**
-     * Finds all {@link Affectation} records associated with a specific
-     * {@link Secouriste}.
+     * Recherche toutes les affectations associées à un Secouriste spécifique.
      *
-     * @param secouristeId The ID of the {@link Secouriste} for which to find
-     *                     affectations.
-     * @return A {@link List} of {@link Affectation} objects for the given
-     *         Secouriste ID.
-     *         The list may be empty if no affectations are found for this
-     *         secouriste or if an error occurs.
+     * @param secouristeId L'ID du secouriste pour lequel trouver les affectations.
+     * @return Une liste d'objets Affectation. Peut être vide.
      */
     public List<Affectation> findAffectationsBySecouristeId(long secouristeId) {
         List<Affectation> affectations = new ArrayList<>();
@@ -133,40 +123,29 @@ public class AffectationDAO extends DAO<Affectation> {
     }
 
     /**
-     * Helper method to map a row from a {@link ResultSet} to an {@link Affectation}
-     * object.
-     * It retrieves IDs and intitule from the current row, then uses {@link DPSDAO},
-     * {@link SecouristeDAO}, and {@link CompetenceDAO} to fetch the full related
-     * objects.
+     * Méthode utilitaire pour transformer une ligne d'un ResultSet en un objet Affectation.
+     * Elle récupère les objets complets DPS, Secouriste et Competence via leurs DAOs respectifs.
      *
-     * @param rs The {@link ResultSet} positioned at the row to map.
-     * @return An {@link Optional} containing the mapped {@link Affectation} if all
-     *         related
-     *         entities are found and valid; otherwise, an empty {@link Optional}.
-     * @throws SQLException If an error occurs while accessing the
-     *                      {@link ResultSet}.
+     * @param rs Le ResultSet positionné sur la ligne à traiter.
+     * @return Un Optional contenant l'objet Affectation si toutes les entités sont trouvées, sinon un Optional vide.
+     * @throws SQLException Si une erreur se produit lors de l'accès au ResultSet.
      */
-    private java.util.Optional<Affectation> mapResultSetToAffectation(ResultSet rs) throws SQLException {
+    private Optional<Affectation> mapResultSetToAffectation(ResultSet rs) throws SQLException {
         DPS dps = dpsDAO.findByID(rs.getLong("idDPS"));
         Secouriste secouriste = secouristeDAO.findByID(rs.getLong("idSecouriste"));
         Competence competence = competenceDAO.findByIntitule(rs.getString("intituleCompetence"));
         if (dps != null && secouriste != null && competence != null) {
-            return java.util.Optional.of(new Affectation(dps, secouriste, competence));
+            return Optional.of(new Affectation(dps, secouriste, competence));
         }
-        return java.util.Optional.empty();
+        return Optional.empty();
     }
 
     /**
-     * Creates a new {@link Affectation} record in the database.
-     * The {@link Affectation} object must have its {@link DPS}, {@link Secouriste},
-     * and {@link Competence} fields properly set with valid entities.
+     * Crée un nouvel enregistrement d'affectation dans la base de données.
      *
-     * @param affectation The {@link Affectation} object to persist. Must not be
-     *                    'null'.
-     * @return The number of rows affected (typically 1 on success, or -1 if an
-     *         SQLException occurs).
-     * @throws IllegalArgumentException if 'affectation' is 'null' or its internal
-     *                                  components are not set.
+     * @param affectation L'objet Affectation à persister. Ne doit pas être null.
+     * @return Le nombre de lignes affectées (1 en cas de succès, -1 en cas d'erreur).
+     * @throws IllegalArgumentException si l'objet affectation est null.
      */
     @Override
     public int create(Affectation affectation) {
@@ -186,18 +165,11 @@ public class AffectationDAO extends DAO<Affectation> {
     }
 
     /**
-     * Deletes an existing {@link Affectation} record from the database.
-     * The deletion is based on the composite key (DPS ID, Secouriste ID, Competence
-     * intitule)
-     * derived from the provided {@link Affectation} object.
+     * Supprime une affectation de la base de données en se basant sur sa clé primaire composite.
      *
-     * @param affectation The {@link Affectation} object to delete. Must not be
-     *                    'null'.
-     * @return The number of rows affected (typically 1 on success, 0 if no matching
-     *         record was found,
-     *         or -1 if an SQLException occurs).
-     * @throws IllegalArgumentException if 'affectation' is 'null' or its internal
-     *                                  components are not set.
+     * @param affectation L'objet Affectation à supprimer. Ne doit pas être null.
+     * @return Le nombre de lignes affectées (1 si succès, 0 si non trouvée, -1 si erreur).
+     * @throws IllegalArgumentException si l'objet affectation est null.
      */
     @Override
     public int delete(Affectation affectation) {
@@ -218,9 +190,8 @@ public class AffectationDAO extends DAO<Affectation> {
 
     /**
      * Récupère toutes les affectations pour un secouriste donné entre deux dates.
-     * C'est une version optimisée qui ne fait qu'une seule requête complexe.
-     * CORRIGÉ : Utilisation d'alias SQL (AS) pour éviter les conflits de noms de
-     * colonnes.
+     * Cette méthode utilise une seule requête optimisée avec des jointures pour
+     * construire les objets complets et éviter de multiples appels à la base de données.
      *
      * @param secouristeId L'ID du secouriste.
      * @param startDate    La date de début de la période.
@@ -285,33 +256,40 @@ public class AffectationDAO extends DAO<Affectation> {
         return affectations;
     }
 
+    /**
+     * Remplace toutes les affectations pour un DPS donné par une nouvelle liste.
+     * Cette opération est transactionnelle : soit toutes les modifications sont appliquées, soit aucune ne l'est.
+     *
+     * @param dpsId L'ID du DPS pour lequel remplacer les affectations.
+     * @param nouvellesAffectations La nouvelle liste d'affectations à enregistrer.
+     * @return `true` si la transaction a réussi, `false` sinon.
+     */
     public boolean replaceAffectationsForDps(long dpsId, List<Affectation> nouvellesAffectations) {
         Connection conn = null;
         try {
             conn = getConnection();
-            // Démarre une transaction
+            // Démarre une transaction pour garantir l'intégrité des données :
+            // soit la suppression et les insertions réussissent, soit tout est annulé.
             conn.setAutoCommit(false);
 
-            // 1. Supprimer les anciennes affectations pour ce DPS
             String deleteSql = "DELETE FROM Affectation WHERE idDPS = ?";
             try (PreparedStatement pstmtDelete = conn.prepareStatement(deleteSql)) {
                 pstmtDelete.setLong(1, dpsId);
                 pstmtDelete.executeUpdate();
             }
 
-            // 2. Insérer les nouvelles affectations
             String insertSql = "INSERT INTO Affectation (idDPS, idSecouriste, intituleCompetence) VALUES (?, ?, ?)";
             try (PreparedStatement pstmtInsert = conn.prepareStatement(insertSql)) {
                 for (Affectation affectation : nouvellesAffectations) {
                     pstmtInsert.setLong(1, affectation.getDps().getId());
                     pstmtInsert.setLong(2, affectation.getSecouriste().getId());
                     pstmtInsert.setString(3, affectation.getCompetence().getIntitule());
-                    pstmtInsert.addBatch(); // Ajoute la commande au lot
+                    pstmtInsert.addBatch();
                 }
-                pstmtInsert.executeBatch(); // Exécute toutes les commandes d'un coup
+                pstmtInsert.executeBatch();
             }
 
-            // 3. Valider la transaction si tout s'est bien passé
+            // Valide la transaction si tout s'est bien passé
             conn.commit();
             return true;
 
@@ -319,7 +297,8 @@ public class AffectationDAO extends DAO<Affectation> {
             System.err.println("Transaction error during affectation replacement: " + e.getMessage());
             if (conn != null) {
                 try {
-                    conn.rollback(); // Annule la transaction en cas d'erreur
+                    // Annule la transaction en cas d'erreur
+                    conn.rollback();
                 } catch (SQLException ex) {
                     ex.printStackTrace();
                 }
@@ -328,7 +307,8 @@ public class AffectationDAO extends DAO<Affectation> {
         } finally {
             if (conn != null) {
                 try {
-                    conn.setAutoCommit(true); // Rétablit le mode par défaut
+                    // Rétablit le mode d'auto-commit par défaut
+                    conn.setAutoCommit(true);
                     conn.close();
                 } catch (SQLException e) {
                     e.printStackTrace();
@@ -337,6 +317,12 @@ public class AffectationDAO extends DAO<Affectation> {
         }
     }
 
+    /**
+     * Récupère toutes les affectations pour une date spécifique.
+     *
+     * @param date La date pour laquelle rechercher les affectations.
+     * @return Une liste d'objets Affectation.
+     */
     public List<Affectation> findAllByDate(LocalDate date) {
     List<Affectation> affectations = new ArrayList<>();
     String sql = "SELECT a.idDPS, a.idSecouriste, a.intituleCompetence " +
@@ -347,7 +333,6 @@ public class AffectationDAO extends DAO<Affectation> {
         pstmt.setDate(1, java.sql.Date.valueOf(date));
         try (ResultSet rs = pstmt.executeQuery()) {
             while (rs.next()) {
-                // Cette méthode vient de votre DAO, elle est déjà correcte
                 mapResultSetToAffectation(rs).ifPresent(affectations::add);
             }
         }
@@ -356,9 +341,10 @@ public class AffectationDAO extends DAO<Affectation> {
     }
     return affectations;
 }
-    
+
     /**
-     * NOUVEAU: Supprime toutes les affectations pour un ID de DPS donné.
+     * Supprime toutes les affectations pour un ID de DPS donné.
+     *
      * @param dpsId L'ID du DPS.
      * @return Le nombre de lignes affectées, ou -1 en cas d'erreur.
      */
@@ -374,11 +360,19 @@ public class AffectationDAO extends DAO<Affectation> {
         }
     }
 
+    /**
+     * Non supporté. L'entité Affectation a une clé primaire composite.
+     * Utilisez une méthode de recherche plus spécifique.
+     */
     @Override
     public Affectation findByID(Long id) {
         throw new UnsupportedOperationException("Affectation has a composite PK. Use findByCompositeKey().");
     }
 
+    /**
+     * Non supporté. La mise à jour d'une affectation (table de jointure)
+     * se fait généralement en supprimant l'ancienne et en créant une nouvelle.
+     */
     @Override
     public int update(Affectation element) {
         throw new UnsupportedOperationException(

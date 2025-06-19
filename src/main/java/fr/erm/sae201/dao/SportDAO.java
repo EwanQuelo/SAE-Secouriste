@@ -6,23 +6,23 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * Data Access Object (DAO) for managing {@link Sport} entities.
- * A {@link Sport} is identified by a unique 'code' (String) and has a 'nom'
- * (name).
- * This class handles CRUD (Create, Read, Update, Delete) operations for Sport
- * records.
+ * DAO (Data Access Object) pour la gestion des entités Sport.
+ * <p>
+ * Un Sport est identifié par un 'code' unique et possède un 'nom'.
+ * Cette classe gère les opérations CRUD pour les enregistrements de Sport.
+ * </p>
  *
- * @author Ewan QUELO, Raphael MILLE, Matheo BIET
+ * @author Ewan QUELO
+ * @author Raphael MILLE
+ * @author Matheo BIET
  * @version 1.0
  */
 public class SportDAO extends DAO<Sport> {
 
     /**
-     * Retrieves all {@link Sport} records from the database.
+     * Récupère tous les sports de la base de données.
      *
-     * @return A {@link List} of all {@link Sport} objects found.
-     *         The list may be empty if no Sport records exist or if an error
-     *         occurs.
+     * @return Une liste de tous les objets Sport trouvés.
      */
     @Override
     public List<Sport> findAll() {
@@ -41,13 +41,10 @@ public class SportDAO extends DAO<Sport> {
     }
 
     /**
-     * Finds a specific {@link Sport} by its unique 'code'.
+     * Recherche un sport spécifique par son 'code' unique.
      *
-     * @param code The unique code of the Sport to find. Can be 'null' or empty.
-     * @return The {@link Sport} object if found; 'null' if no Sport with the given
-     *         code
-     *         exists, if the provided 'code' is 'null' or empty, or if an error
-     *         occurs.
+     * @param code Le code unique du sport à trouver.
+     * @return L'objet Sport si trouvé ; sinon `null`.
      */
     public Sport findByCode(String code) {
         if (code == null || code.trim().isEmpty())
@@ -68,17 +65,12 @@ public class SportDAO extends DAO<Sport> {
     }
 
     /**
-     * Creates a new {@link Sport} record in the database.
-     * The 'code' of the Sport serves as its primary key.
+     * Crée un nouvel enregistrement de Sport dans la base de données.
+     * Le 'code' du sport sert de clé primaire.
      *
-     * @param sport The {@link Sport} object to persist. Its 'code' and 'nom' must
-     *              be set.
-     *              Neither the 'sport' object nor its 'code' can be 'null'.
-     * @return The number of rows affected (typically 1 on success). Returns -1 if
-     *         an
-     *         {@link SQLException} occurs (e.g., if the code already exists due to
-     *         primary key constraint) or if 'sport' or its 'code' is 'null'.
-     * @throws IllegalArgumentException if 'sport' or its 'code' is 'null'.
+     * @param sport L'objet Sport à persister. Son 'code' ne doit pas être null.
+     * @return Le nombre de lignes affectées (1 si succès, -1 si erreur).
+     * @throws IllegalArgumentException si l'objet sport ou son code est null.
      */
     @Override
     public int create(Sport sport) {
@@ -97,20 +89,12 @@ public class SportDAO extends DAO<Sport> {
     }
 
     /**
-     * Updates an existing {@link Sport}'s 'nom' (name) in the database.
-     * The 'code' of the Sport is used to identify the record to update and cannot
-     * be changed
-     * by this method as it is the primary key.
+     * Met à jour le 'nom' d'un sport existant dans la base de données.
+     * Le 'code' est utilisé pour identifier l'enregistrement et ne peut pas être modifié.
      *
-     * @param sport The {@link Sport} object with an updated 'nom'. Its 'code' must
-     *              be set
-     *              to identify the record. Neither 'sport' object nor its 'code'
-     *              can be 'null'.
-     * @return The number of rows affected (1 if successful, 0 if no record with the
-     *         code was found).
-     *         Returns -1 if an {@link SQLException} occurs or if 'sport' or its
-     *         'code' is 'null'.
-     * @throws IllegalArgumentException if 'sport' or its 'code' is 'null'.
+     * @param sport L'objet Sport avec le nom mis à jour. Son 'code' doit être défini.
+     * @return Le nombre de lignes affectées (1 si succès, 0 si non trouvé, -1 si erreur).
+     * @throws IllegalArgumentException si l'objet sport ou son code est null.
      */
     @Override
     public int update(Sport sport) {
@@ -129,19 +113,12 @@ public class SportDAO extends DAO<Sport> {
     }
 
     /**
-     * Deletes a {@link Sport} from the database using the provided {@link Sport}
-     * object.
-     * This method internally calls 'deleteByCode' using the 'code' from the 'sport'
-     * object.
-     * Note: This does not automatically handle related records (e.g., in 'DPS')
-     * unless 'ON DELETE CASCADE' or 'ON DELETE SET NULL' is set up in the database
-     * schema
-     * for foreign keys referencing the Sport's code.
+     * Supprime un sport de la base de données en utilisant l'objet fourni.
+     * Appelle en interne `deleteByCode`.
      *
-     * @param sport The {@link Sport} object to delete. Its 'code' must be set.
-     *              Neither 'sport' object nor its 'code' can be 'null'.
-     * @return The number of rows affected.
-     * @throws IllegalArgumentException if 'sport' or its 'code' is 'null'.
+     * @param sport L'objet Sport à supprimer. Son 'code' doit être défini.
+     * @return Le nombre de lignes affectées.
+     * @throws IllegalArgumentException si l'objet sport ou son code est null.
      */
     @Override
     public int delete(Sport sport) {
@@ -151,14 +128,11 @@ public class SportDAO extends DAO<Sport> {
     }
 
     /**
-     * Deletes a {@link Sport} from the database by its unique 'code'.
+     * Supprime un sport de la base de données par son 'code' unique.
      *
-     * @param code The unique 'code' of the Sport to delete. Cannot be 'null' or
-     *             empty.
-     * @return The number of rows affected (1 if successful, 0 if no record with the
-     *         code was found).
-     *         Returns -1 if an {@link SQLException} occurs or if 'code' is invalid.
-     * @throws IllegalArgumentException if 'code' is 'null' or empty.
+     * @param code Le code unique du sport à supprimer. Ne peut être null ou vide.
+     * @return Le nombre de lignes affectées (1 si succès, 0 si non trouvé, -1 si erreur).
+     * @throws IllegalArgumentException si le code est null ou vide.
      */
     public int deleteByCode(String code) {
         if (code == null || code.trim().isEmpty())
@@ -174,19 +148,21 @@ public class SportDAO extends DAO<Sport> {
         }
     }
 
+    /**
+     * Non supporté. La clé primaire de Sport est une chaîne de caractères ('code').
+     * Utilisez `findByCode(String)`.
+     */
     @Override
     public Sport findByID(Long id) {
         throw new UnsupportedOperationException("Sport ID is a String (code). Use findByCode(String).");
     }
 
     /**
-     * Maps a row from a {@link ResultSet} to a {@link Sport} object.
-     * Assumes the {@link ResultSet} contains columns 'code' and 'nom'.
+     * Transforme une ligne d'un ResultSet en un objet Sport.
      *
-     * @param rs The {@link ResultSet} currently positioned at the row to map.
-     * @return A new {@link Sport} object populated with data from the current row.
-     * @throws SQLException If an error occurs while accessing the
-     *                      {@link ResultSet}.
+     * @param rs Le ResultSet positionné sur la ligne à traiter.
+     * @return Un nouvel objet Sport.
+     * @throws SQLException Si une erreur se produit lors de l'accès au ResultSet.
      */
     private Sport mapResultSetToSport(ResultSet rs) throws SQLException {
         return new Sport(

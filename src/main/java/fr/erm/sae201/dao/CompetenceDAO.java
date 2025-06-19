@@ -8,27 +8,25 @@ import java.util.List;
 import java.util.Set;
 
 /**
- * Data Access Object (DAO) for managing {@link Competence} entities.
- * A {@link Competence} represents a skill or qualification. Competencies can
- * have prerequisites,
- * which are other competencies that must be acquired first. These relationships
- * are managed
- * through the 'Necessite' table.
- * This class handles CRUD operations for competencies and manages their
- * prerequisite relationships.
+ * DAO (Data Access Object) pour la gestion des entités Competence.
+ * <p>
+ * Une compétence représente un savoir-faire ou une qualification. Les compétences
+ * peuvent avoir des prérequis, qui sont d'autres compétences à acquérir au préalable.
+ * Ces relations sont gérées via la table 'Necessite'.
+ * </p>
  *
- * @author Ewan QUELO, Raphael MILLE, Matheo BIET
+ * @author Ewan QUELO
+ * @author Raphael MILLE
+ * @author Matheo BIET
  * @version 1.0
  */
 public class CompetenceDAO extends DAO<Competence> {
 
     /**
-     * Retrieves all {@link Competence} records from the database.
-     * For each competence, its prerequisites are also loaded and set.
+     * Récupère toutes les compétences de la base de données.
+     * Pour chaque compétence, ses prérequis sont également chargés.
      *
-     * @return A {@link List} of all {@link Competence} objects, each potentially
-     *         with its set of prerequisites populated. The list may be empty
-     *         if no competencies are found or if an error occurs.
+     * @return Une liste de toutes les compétences, chacune avec ses prérequis potentiels.
      */
     @Override
     public List<Competence> findAll() {
@@ -39,7 +37,7 @@ public class CompetenceDAO extends DAO<Competence> {
                 ResultSet rs = stmt.executeQuery(sql)) {
             while (rs.next()) {
                 Competence comp = mapResultSetToCompetence(rs);
-                // On "hydrate" l'objet avec ses prérequis
+                // "Hydrate" l'objet en chargeant ses prérequis depuis la base de données.
                 comp.setPrerequisites(findPrerequisitesFor(comp.getIntitule()));
                 competences.add(comp);
             }
@@ -50,16 +48,11 @@ public class CompetenceDAO extends DAO<Competence> {
     }
 
     /**
-     * Finds a specific {@link Competence} by its 'intitule' (name).
-     * If found, its prerequisites are also loaded and set.
+     * Recherche une compétence spécifique par son intitulé.
+     * Si elle est trouvée, ses prérequis sont également chargés.
      *
-     * @param intitule The unique title of the competence to find.
-     *                 Should not be null or empty.
-     * @return The {@link Competence} object if found, with its prerequisites
-     *         populated;
-     *         'null' if no competence with the given 'intitule' exists, if
-     *         'intitule' is invalid,
-     *         or if an error occurs.
+     * @param intitule L'intitulé unique de la compétence à trouver.
+     * @return L'objet Competence si trouvé, avec ses prérequis ; sinon `null`.
      */
     public Competence findByIntitule(String intitule) {
         if (intitule == null || intitule.trim().isEmpty())
@@ -71,7 +64,6 @@ public class CompetenceDAO extends DAO<Competence> {
             try (ResultSet rs = pstmt.executeQuery()) {
                 if (rs.next()) {
                     Competence comp = mapResultSetToCompetence(rs);
-                    // On "hydrate" l'objet avec ses prérequis
                     comp.setPrerequisites(findPrerequisitesFor(intitule));
                     return comp;
                 }
@@ -82,22 +74,14 @@ public class CompetenceDAO extends DAO<Competence> {
         return null;
     }
 
-    // --- Prerequisite Relationship Management (Necessite Table) ---
-
     /**
-     * Finds all prerequisite competencies for a given competence.
-     * This method queries the 'Necessite' join table.
-     * To avoid potential infinite loops in prerequisite loading (e.g., A requires
-     * B, B requires A),
-     * this method uses 'findByIntituleSimple' to load prerequisite objects, which
-     * does not recursively load their own prerequisites.
+     * Recherche tous les prérequis pour une compétence donnée.
+     * Cette méthode interroge la table de jointure 'Necessite'. Pour éviter les
+     * boucles infinies de chargement (si A requiert B et B requiert A), elle utilise
+     * une méthode de recherche "simple" qui ne charge pas les prérequis des prérequis.
      *
-     * @param intituleCompetence The 'intitule' of the competence for which to find
-     *                           prerequisites.
-     * @return A {@link Set} of {@link Competence} objects that are prerequisites
-     *         for the specified competence.
-     *         The set may be empty if there are no prerequisites or if an error
-     *         occurs.
+     * @param intituleCompetence L'intitulé de la compétence pour laquelle trouver les prérequis.
+     * @return Un ensemble de compétences qui sont des prérequis pour la compétence spécifiée.
      */
     public Set<Competence> findPrerequisitesFor(String intituleCompetence) {
         String sql = "SELECT competenceRequise FROM Necessite WHERE intituleCompetence = ?";
@@ -107,9 +91,7 @@ public class CompetenceDAO extends DAO<Competence> {
             pstmt.setString(1, intituleCompetence);
             try (ResultSet rs = pstmt.executeQuery()) {
                 while (rs.next()) {
-                    // Pour chaque prérequis trouvé, on charge l'objet Competence complet
-                    // Attention à ne pas créer de boucle infinie si A requiert B et B requiert A.
-                    // findByIntituleSimple évite de recharger les prérequis des prérequis.
+                    // findByIntituleSimple est utilisé pour éviter de recharger récursivement les prérequis.
                     Competence prereq = findByIntituleSimple(rs.getString("competenceRequise"));
                     if (prereq != null) {
                         prerequisites.add(prereq);
@@ -123,14 +105,11 @@ public class CompetenceDAO extends DAO<Competence> {
     }
 
     /**
-     * Adds a prerequisite relationship between two competencies in the 'Necessite'
-     * table.
+     * Ajoute une relation de prérequis entre deux compétences dans la table 'Necessite'.
      *
-     * @param intituleCompetence The 'intitule' of the main competence.
-     * @param intitulePrerequis  The 'intitule' of the competence that is a
-     *                           prerequisite.
-     * @return The number of rows affected (typically 1 on success, or -1 if an
-     *         SQLException occurs).
+     * @param intituleCompetence L'intitulé de la compétence principale.
+     * @param intitulePrerequis  L'intitulé de la compétence qui est un prérequis.
+     * @return Le nombre de lignes affectées (1 en cas de succès, -1 en cas d'erreur).
      */
     public int addPrerequisite(String intituleCompetence, String intitulePrerequis) {
         String sql = "INSERT INTO Necessite (intituleCompetence, competenceRequise) VALUES (?, ?)";
@@ -146,15 +125,11 @@ public class CompetenceDAO extends DAO<Competence> {
     }
 
     /**
-     * Removes a prerequisite relationship between two competencies from the
-     * 'Necessite' table.
+     * Supprime une relation de prérequis entre deux compétences de la table 'Necessite'.
      *
-     * @param intituleCompetence The 'intitule' of the main competence.
-     * @param intitulePrerequis  The 'intitule' of the prerequisite competence to
-     *                           remove.
-     * @return The number of rows affected (typically 1 on success, 0 if no such
-     *         relationship existed,
-     *         or -1 if an SQLException occurs).
+     * @param intituleCompetence L'intitulé de la compétence principale.
+     * @param intitulePrerequis  L'intitulé du prérequis à supprimer.
+     * @return Le nombre de lignes affectées (1 si succès, 0 si non trouvée, -1 si erreur).
      */
     public int removePrerequisite(String intituleCompetence, String intitulePrerequis) {
         String sql = "DELETE FROM Necessite WHERE intituleCompetence = ? AND competenceRequise = ?";
@@ -169,22 +144,16 @@ public class CompetenceDAO extends DAO<Competence> {
         }
     }
 
-    // --- Basic CRUD Methods ---
-
     /**
-     * Creates a new {@link Competence} record in the 'Competence' table.
-     * This method only creates the competence itself; prerequisite relationships
-     * must be added separately using 'addPrerequisite'.
+     * Crée un nouvel enregistrement dans la table 'Competence'.
+     * Cette méthode ne crée que la compétence elle-même ; les relations de prérequis
+     * doivent être ajoutées séparément.
      *
-     * @param competence The {@link Competence} object to persist. Its 'intitule'
-     *                   must be set.
-     * @return The number of rows affected (typically 1 on success, or -1 if an
-     *         SQLException occurs).
+     * @param competence L'objet Competence à persister.
+     * @return Le nombre de lignes affectées (1 en cas de succès, -1 en cas d'erreur).
      */
     @Override
     public int create(Competence competence) {
-        // La création ne concerne que la table Competence, pas les relations.
-        // Les relations sont ajoutées après via addPrerequisite.
         String sql = "INSERT INTO Competence (intitule) VALUES (?)";
         try (Connection conn = getConnection();
                 PreparedStatement pstmt = conn.prepareStatement(sql)) {
@@ -197,15 +166,11 @@ public class CompetenceDAO extends DAO<Competence> {
     }
 
     /**
-     * Deletes a {@link Competence} from the database using its object.
-     * This internally calls 'deleteByIntitule'.
-     * If 'ON DELETE CASCADE' is set up in the database for the 'Necessite' table's
-     * foreign keys
-     * referencing 'Competence', related prerequisite entries will also be deleted.
+     * Supprime une compétence de la base de données en utilisant son objet.
+     * Appelle en interne 'deleteByIntitule'.
      *
-     * @param competence The {@link Competence} object to delete. Its 'intitule'
-     *                   must be set.
-     * @return The number of rows affected in the 'Competence' table.
+     * @param competence L'objet Competence à supprimer.
+     * @return Le nombre de lignes affectées.
      */
     @Override
     public int delete(Competence competence) {
@@ -213,16 +178,12 @@ public class CompetenceDAO extends DAO<Competence> {
     }
 
     /**
-     * Deletes a {@link Competence} from the database by its 'intitule'.
-     * If 'ON DELETE CASCADE' is set up in the database for the 'Necessite' table's
-     * foreign keys
-     * referencing 'Competence', related prerequisite entries will also be deleted.
+     * Supprime une compétence de la base de données par son intitulé.
+     * Si la contrainte 'ON DELETE CASCADE' est configurée dans la BDD,
+     * les entrées de prérequis associées seront également supprimées.
      *
-     * @param intitule The 'intitule' of the competence to delete.
-     * @return The number of rows affected in the 'Competence' table (typically 1 on
-     *         success,
-     *         0 if no competence with that 'intitule' was found, or -1 if an
-     *         SQLException occurs).
+     * @param intitule L'intitulé de la compétence à supprimer.
+     * @return Le nombre de lignes affectées (1 si succès, 0 si non trouvée, -1 si erreur).
      */
     public int deleteByIntitule(String intitule) {
         String sql = "DELETE FROM Competence WHERE intitule = ?";
@@ -236,17 +197,12 @@ public class CompetenceDAO extends DAO<Competence> {
         }
     }
 
-    // --- Utility and Unsupported Methods ---
-
     /**
-     * A "simple" version of 'findByIntitule' that retrieves a {@link Competence}
-     * without recursively loading its prerequisites.
-     * This is primarily used internally by 'findPrerequisitesFor' to prevent
-     * potential infinite loops when competencies have circular dependencies.
+     * Version "simple" de `findByIntitule` qui récupère une compétence sans charger ses prérequis.
+     * Principalement utilisée en interne pour éviter les boucles infinies de chargement.
      *
-     * @param intitule The 'intitule' of the competence to find.
-     * @return The {@link Competence} object if found; 'null' otherwise or if an
-     *         error occurs.
+     * @param intitule L'intitulé de la compétence à trouver.
+     * @return L'objet Competence si trouvé ; sinon `null`.
      */
     private Competence findByIntituleSimple(String intitule) {
         String sql = "SELECT intitule FROM Competence WHERE intitule = ?";
@@ -265,26 +221,19 @@ public class CompetenceDAO extends DAO<Competence> {
     }
 
     /**
-     * Maps a row from a {@link ResultSet} to a {@link Competence} object.
-     * Assumes the {@link ResultSet} contains an 'intitule' column.
+     * Transforme une ligne d'un ResultSet en un objet Competence.
      *
-     * @param rs The {@link ResultSet} currently positioned at the row to map.
-     * @return A new {@link Competence} object.
-     * @throws SQLException If an error occurs while accessing the
-     *                      {@link ResultSet}.
+     * @param rs Le ResultSet positionné sur la ligne à traiter.
+     * @return Un nouvel objet Competence.
+     * @throws SQLException Si une erreur se produit lors de l'accès au ResultSet.
      */
     private Competence mapResultSetToCompetence(ResultSet rs) throws SQLException {
         return new Competence(rs.getString("intitule"));
     }
 
     /**
-     * This method is not supported for {@link Competence} as its primary key is a
-     * String ('intitule').
-     * Use {@link #findByIntitule(String)} instead.
-     *
-     * @param id The ID (not used for {@link Competence}, which uses a String PK).
-     * @return Always throws {@link UnsupportedOperationException}.
-     * @throws UnsupportedOperationException Always thrown.
+     * Non supporté. La clé primaire de Competence est une chaîne de caractères ('intitule').
+     * Utilisez `findByIntitule(String)`.
      */
     @Override
     public Competence findByID(Long id) {
@@ -292,20 +241,9 @@ public class CompetenceDAO extends DAO<Competence> {
     }
 
     /**
-     * Updating the primary key ('intitule') of a {@link Competence} is generally
-     * not supported.
-     * If the 'intitule' needs to be changed, it's often better to delete the old
-     * competence
-     * and create a new one with the new 'intitule', then re-establish any
-     * prerequisite relationships.
-     * A specific method for renaming (which would involve updating related
-     * 'Necessite' entries)
-     * could be implemented if required.
-     *
-     * @param element The {@link Competence} to update (not directly supported for
-     *                PK change).
-     * @return Always throws {@link UnsupportedOperationException}.
-     * @throws UnsupportedOperationException Always thrown.
+     * Non supporté. La mise à jour de la clé primaire ('intitule') n'est pas une
+     * pratique standard. Il est préférable de supprimer l'ancienne compétence et
+     * d'en créer une nouvelle.
      */
     @Override
     public int update(Competence element) {

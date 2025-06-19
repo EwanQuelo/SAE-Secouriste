@@ -2,7 +2,6 @@
 target/
 
 .DS_Store
-DAO.java
 dependency-reduced-pom.xml
 out.txt
 outtt.txt

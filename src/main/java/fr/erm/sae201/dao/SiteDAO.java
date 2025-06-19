@@ -6,23 +6,24 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * Data Access Object (DAO) for managing {@link Site} entities.
- * A {@link Site} represents a geographical location, identified by a unique
- * 'code',
- * and includes a name, longitude, and latitude.
- * This class handles CRUD (Create, Read, Update, Delete) operations for Site
- * records.
+ * DAO (Data Access Object) pour la gestion des entités Site.
+ * <p>
+ * Un Site représente un lieu géographique, identifié par un 'code' unique,
+ * et inclut un nom, une longitude et une latitude. Cette classe gère les
+ * opérations CRUD pour les enregistrements de Site.
+ * </p>
  *
- * @author Ewan QUELO, Raphael MILLE, Matheo BIET
+ * @author Ewan QUELO
+ * @author Raphael MILLE
+ * @author Matheo BIET
  * @version 1.0
  */
 public class SiteDAO extends DAO<Site> {
 
     /**
-     * Retrieves all {@link Site} records from the database.
+     * Récupère tous les sites de la base de données.
      *
-     * @return A {@link List} of all {@link Site} objects found.
-     *         The list may be empty if no Site records exist or if an error occurs.
+     * @return Une liste de tous les objets Site trouvés.
      */
     @Override
     public List<Site> findAll() {
@@ -41,13 +42,10 @@ public class SiteDAO extends DAO<Site> {
     }
 
     /**
-     * Finds a specific {@link Site} by its unique 'code'.
+     * Recherche un site spécifique par son 'code' unique.
      *
-     * @param code The unique code of the Site to find. Can be 'null' or empty.
-     * @return The {@link Site} object if found; 'null' if no Site with the given
-     *         code
-     *         exists, if the provided 'code' is 'null' or empty, or if an error
-     *         occurs.
+     * @param code Le code unique du site à trouver.
+     * @return L'objet Site si trouvé ; sinon `null`.
      */
     public Site findByCode(String code) {
         if (code == null || code.trim().isEmpty())
@@ -68,17 +66,12 @@ public class SiteDAO extends DAO<Site> {
     }
 
     /**
-     * Creates a new {@link Site} record in the database.
-     * The 'code' of the Site serves as its primary key.
+     * Crée un nouvel enregistrement de Site dans la base de données.
+     * Le 'code' du site sert de clé primaire.
      *
-     * @param site The {@link Site} object to persist. Its 'code', 'nom',
-     *             'longitude',
-     *             and 'latitude' must be set. Must not be 'null'.
-     * @return The number of rows affected (typically 1 on success). Returns -1 if
-     *         an
-     *         {@link SQLException} occurs (e.g., if the code already exists due to
-     *         primary key constraint) or if 'site' is 'null'.
-     * @throws IllegalArgumentException if 'site' is 'null'.
+     * @param site L'objet Site à persister. Ne doit pas être null.
+     * @return Le nombre de lignes affectées (1 si succès, -1 si erreur).
+     * @throws IllegalArgumentException si l'objet site est null.
      */
     @Override
     public int create(Site site) {
@@ -90,7 +83,7 @@ public class SiteDAO extends DAO<Site> {
             pstmt.setString(1, site.getCode());
             pstmt.setString(2, site.getNom());
             pstmt.setFloat(3, site.getLongitude());
-            pstmt.setFloat(4, site.getLatitude()); // Nom de colonne corrigé
+            pstmt.setFloat(4, site.getLatitude());
             return pstmt.executeUpdate();
         } catch (SQLException e) {
             System.err.println("Error creating Site " + site.getCode() + ": " + e.getMessage());
@@ -99,19 +92,12 @@ public class SiteDAO extends DAO<Site> {
     }
 
     /**
-     * Updates an existing {@link Site}'s details (name, longitude, latitude) in the
-     * database.
-     * The 'code' of the Site is used to identify the record to update and cannot be
-     * changed
-     * by this method.
+     * Met à jour les informations d'un site existant (nom, longitude, latitude).
+     * Le 'code' du site, utilisé pour l'identifier, ne peut pas être modifié par cette méthode.
      *
-     * @param site The {@link Site} object with updated information. Its 'code' must
-     *             be set.
-     *             Must not be 'null'.
-     * @return The number of rows affected (1 if successful, 0 if no record with the
-     *         code was found).
-     *         Returns -1 if an {@link SQLException} occurs or if 'site' is 'null'.
-     * @throws IllegalArgumentException if 'site' is 'null'.
+     * @param site L'objet Site avec les informations mises à jour. Son 'code' doit être défini.
+     * @return Le nombre de lignes affectées (1 si succès, 0 si non trouvé, -1 si erreur).
+     * @throws IllegalArgumentException si l'objet site est null.
      */
     @Override
     public int update(Site site) {
@@ -122,7 +108,7 @@ public class SiteDAO extends DAO<Site> {
                 PreparedStatement pstmt = conn.prepareStatement(sql)) {
             pstmt.setString(1, site.getNom());
             pstmt.setFloat(2, site.getLongitude());
-            pstmt.setFloat(3, site.getLatitude()); // Nom de colonne corrigé
+            pstmt.setFloat(3, site.getLatitude());
             pstmt.setString(4, site.getCode());
             return pstmt.executeUpdate();
         } catch (SQLException e) {
@@ -132,16 +118,11 @@ public class SiteDAO extends DAO<Site> {
     }
 
     /**
-     * Deletes a {@link Site} record from the database based on its 'code'.
-     * Note: This does not automatically handle related records (e.g., in 'DPS')
-     * unless 'ON DELETE CASCADE' is set up in the database schema.
+     * Supprime un site de la base de données en se basant sur son 'code'.
      *
-     * @param site The {@link Site} object to delete. Its 'code' must be set.
-     *             Must not be 'null'.
-     * @return The number of rows affected (1 if successful, 0 if no record with the
-     *         code was found).
-     *         Returns -1 if an {@link SQLException} occurs or if 'site' is 'null'.
-     * @throws IllegalArgumentException if 'site' is 'null'.
+     * @param site L'objet Site à supprimer. Son 'code' doit être défini.
+     * @return Le nombre de lignes affectées (1 si succès, 0 si non trouvé, -1 si erreur).
+     * @throws IllegalArgumentException si l'objet site est null.
      */
     @Override
     public int delete(Site site) {
@@ -158,20 +139,21 @@ public class SiteDAO extends DAO<Site> {
         }
     }
 
+    /**
+     * Non supporté. La clé primaire de Site est une chaîne de caractères ('code').
+     * Utilisez `findByCode(String)`.
+     */
     @Override
     public Site findByID(Long id) {
         throw new UnsupportedOperationException("Site ID is String (code). Use findByCode(String).");
     }
 
     /**
-     * Maps a row from a {@link ResultSet} to a {@link Site} object.
-     * Assumes the {@link ResultSet} contains columns 'code', 'nom', 'longitude',
-     * and 'latitude'.
+     * Transforme une ligne d'un ResultSet en un objet Site.
      *
-     * @param rs The {@link ResultSet} currently positioned at the row to map.
-     * @return A new {@link Site} object populated with data from the current row.
-     * @throws SQLException If an error occurs while accessing the
-     *                      {@link ResultSet}.
+     * @param rs Le ResultSet positionné sur la ligne à traiter.
+     * @return Un nouvel objet Site.
+     * @throws SQLException Si une erreur se produit lors de l'accès au ResultSet.
      */
     private Site mapResultSetToSite(ResultSet rs) throws SQLException {
         return new Site(

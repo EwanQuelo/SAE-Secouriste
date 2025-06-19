@@ -12,26 +12,27 @@ import java.util.List;
 import java.util.Set;
 
 /**
- * Data Access Object (DAO) for managing {@link Secouriste} (Rescuer) entities.
- * A {@link Secouriste} has personal details, a set of {@link Competence}s they
- * possess,
- * and a set of {@link Journee}s (days) on which they are available.
- * This class handles CRUD operations for Secouriste records and manages their
- * relationships with Competences (via 'Possede' table) and Availabilities
- * (via 'EstDisponible' table).
+ * DAO (Data Access Object) pour la gestion des entités Secouriste.
+ * <p>
+ * Un Secouriste possède des informations personnelles, un ensemble de compétences
+ * et un ensemble de journées où il est disponible. Ce DAO gère les opérations CRUD
+ * pour les secouristes et leurs relations avec les Compétences (table 'Possede')
+ * et les disponibilités (table 'EstDisponible').
+ * </p>
  *
- * @author Ewan QUELO, Raphael MILLE, Matheo BIET
+ * @author Ewan QUELO
+ * @author Raphael MILLE
+ * @author Matheo BIET
  * @version 1.0
  */
 public class SecouristeDAO extends DAO<Secouriste> {
 
-    // DAOs for related entities, used when managing relationships
     private final CompetenceDAO competenceDAO = new CompetenceDAO();
     private final JourneeDAO journeeDAO = new JourneeDAO();
 
-
-        /**
+    /**
      * Compte le nombre total de secouristes dans la base de données.
+     *
      * @return Le nombre total de secouristes.
      */
     public int countAll() {
@@ -48,18 +49,17 @@ public class SecouristeDAO extends DAO<Secouriste> {
         return 0;
     }
 
-        /**
-     * Compte le nombre total de secouristes correspondant à une recherche.
+    /**
+     * Compte le nombre de secouristes correspondant à une recherche.
      * Si la recherche est vide, compte tous les secouristes.
+     *
      * @param query Le terme de recherche.
      * @return Le nombre de secouristes correspondants.
      */
     public int countFiltered(String query) {
-        // Si la query est vide ou null, on compte tout
         if (query == null || query.trim().isEmpty()) {
-            return countAll(); // Réutilise la méthode existante
+            return countAll();
         }
-        
         String sql = "SELECT COUNT(*) FROM Secouriste WHERE CONCAT(nom, ' ', prenom, email) LIKE ?";
         try (Connection conn = getConnection();
              PreparedStatement pstmt = conn.prepareStatement(sql)) {
@@ -77,15 +77,15 @@ public class SecouristeDAO extends DAO<Secouriste> {
 
     /**
      * Récupère une "page" de secouristes filtrés par un terme de recherche.
+     *
      * @param query Le terme de recherche.
-     * @param offset Le point de départ.
+     * @param offset Le point de départ (nombre d'éléments à sauter).
      * @param limit Le nombre d'éléments à récupérer.
      * @return Une liste de secouristes filtrés et paginés.
      */
     public List<Secouriste> findFilteredAndPaginated(String query, int offset, int limit) {
-        // Si la query est vide ou null, on utilise la méthode non filtrée
         if (query == null || query.trim().isEmpty()) {
-            return findPaginated(offset, limit); // Réutilise la méthode existante
+            return findPaginated(offset, limit);
         }
 
         List<Secouriste> secouristes = new ArrayList<>();
@@ -112,13 +112,13 @@ public class SecouristeDAO extends DAO<Secouriste> {
 
     /**
      * Récupère une "page" de secouristes depuis la base de données.
-     * @param offset Le point de départ (combien d'éléments sauter).
+     *
+     * @param offset Le point de départ (nombre d'éléments à sauter).
      * @param limit Le nombre maximum d'éléments à récupérer.
      * @return Une liste de secouristes pour la page demandée.
      */
     public List<Secouriste> findPaginated(int offset, int limit) {
         List<Secouriste> secouristes = new ArrayList<>();
-        // L'ordre par ID garantit une pagination stable
         String sql = "SELECT id, nom, prenom, dateNaissance, email, tel, adresse FROM Secouriste ORDER BY id LIMIT ? OFFSET ?";
         try (Connection conn = getConnection();
              PreparedStatement pstmt = conn.prepareStatement(sql)) {
@@ -126,7 +126,7 @@ public class SecouristeDAO extends DAO<Secouriste> {
             pstmt.setInt(2, offset);
             try (ResultSet rs = pstmt.executeQuery()) {
                 while (rs.next()) {
-                    // On hydrate avec les relations (compétences, etc.)
+                    // "Hydrate" l'objet avec ses relations (compétences, disponibilités).
                     secouristes.add(mapResultSetToSecouriste(rs, true));
                 }
             }
@@ -137,15 +137,11 @@ public class SecouristeDAO extends DAO<Secouriste> {
     }
 
     /**
-     * Finds a specific {@link Secouriste} by their unique ID.
-     * The retrieved Secouriste object is "hydrated" with its associated
-     * {@link Competence}s and availabilities ({@link Journee}s).
+     * Recherche un secouriste spécifique par son ID unique.
+     * L'objet Secouriste est "hydraté" avec ses compétences et disponibilités.
      *
-     * @param id The unique ID of the {@link Secouriste} to find. Can be 'null'.
-     * @return The {@link Secouriste} object if found, fully populated with their
-     *         competences and availabilities; 'null' if no Secouriste with the
-     *         given ID
-     *         exists, if 'id' is 'null', or if an error occurs.
+     * @param id L'ID unique du secouriste à trouver.
+     * @return L'objet Secouriste si trouvé ; sinon `null`.
      */
     @Override
     public Secouriste findByID(Long id) {
@@ -157,7 +153,7 @@ public class SecouristeDAO extends DAO<Secouriste> {
             pstmt.setLong(1, id);
             try (ResultSet rs = pstmt.executeQuery()) {
                 if (rs.next()) {
-                    return mapResultSetToSecouriste(rs, true); // Hydrate avec les relations
+                    return mapResultSetToSecouriste(rs, true);
                 }
             }
         } catch (SQLException e) {
@@ -167,13 +163,10 @@ public class SecouristeDAO extends DAO<Secouriste> {
     }
 
     /**
-     * Retrieves all {@link Secouriste} records from the database.
-     * Each Secouriste object in the returned list is "hydrated" with its associated
-     * {@link Competence}s and availabilities ({@link Journee}s).
+     * Récupère tous les secouristes de la base de données.
+     * Chaque objet Secouriste est "hydraté" avec ses compétences et disponibilités.
      *
-     * @return A {@link List} of all {@link Secouriste} objects found, fully
-     *         populated.
-     *         The list may be empty if no Secouristes exist or if an error occurs.
+     * @return Une liste de tous les objets Secouriste trouvés.
      */
     @Override
     public List<Secouriste> findAll() {
@@ -183,7 +176,7 @@ public class SecouristeDAO extends DAO<Secouriste> {
                 Statement stmt = conn.createStatement();
                 ResultSet rs = stmt.executeQuery(sql)) {
             while (rs.next()) {
-                secouristes.add(mapResultSetToSecouriste(rs, true)); // Hydrate avec les relations
+                secouristes.add(mapResultSetToSecouriste(rs, true));
             }
         } catch (SQLException e) {
             System.err.println("Error finding all Secouristes: " + e.getMessage());
@@ -191,17 +184,11 @@ public class SecouristeDAO extends DAO<Secouriste> {
         return secouristes;
     }
 
-    // --- Relationship Management: Possede (Secouriste <-> Competence) ---
-
     /**
-     * Finds all {@link Competence}s possessed by a specific {@link Secouriste}.
-     * This queries the 'Possede' join table.
+     * Recherche toutes les compétences possédées par un secouriste.
      *
-     * @param secouristeId The ID of the {@link Secouriste}.
-     * @return A {@link Set} of {@link Competence} objects possessed by the
-     *         Secouriste.
-     *         The set may be empty if the Secouriste has no competences or if an
-     *         error occurs.
+     * @param secouristeId L'ID du secouriste.
+     * @return Un ensemble d'objets Competence.
      */
     public Set<Competence> findCompetencesForSecouriste(long secouristeId) {
         Set<Competence> competences = new HashSet<>();
@@ -223,15 +210,11 @@ public class SecouristeDAO extends DAO<Secouriste> {
     }
 
     /**
-     * Adds a {@link Competence} to a {@link Secouriste} in the 'Possede' table.
+     * Ajoute une compétence à un secouriste dans la table 'Possede'.
      *
-     * @param secouristeId       The ID of the {@link Secouriste}.
-     * @param intituleCompetence The 'intitule' (title) of the {@link Competence} to
-     *                           add.
-     * @return The number of rows affected (typically 1 on success, or -1 if an
-     *         SQLException occurs,
-     *         e.g., if the relationship already exists and there's a unique
-     *         constraint).
+     * @param secouristeId L'ID du secouriste.
+     * @param intituleCompetence L'intitulé de la compétence à ajouter.
+     * @return Le nombre de lignes affectées (1 si succès, -1 si erreur).
      */
     public int addCompetenceToSecouriste(long secouristeId, String intituleCompetence) {
         String sql = "INSERT INTO Possede (idSecouriste, intituleCompetence) VALUES (?, ?)";
@@ -247,15 +230,11 @@ public class SecouristeDAO extends DAO<Secouriste> {
     }
 
     /**
-     * Removes a {@link Competence} from a {@link Secouriste} in the 'Possede'
-     * table.
+     * Supprime une compétence d'un secouriste dans la table 'Possede'.
      *
-     * @param secouristeId       The ID of the {@link Secouriste}.
-     * @param intituleCompetence The 'intitule' (title) of the {@link Competence} to
-     *                           remove.
-     * @return The number of rows affected (1 if the competence was removed, 0 if it
-     *         wasn't possessed).
-     *         Returns -1 if an SQLException occurs.
+     * @param secouristeId L'ID du secouriste.
+     * @param intituleCompetence L'intitulé de la compétence à supprimer.
+     * @return Le nombre de lignes affectées (1 si succès, 0 si non trouvée, -1 si erreur).
      */
     public int removeCompetenceFromSecouriste(long secouristeId, String intituleCompetence) {
         String sql = "DELETE FROM Possede WHERE idSecouriste = ? AND intituleCompetence = ?";
@@ -269,18 +248,11 @@ public class SecouristeDAO extends DAO<Secouriste> {
         }
     }
 
-    // --- Relationship Management: EstDisponible (Secouriste <-> Journee) ---
-
     /**
-     * Finds all {@link Journee}s (days) on which a specific {@link Secouriste} is
-     * available.
-     * This queries the 'EstDisponible' join table.
+     * Recherche toutes les journées où un secouriste est disponible.
      *
-     * @param secouristeId The ID of the {@link Secouriste}.
-     * @return A {@link Set} of {@link Journee} objects representing the
-     *         Secouriste's availabilities.
-     *         The set may be empty if the Secouriste has no availabilities or if an
-     *         error occurs.
+     * @param secouristeId L'ID du secouriste.
+     * @return Un ensemble d'objets Journee représentant les disponibilités.
      */
     public Set<Journee> findAvailabilitiesForSecouriste(long secouristeId) {
         Set<Journee> journees = new HashSet<>();
@@ -299,54 +271,43 @@ public class SecouristeDAO extends DAO<Secouriste> {
     }
 
     /**
-     * Adds an availability (a specific {@link Journee}) for a {@link Secouriste}
-     * in the 'EstDisponible' table.
+     * Ajoute une disponibilité (une journée) pour un secouriste.
+     * S'assure d'abord que la journée existe dans la table 'Journee'.
      *
-     * @param secouristeId The ID of the {@link Secouriste}.
-     * @param date         The {@link LocalDate} representing the day of
-     *                     availability.
-     * @return The number of rows affected (typically 1 on success, or -1 if an
-     *         SQLException occurs,
-     *         e.g., if the availability already exists and there's a unique
-     *         constraint).
+     * @param secouristeId L'ID du secouriste.
+     * @param date La date de la disponibilité.
+     * @return Le nombre de lignes affectées (1 si succès, -1 si erreur).
      */
     public int addAvailability(long secouristeId, LocalDate date) {
-    // Étape 1 : S'assurer que la journée existe dans la table Journee.
-    // "INSERT IGNORE" va tenter d'insérer la journée. Si elle existe déjà (clé primaire dupliquée),
-    // il ne fera rien et ne lèvera pas d'erreur. C'est parfait pour notre cas.
-    String sqlEnsureJournee = "INSERT IGNORE INTO Journee (jour) VALUES (?)";
-    try (Connection conn = getConnection();
-         PreparedStatement pstmtEnsure = conn.prepareStatement(sqlEnsureJournee)) {
-        pstmtEnsure.setDate(1, java.sql.Date.valueOf(date));
-        pstmtEnsure.executeUpdate();
-    } catch (SQLException e) {
-        System.err.println("Error ensuring Journee exists for date " + date + ": " + e.getMessage());
-        return -1; // On ne continue pas si cette étape échoue.
-    }
+        // S'assure que la journée existe dans la table Journee pour éviter une erreur de clé étrangère.
+        String sqlEnsureJournee = "INSERT IGNORE INTO Journee (jour) VALUES (?)";
+        try (Connection conn = getConnection();
+             PreparedStatement pstmtEnsure = conn.prepareStatement(sqlEnsureJournee)) {
+            pstmtEnsure.setDate(1, java.sql.Date.valueOf(date));
+            pstmtEnsure.executeUpdate();
+        } catch (SQLException e) {
+            System.err.println("Error ensuring Journee exists for date " + date + ": " + e.getMessage());
+            return -1;
+        }
 
-    // Étape 2 : Maintenant que la journée existe, on peut insérer la disponibilité sans risque.
-    String sqlInsertDispo = "INSERT INTO EstDisponible (idSecouriste, jour) VALUES (?, ?)";
-    try (Connection conn = getConnection();
-         PreparedStatement pstmtDispo = conn.prepareStatement(sqlInsertDispo)) {
-        pstmtDispo.setLong(1, secouristeId);
-        pstmtDispo.setDate(2, java.sql.Date.valueOf(date));
-        return pstmtDispo.executeUpdate();
-    } catch (SQLException e) {
-        // On ne devrait plus avoir l'erreur de clé étrangère, mais on garde la gestion d'erreur.
-        System.err.println("Error adding availability: " + e.getMessage());
-        return -1;
+        String sqlInsertDispo = "INSERT INTO EstDisponible (idSecouriste, jour) VALUES (?, ?)";
+        try (Connection conn = getConnection();
+             PreparedStatement pstmtDispo = conn.prepareStatement(sqlInsertDispo)) {
+            pstmtDispo.setLong(1, secouristeId);
+            pstmtDispo.setDate(2, java.sql.Date.valueOf(date));
+            return pstmtDispo.executeUpdate();
+        } catch (SQLException e) {
+            System.err.println("Error adding availability: " + e.getMessage());
+            return -1;
+        }
     }
-}
 
     /**
-     * Removes an availability (a specific {@link Journee}) for a {@link Secouriste}
-     * from the 'EstDisponible' table.
+     * Supprime une disponibilité pour un secouriste.
      *
-     * @param secouristeId The ID of the {@link Secouriste}.
-     * @param date         The {@link LocalDate} of the availability to remove.
-     * @return The number of rows affected (1 if availability was removed, 0 if it
-     *         didn't exist).
-     *         Returns -1 if an SQLException occurs.
+     * @param secouristeId L'ID du secouriste.
+     * @param date La date de la disponibilité à supprimer.
+     * @return Le nombre de lignes affectées (1 si succès, 0 si non trouvée, -1 si erreur).
      */
     public int removeAvailability(long secouristeId, LocalDate date) {
         String sql = "DELETE FROM EstDisponible WHERE idSecouriste = ? AND jour = ?";
@@ -360,20 +321,13 @@ public class SecouristeDAO extends DAO<Secouriste> {
         }
     }
 
-    // --- Basic CRUD Methods and Utility ---
-
     /**
-     * Maps a row from a {@link ResultSet} to a {@link Secouriste} object.
-     * If 'fetchRelations' is true, it also populates the Secouriste's competences
-     * and availabilities by calling respective finder methods.
+     * Transforme une ligne d'un ResultSet en un objet Secouriste.
      *
-     * @param rs             The {@link ResultSet} positioned at the row to map.
-     * @param fetchRelations If 'true', related competences and availabilities are
-     *                       fetched.
-     * @return A new {@link Secouriste} object, potentially with its relations
-     *         populated.
-     * @throws SQLException If an error occurs while accessing the
-     *                      {@link ResultSet}.
+     * @param rs Le ResultSet positionné sur la ligne à traiter.
+     * @param fetchRelations Si `true`, les compétences et disponibilités sont aussi chargées.
+     * @return Un nouvel objet Secouriste.
+     * @throws SQLException Si une erreur survient lors de l'accès au ResultSet.
      */
     private Secouriste mapResultSetToSecouriste(ResultSet rs, boolean fetchRelations) throws SQLException {
         Secouriste secouriste = new Secouriste(
@@ -392,20 +346,11 @@ public class SecouristeDAO extends DAO<Secouriste> {
     }
 
     /**
-     * Creates a new {@link Secouriste} record in the database.
-     * After successful insertion, the generated ID from the database is set
-     * back into the provided {@link Secouriste} object.
-     * This method returns the generated ID of the new Secouriste.
-     * Note: Competences and availabilities must be added separately using methods
-     * like
-     * 'addCompetenceToSecouriste' and 'addAvailability'.
+     * Crée un nouvel enregistrement de Secouriste dans la base de données.
+     * Renvoie l'ID généré pour le nouveau secouriste.
      *
-     * @param secouriste The {@link Secouriste} object to persist. Must not be
-     *                   'null'.
-     * @return The ID of the newly created Secouriste if successful; -1 if an error
-     *         occurs
-     *         or if 'secouriste' is 'null'.
-     * @throws IllegalArgumentException if 'secouriste' is 'null'.
+     * @param secouriste L'objet Secouriste à persister.
+     * @return L'ID du secouriste nouvellement créé, ou -1 en cas d'erreur.
      */
     @Override
     public int create(Secouriste secouriste) {
@@ -427,7 +372,7 @@ public class SecouristeDAO extends DAO<Secouriste> {
                     }
                 }
             }
-            return (int) secouriste.getId(); // Retourne l'ID du nouveau secouriste
+            return (int) secouriste.getId();
         } catch (SQLException e) {
             System.err.println("Error creating Secouriste: " + e.getMessage());
             return -1;
@@ -435,19 +380,11 @@ public class SecouristeDAO extends DAO<Secouriste> {
     }
 
     /**
-     * Updates an existing {@link Secouriste}'s personal details in the database.
-     * Note: This method does not update competences or availabilities. Those must
-     * be
-     * managed through their specific add/remove methods.
+     * Met à jour les informations personnelles d'un secouriste.
+     * Ne modifie ni les compétences, ni les disponibilités.
      *
-     * @param secouriste The {@link Secouriste} object with updated information.
-     *                   Its ID must be set to identify the record to update. Must
-     *                   not be 'null'.
-     * @return The number of rows affected (1 if successful, 0 if no record with the
-     *         ID was found).
-     *         Returns -1 if an {@link SQLException} occurs or if 'secouriste' is
-     *         'null'.
-     * @throws IllegalArgumentException if 'secouriste' is 'null'.
+     * @param secouriste L'objet Secouriste avec les informations mises à jour.
+     * @return Le nombre de lignes affectées (1 si succès, 0 si non trouvé, -1 si erreur).
      */
     @Override
     public int update(Secouriste secouriste) {
@@ -468,18 +405,10 @@ public class SecouristeDAO extends DAO<Secouriste> {
     }
 
     /**
-     * Deletes a {@link Secouriste} from the database based on their ID.
-     * Note: This does not automatically handle related records in 'Possede',
-     * 'EstDisponible',
-     * or 'Affectation' unless 'ON DELETE CASCADE' is set up in the database schema.
+     * Supprime un secouriste de la base de données en fonction de son ID.
      *
-     * @param secouriste The {@link Secouriste} object to delete. Its ID must be
-     *                   set.
-     *                   Can be 'null', in which case -1 is returned.
-     * @return The number of rows affected (1 if successful, 0 if no record with the
-     *         ID was found).
-     *         Returns -1 if 'secouriste' is 'null', its ID is not set, or an
-     *         {@link SQLException} occurs.
+     * @param secouriste L'objet Secouriste à supprimer.
+     * @return Le nombre de lignes affectées (1 si succès, 0 si non trouvé, -1 si erreur).
      */
     @Override
     public int delete(Secouriste secouriste) {

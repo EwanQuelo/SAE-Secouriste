@@ -7,40 +7,33 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Objects;
 
 /**
- * Data Access Object (DAO) for managing {@link DPS} (Dispositif Prévisionnel de
- * Secours) entities.
- * A {@link DPS} represents a planned rescue and first aid deployment, detailing
- * schedules,
- * location, associated sport, and the day of operation. This DAO handles CRUD
- * operations
- * for DPS records and manages the relationship with required
- * {@link Competence}s
- * through the 'ABesoin' join table.
+ * DAO (Data Access Object) pour la gestion des entités DPS (Dispositif Prévisionnel de Secours).
+ * <p>
+ * Un DPS représente un déploiement planifié de secours, détaillant les horaires,
+ * le lieu, le sport associé et le jour de l'opération. Ce DAO gère les opérations CRUD
+ * pour les enregistrements de DPS et la relation avec les compétences requises
+ * via la table de jointure 'ABesoin'.
+ * </p>
  *
- * @author Ewan QUELO, Raphael MILLE, Matheo BIET
+ * @author Ewan QUELO
+ * @author Raphael MILLE
+ * @author Matheo BIET
  * @version 1.1
  */
 public class DPSDAO extends DAO<DPS> {
 
-    // DAOs for related entities, used to reconstruct DPS objects
-    // or manage related data.
+    // DAOs pour les entités liées, utilisés pour reconstruire les objets DPS.
     private final SiteDAO siteDAO = new SiteDAO();
     private final SportDAO sportDAO = new SportDAO();
     private final JourneeDAO journeeDAO = new JourneeDAO();
     private final CompetenceDAO competenceDAO = new CompetenceDAO();
 
     /**
-     * Retrieves all {@link DPS} records from the database.
-     * Each DPS object is constructed by mapping a row from the 'DPS' table and
-     * resolving its associated {@link Site}, {@link Sport}, and {@link Journee}
-     * objects.
+     * Récupère tous les enregistrements de DPS de la base de données.
      *
-     * @return A {@link List} of all {@link DPS} objects found. The list may be
-     *         empty
-     *         if no DPS records exist or if an error occurs during retrieval.
+     * @return Une liste de tous les objets DPS trouvés. La liste peut être vide.
      */
     @Override
     public List<DPS> findAll() {
@@ -59,13 +52,10 @@ public class DPSDAO extends DAO<DPS> {
     }
 
     /**
-     * Finds a specific {@link DPS} by its unique ID.
-     * The DPS object is constructed by mapping the corresponding row and resolving
-     * its associated {@link Site}, {@link Sport}, and {@link Journee} objects.
+     * Recherche un DPS spécifique par son ID unique.
      *
-     * @param id The unique ID of the {@link DPS} to find. Can be 'null'.
-     * @return The {@link DPS} object if found; 'null' if no DPS with the given ID
-     *         exists, if the provided 'id' is 'null', or if an error occurs.
+     * @param id L'ID unique du DPS à trouver.
+     * @return L'objet DPS si trouvé ; sinon `null`.
      */
     @Override
     public DPS findByID(Long id) {
@@ -87,18 +77,13 @@ public class DPSDAO extends DAO<DPS> {
     }
 
     /**
-     * Creates a new {@link DPS} record in the database.
-     * The start and end times are taken directly from the 'int[] {HH, MM}' format.
-     * After successful insertion, the generated ID from the database is set
-     * back into the provided {@link DPS} object.
+     * Crée un nouvel enregistrement de DPS dans la base de données.
+     * Après une insertion réussie, l'ID généré par la base de données est
+     * affecté à l'objet DPS fourni en paramètre.
      *
-     * @param dps The {@link DPS} object to persist. Must not be 'null'.
-     *            Its {@link Site}, {@link Sport}, and {@link Journee} must be set
-     *            and valid.
-     * @return The number of rows affected (typically 1 on success). Returns -1 if
-     *         an
-     *         {@link SQLException} occurs or if the 'dps' object is 'null'.
-     * @throws IllegalArgumentException if 'dps' is 'null'.
+     * @param dps L'objet DPS à persister. Ne doit pas être null.
+     * @return Le nombre de lignes affectées (1 en cas de succès, -1 en cas d'erreur).
+     * @throws IllegalArgumentException si l'objet dps est null.
      */
     @Override
     public int create(DPS dps) {
@@ -130,10 +115,10 @@ public class DPSDAO extends DAO<DPS> {
             return -1;
         }
     }
-    
 
     /**
-     * NOUVEAU: Récupère tous les DPS dans une plage de dates donnée.
+     * Récupère tous les DPS dans une plage de dates donnée.
+     *
      * @param startDate La date de début.
      * @param endDate La date de fin.
      * @return Une liste de DPS.
@@ -157,16 +142,11 @@ public class DPSDAO extends DAO<DPS> {
     }
 
     /**
-     * Updates an existing {@link DPS} record in the database.
-     * The start and end times are taken directly from the 'int[] {HH, MM}' format.
+     * Met à jour un enregistrement de DPS existant dans la base de données.
      *
-     * @param dps The {@link DPS} object with updated information. Its ID must be
-     *            set
-     *            to identify the record to update. Must not be 'null'.
-     * @return The number of rows affected (1 if successful, 0 if no record with the
-     *         ID was found).
-     *         Returns -1 if an {@link SQLException} occurs or if 'dps' is 'null'.
-     * @throws IllegalArgumentException if 'dps' is 'null'.
+     * @param dps L'objet DPS avec les informations mises à jour. Son ID doit être défini.
+     * @return Le nombre de lignes affectées (1 si succès, 0 si non trouvé, -1 si erreur).
+     * @throws IllegalArgumentException si l'objet dps est null.
      */
     @Override
     public int update(DPS dps) {
@@ -191,14 +171,11 @@ public class DPSDAO extends DAO<DPS> {
     }
 
     /**
-     * Deletes a {@link DPS} record from the database based on its ID.
+     * Supprime un enregistrement de DPS de la base de données en fonction de son ID.
      *
-     * @param dps The {@link DPS} object to delete. Its ID must be set. Must not be
-     *            'null'.
-     * @return The number of rows affected (1 if successful, 0 if no record with the
-     *         ID was found).
-     *         Returns -1 if an {@link SQLException} occurs or if 'dps' is 'null'.
-     * @throws IllegalArgumentException if 'dps' is 'null'.
+     * @param dps L'objet DPS à supprimer. Son ID doit être défini.
+     * @return Le nombre de lignes affectées (1 si succès, 0 si non trouvé, -1 si erreur).
+     * @throws IllegalArgumentException si l'objet dps est null.
      */
     @Override
     public int delete(DPS dps) {
@@ -216,22 +193,14 @@ public class DPSDAO extends DAO<DPS> {
     }
 
     /**
-     * Maps a row from a {@link ResultSet} to a {@link DPS} object.
-     * This method retrieves related {@link Site}, {@link Sport}, and
-     * {@link Journee} objects
-     * using their respective DAOs based on codes/dates found in the result set.
-     * It also reconstructs the 'int[] {HH, MM}' format from separate DB columns.
-     * If any critical related entity (Site, Sport, Journee) is not found, this
-     * method
-     * prints an error and returns 'null', indicating the DPS object could not be
-     * fully constructed.
+     * Transforme une ligne d'un ResultSet en un objet DPS.
+     * Cette méthode récupère les objets Site, Sport et Journee associés via
+     * leurs DAOs respectifs. Si une de ces entités liées est introuvable,
+     * la méthode retourne `null`.
      *
-     * @param rs The {@link ResultSet} positioned at the row to map.
-     * @return A new {@link DPS} object, or 'null' if essential related data is
-     *         missing
-     *         or an {@link SQLException} occurs.
-     * @throws SQLException If an error occurs while accessing the
-     *                      {@link ResultSet}.
+     * @param rs Le ResultSet positionné sur la ligne à traiter.
+     * @return Un nouvel objet DPS, ou `null` si des données essentielles sont manquantes.
+     * @throws SQLException Si une erreur survient lors de l'accès au ResultSet.
      */
     private DPS mapResultSetToDPS(ResultSet rs) throws SQLException {
         Site site = siteDAO.findByCode(rs.getString("lieu"));
@@ -253,20 +222,12 @@ public class DPSDAO extends DAO<DPS> {
                 sport);
     }
 
-    // --- Relationship Management: ABesoin (DPS <-> Competence) ---
-
     /**
-     * Finds all required {@link Competence}s and their respective numbers needed
-     * for a specific DPS.
-     * This queries the 'ABesoin' join table.
+     * Recherche toutes les compétences requises et leur nombre pour un DPS spécifique.
+     * Interroge la table de jointure 'ABesoin'.
      *
-     * @param dpsId The ID of the {@link DPS} for which to find requirements.
-     * @return A {@link Map} where keys are {@link Competence} objects and values
-     *         are
-     *         the 'Integer' number of personnel with that competence required for
-     *         the DPS.
-     *         Returns an empty map if no requirements are found or if an error
-     *         occurs.
+     * @param dpsId L'ID du DPS pour lequel trouver les exigences.
+     * @return Une Map où les clés sont les objets Competence et les valeurs le nombre requis.
      */
     public Map<Competence, Integer> findRequiredCompetencesForDps(long dpsId) {
         Map<Competence, Integer> requirements = new HashMap<>();
@@ -288,25 +249,16 @@ public class DPSDAO extends DAO<DPS> {
     }
 
     /**
-     * Sets or updates the required number for a specific {@link Competence} for a
-     * given DPS.
-     * This uses an 'INSERT ... ON DUPLICATE KEY UPDATE' SQL statement to either
-     * create
-     * a new requirement entry in 'ABesoin' or update the 'nombre' (number) if the
-     * DPS-Competence pair already exists.
+     * Définit ou met à jour le nombre requis pour une compétence spécifique d'un DPS.
+     * Utilise une instruction 'INSERT ... ON DUPLICATE KEY UPDATE' pour créer ou
+     * mettre à jour l'entrée dans la table 'ABesoin'.
      *
-     * @param dpsId              The ID of the {@link DPS}.
-     * @param intituleCompetence The 'intitule' (title) of the {@link Competence}.
-     * @param nombre             The required number of personnel with this
-     *                           competence.
-     * @return The number of rows affected (typically 1 for insert, 2 for update due
-     *         to how
-     *         'ON DUPLICATE KEY UPDATE' is counted by some drivers, or -1 if an
-     *         error occurs).
+     * @param dpsId              L'ID du DPS.
+     * @param intituleCompetence L'intitulé de la compétence.
+     * @param nombre             Le nombre de secouristes requis avec cette compétence.
+     * @return Le nombre de lignes affectées, ou -1 en cas d'erreur.
      */
     public int setRequiredCompetence(long dpsId, String intituleCompetence, int nombre) {
-        // Utilise INSERT ... ON DUPLICATE KEY UPDATE pour créer ou mettre à jour la
-        // ligne
         String sql = "INSERT INTO ABesoin (idDPS, intituleCompetence, nombre) VALUES (?, ?, ?) ON DUPLICATE KEY UPDATE nombre = VALUES(nombre)";
         try (Connection conn = getConnection(); PreparedStatement pstmt = conn.prepareStatement(sql)) {
             pstmt.setLong(1, dpsId);
@@ -320,15 +272,11 @@ public class DPSDAO extends DAO<DPS> {
     }
 
     /**
-     * Removes a required {@link Competence} from a specific DPS in the 'ABesoin'
-     * table.
+     * Supprime une compétence requise pour un DPS spécifique de la table 'ABesoin'.
      *
-     * @param dpsId              The ID of the {@link DPS}.
-     * @param intituleCompetence The 'intitule' (title) of the {@link Competence} to
-     *                           remove.
-     * @return The number of rows affected (1 if the requirement was removed, 0 if
-     *         it didn't exist).
-     *         Returns -1 if an {@link SQLException} occurs.
+     * @param dpsId              L'ID du DPS.
+     * @param intituleCompetence L'intitulé de la compétence à supprimer.
+     * @return Le nombre de lignes affectées (1 si succès, 0 si non trouvée, -1 si erreur).
      */
     public int removeRequiredCompetence(long dpsId, String intituleCompetence) {
         String sql = "DELETE FROM ABesoin WHERE idDPS = ? AND intituleCompetence = ?";
@@ -342,32 +290,4 @@ public class DPSDAO extends DAO<DPS> {
         }
     }
 
-    /**
-     * Private helper method to map a {@link ResultSet} row to a {@link DPS} object,
-     * with an option to fetch related 'ABesoin' competence requirements.
-     * Note: This method is currently not used directly in the provided snippet but
-     * is available
-     * for internal use if needed for more complex fetching logic.
-     *
-     * @param rs             The {@link ResultSet} positioned at the row to map.
-     * @param fetchRelations If 'true', competence requirements from 'ABesoin' are
-     *                       fetched and set.
-     * @return A new {@link DPS} object. Returns 'null' if essential base data
-     *         (Site, Sport, Journee) is missing.
-     * @throws SQLException If an error occurs while accessing the
-     *                      {@link ResultSet}.
-     */
-    private DPS mapResultSetToDPS(ResultSet rs, boolean fetchRelations) throws SQLException {
-        Site site = siteDAO.findByCode(rs.getString("lieu"));
-        Sport sport = sportDAO.findByCode(rs.getString("sport"));
-        Journee journee = journeeDAO.findByDate(rs.getDate("jour").toLocalDate());
-
-        DPS dps = new DPS(rs.getLong("id"), new int[]{rs.getInt("horaire_depart_heure"), rs.getInt("horaire_depart_minute")},
-                new int[]{rs.getInt("horaire_fin_heure"), rs.getInt("horaire_fin_minute")}, site, journee, sport);
-
-        if (fetchRelations) {
-            dps.setCompetencesRequises(findRequiredCompetencesForDps(dps.getId()));
-        }
-        return dps;
-    }
 }

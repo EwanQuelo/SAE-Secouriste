@@ -6,103 +6,99 @@ import java.sql.SQLException;
 import java.util.List;
 
 /**
- * Abstract Data Access Object (DAO) class.
- * This class provides a foundational template for common database Create, Read,
- * Update, and Delete (CRUD) operations. It also manages the establishment
- * of database connections. Concrete DAO implementations for specific entities
- * should extend this class and implement its abstract methods.
+ * Classe abstraite DAO (Data Access Object).
+ * <p>
+ * Fournit un modèle de base pour les opérations CRUD (Create, Read, Update, Delete)
+ * communes à la base de données. Elle gère également l'établissement des connexions.
+ * Les DAO concrets pour des entités spécifiques doivent hériter de cette classe.
+ * </p>
  *
- * @param <T> The type of the entity (Plain Old Java Object - POJO) that a
- *            concrete
- *            DAO will manage.
- * @author Abdelbadie, Ewan QUELO, Raphael MILLE, Matheo BIET
+ * @param <T> Le type de l'entité (POJO) que le DAO concret gérera.
+ * @author Abdelbadie
+ * @author Ewan QUELO
+ * @author Raphael MILLE
+ * @author Matheo BIET
  * @version 1.1
  */
 public abstract class DAO<T> {
 
-    // Database connection parameters
+    // Paramètres de connexion à la base de données
     private static final String DRIVER_CLASS_NAME = "com.mysql.cj.jdbc.Driver";
     private static final String URL = "jdbc:mysql://localhost:3306/secours2030?useSSL=false&serverTimezone=UTC&allowPublicKeyRetrieval=true";
     private static final String USERNAME = "root";
     private static final String PASSWORD = "snowad1234";
+
     /**
-     * Establishes and returns a connection to the database.
-     * This method first attempts to load the JDBC driver specified by
-     * 'DRIVER_CLASS_NAME'.
-     * Then, it uses 'DriverManager' to obtain a connection using the predefined
-     * 'URL', 'USERNAME', and 'PASSWORD'.
+     * Établit et retourne une connexion à la base de données.
+     * <p>
+     * Cette méthode tente d'abord de charger le pilote JDBC. Ensuite, elle utilise
+     * le DriverManager pour obtenir une connexion en utilisant l'URL, le nom
+     * d'utilisateur et le mot de passe prédéfinis.
+     * </p>
      *
-     * @return A {@link Connection} object to the database.
-     * @throws SQLException if a database access error occurs during connection
-     *                      establishment (e.g., incorrect URL, credentials, or
-     *                      server not available).
-     *                      The method may also print a stack trace to standard
-     *                      error and return 'null'
-     *                      if the JDBC driver class cannot be found.
+     * @return Un objet Connection vers la base de données.
+     * @throws SQLException si une erreur d'accès à la base de données se produit
+     *                      (ex: URL incorrecte, identifiants faux, serveur non disponible).
      */
     protected Connection getConnection() throws SQLException {
-        // Load the driver class
         try {
             Class.forName(DRIVER_CLASS_NAME);
         } catch (ClassNotFoundException ex) {
             ex.printStackTrace();
             return null;
         }
-        // Obtain the connection
         return DriverManager.getConnection(URL, USERNAME, PASSWORD);
     }
 
     /**
-     * Retrieves all elements of type T from the database.
-     * 
-     * @return A list of all elements.
+     * Récupère tous les éléments de type T de la base de données.
+     *
+     * @return Une liste de tous les éléments.
      */
     public abstract List<T> findAll();
 
     /**
-     * Finds an element by its primary key, assuming the key is a Long.
-     * DAOs for entities with non-Long or composite primary keys (e.g., String code,
-     * LocalDate)
-     * should throw an UnsupportedOperationException and provide their own specific
-     * finders
-     * (e.g., findByCode(String code)).
-     * 
-     * @param id The Long ID of the element.
-     * @return The element if found, otherwise null.
+     * Recherche un élément par sa clé primaire, en supposant que la clé est un Long.
+     * <p>
+     * Les DAOs pour des entités avec des clés non-Long ou composites (ex: String)
+     * doivent lever une UnsupportedOperationException et fournir leurs propres
+     * méthodes de recherche spécifiques (ex: findByCode(String)).
+     * </p>
+     *
+     * @param id L'ID de type Long de l'élément.
+     * @return L'élément si trouvé, sinon null.
      */
     public abstract T findByID(Long id);
 
     /**
-     * Creates a new element in the database.
-     * 
-     * @param element The element to create.
-     * @return The number of rows affected (typically 1 on success), or -1 on error.
+     * Crée un nouvel élément dans la base de données.
+     *
+     * @param element L'élément à créer.
+     * @return Le nombre de lignes affectées (typiquement 1), ou -1 en cas d'erreur.
      */
     public abstract int create(T element);
 
     /**
-     * Updates an existing element in the database.
-     * 
-     * @param element The element with updated information.
-     * @return The number of rows affected, or -1 on error.
+     * Met à jour un élément existant dans la base de données.
+     *
+     * @param element L'élément avec les informations mises à jour.
+     * @return Le nombre de lignes affectées, ou -1 en cas d'erreur.
      */
     public abstract int update(T element);
 
     /**
-     * Deletes an element from the database.
-     * 
-     * @param element The element to delete.
-     * @return The number of rows affected, or -1 on error.
+     * Supprime un élément de la base de données.
+     *
+     * @param element L'élément à supprimer.
+     * @return Le nombre de lignes affectées, ou -1 en cas d'erreur.
      */
     public abstract int delete(T element);
 
     /**
-     * Utility method to close an {@link AutoCloseable} resource (like {@link Connection},
-     * {@link java.sql.Statement}, {@link java.sql.ResultSet}) without throwing an exception
-     * if the close operation itself fails.
-     * Any exception during closing is caught and its message is printed to standard error.
-     * 
-     * @param resource The {@link AutoCloseable} resource to close. Can be 'null'.
+     * Méthode utilitaire pour fermer une ressource (Connection, Statement, ResultSet)
+     * sans lever d'exception si la fermeture elle-même échoue.
+     *
+     * @param resource La ressource AutoCloseable à fermer. Peut être null.
      */
     public static void closeQuietly(AutoCloseable resource) {
         if (resource != null) {

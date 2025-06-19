@@ -7,21 +7,24 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * Data Access Object (DAO) for managing {@link Journee} entities.
- * A {@link Journee} (Day) represents a specific date, which serves as its primary key.
- * This class handles CRUD operations for Journee records.
+ * DAO (Data Access Object) pour la gestion des entités Journee.
+ * <p>
+ * Une Journee représente une date spécifique, qui sert de clé primaire.
+ * Cette classe gère les opérations CRUD pour les enregistrements de Journee.
+ * </p>
  *
- * @author Ewan QUELO, Raphael MILLE, Matheo BIET
+ * @author Ewan QUELO
+ * @author Raphael MILLE
+ * @author Matheo BIET
  * @version 1.0
  */
 public class JourneeDAO extends DAO<Journee> {
 
     /**
-     * Retrieves all {@link Journee} records from the database.
-     * Each Journee is identified by a unique date.
+     * Récupère toutes les journées de la base de données.
+     * Chaque journée est identifiée par une date unique.
      *
-     * @return A {@link List} of all {@link Journee} objects found.
-     *         The list may be empty if no Journee records exist or if an error occurs.
+     * @return Une liste de tous les objets Journee trouvés.
      */
     @Override
     public List<Journee> findAll() {
@@ -40,12 +43,11 @@ public class JourneeDAO extends DAO<Journee> {
     }
 
     /**
-     * Finds a specific {@link Journee} by its date.
-     * The date acts as the primary key for a Journee.
+     * Recherche une journée spécifique par sa date.
+     * La date sert de clé primaire pour une journée.
      *
-     * @param date The {@link LocalDate} to search for. Can be 'null'.
-     * @return The {@link Journee} object if found; 'null' if no Journee with the given date
-     *         exists, if the provided 'date' is 'null', or if an error occurs.
+     * @param date La date à rechercher.
+     * @return L'objet Journee si trouvé ; sinon `null`.
      */
     public Journee findByDate(LocalDate date) {
         if (date == null) return null;
@@ -64,17 +66,13 @@ public class JourneeDAO extends DAO<Journee> {
         return null;
     }
 
-
     /**
-     * Creates a new {@link Journee} record in the database.
-     * The date of the Journee serves as its primary key.
+     * Crée un nouvel enregistrement de Journee dans la base de données.
+     * La date de la journée sert de clé primaire.
      *
-     * @param journee The {@link Journee} object to persist. Its date must be set.
-     *                Must not be 'null'.
-     * @return The number of rows affected (typically 1 on success). Returns -1 if an
-     *         {@link SQLException} occurs (e.g., if the date already exists due to
-     *         primary key constraint) or if 'journee' is 'null'.
-     * @throws IllegalArgumentException if 'journee' is 'null'.
+     * @param journee L'objet Journee à persister. Ne doit pas être null.
+     * @return Le nombre de lignes affectées (1 en cas de succès, -1 si erreur).
+     * @throws IllegalArgumentException si l'objet journee est null.
      */
     @Override
     public int create(Journee journee) {
@@ -85,20 +83,18 @@ public class JourneeDAO extends DAO<Journee> {
             pstmt.setDate(1, Date.valueOf(journee.getDate()));
             return pstmt.executeUpdate();
         } catch (SQLException e) {
-            // Peut échouer si la date existe déjà (clé primaire)
+            // L'erreur se produit souvent si la date existe déjà (violant la contrainte de clé primaire).
             System.err.println("Error creating Journee " + journee + ": " + e.getMessage());
             return -1;
         }
     }
 
     /**
-     * Deletes a {@link Journee} record from the database based on its date
+     * Supprime un enregistrement de Journee de la base de données en fonction de sa date.
      *
-     * @param journee The {@link Journee} object to delete. Its date must be set.
-     *                Must not be 'null'.
-     * @return The number of rows affected (1 if successful, 0 if no record with the date was found).
-     *         Returns -1 if an {@link SQLException} occurs or if 'journee' is 'null'.
-     * @throws IllegalArgumentException if 'journee' is 'null'.
+     * @param journee L'objet Journee à supprimer. Ne doit pas être null.
+     * @return Le nombre de lignes affectées (1 si succès, 0 si non trouvé, -1 si erreur).
+     * @throws IllegalArgumentException si l'objet journee est null.
      */
     @Override
     public int delete(Journee journee) {
@@ -114,11 +110,19 @@ public class JourneeDAO extends DAO<Journee> {
         }
     }
 
+    /**
+     * Non supporté. La clé primaire de Journee est une LocalDate.
+     * Utilisez `findByDate(LocalDate)`.
+     */
     @Override
     public Journee findByID(Long id) {
         throw new UnsupportedOperationException("Journee ID is a LocalDate, not a Long. Use findByDate(LocalDate).");
     }
 
+    /**
+     * Non supporté. La mise à jour d'une clé primaire n'est pas recommandée.
+     * Utilisez `delete` puis `create`.
+     */
     @Override
     public int update(Journee element) {
         throw new UnsupportedOperationException("Updating a primary key (jour) is not recommended. Use delete then create.");

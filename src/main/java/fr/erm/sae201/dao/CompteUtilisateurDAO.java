@@ -8,16 +8,23 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * Data Access Object (DAO) for managing {@link CompteUtilisateur} entities.
+ * DAO (Data Access Object) pour la gestion des entités CompteUtilisateur.
+ *
+ * @author Ewan QUELO
+ * @author Raphael MILLE
+ * @author Matheo BIET
+ * @version 1.0
  */
 public class CompteUtilisateurDAO extends DAO<CompteUtilisateur> {
 
     /**
-     * Finds a {@link CompteUtilisateur} by its unique 'login' (username/email).
+     * Recherche un CompteUtilisateur par son 'login' unique (email).
      *
-     * @param login The login identifier of the user account to find.
-     * @return The {@link CompteUtilisateur} if found.
-     * @throws EntityNotFoundException if no account with the given 'login' exists.
+     * @param login L'identifiant de connexion du compte à trouver.
+     * @return Le CompteUtilisateur s'il est trouvé.
+     * @throws EntityNotFoundException si aucun compte avec ce login n'existe.
+     * @throws IllegalArgumentException si le login est null ou vide.
+     * @throws RuntimeException si une erreur SQL survient.
      */
     public CompteUtilisateur findByLogin(String login) {
         if (login == null || login.trim().isEmpty()) {
@@ -39,22 +46,19 @@ public class CompteUtilisateurDAO extends DAO<CompteUtilisateur> {
                 }
             }
         } catch (SQLException e) {
-            // En cas d'erreur SQL, on la "wrap" dans une RuntimeException pour ne pas forcer les 'throws'.
+            // "Encapsule" l'erreur SQL dans une RuntimeException pour ne pas
+            // forcer la gestion de l'exception dans les couches supérieures.
             throw new RuntimeException("Erreur BDD lors de la recherche du compte : " + login, e);
         }
     }
 
     /**
-     * Creates a new {@link CompteUtilisateur} record in the database.
-     * The 'idSecouriste' field can be null if the account is not linked to a
-     * specific rescuer.
+     * Crée un nouvel enregistrement de CompteUtilisateur dans la base de données.
+     * Le champ 'idSecouriste' peut être null si le compte n'est pas lié à un secouriste.
      *
-     * @param compte The {@link CompteUtilisateur} object to persist. Must not be
-     *               'null'.
-     *               Its 'login', 'motDePasseHash', and 'role' fields must be set.
-     * @return The number of rows affected (typically 1 on success, or -1 if an
-     *         SQLException occurs).
-     * @throws IllegalArgumentException if 'compte' is 'null'.
+     * @param compte L'objet CompteUtilisateur à persister. Ne doit pas être null.
+     * @return Le nombre de lignes affectées (1 en cas de succès, -1 en cas d'erreur).
+     * @throws IllegalArgumentException si l'objet compte est null.
      */
     @Override
     public int create(CompteUtilisateur compte) {
@@ -80,16 +84,11 @@ public class CompteUtilisateurDAO extends DAO<CompteUtilisateur> {
     }
 
     /**
-     * Updates the 'motDePasseHash' (hashed password) for a user account identified
-     * by its 'login'.
+     * Met à jour le mot de passe hashé pour un compte utilisateur identifié par son login.
      *
-     * @param login           The 'login' of the account whose password is to be
-     *                        updated.
-     * @param newPasswordHash The new hashed password.
-     * @return The number of rows affected (typically 1 if the account exists and
-     *         password was updated,
-     *         0 if no account with that 'login' was found, or -1 if an SQLException
-     *         occurs).
+     * @param login           Le login du compte à mettre à jour.
+     * @param newPasswordHash Le nouveau mot de passe hashé.
+     * @return Le nombre de lignes affectées (1 si succès, 0 si non trouvé, -1 si erreur).
      */
     public int updatePassword(String login, String newPasswordHash) {
         String sql = "UPDATE CompteUtilisateur SET motDePasseHash = ? WHERE login = ?";
@@ -105,19 +104,11 @@ public class CompteUtilisateurDAO extends DAO<CompteUtilisateur> {
     }
 
     /**
-     * Updates attributes of a {@link CompteUtilisateur} other than the password.
-     * Specifically, this method can update the 'role' and 'idSecouriste' of an
-     * account.
-     * The password should be updated using the 'updatePassword' method.
+     * Met à jour les attributs d'un CompteUtilisateur (hors mot de passe).
+     * Peut modifier le rôle et l'idSecouriste associé.
      *
-     * @param compte The {@link CompteUtilisateur} object containing the new 'role'
-     *               and/or 'idSecouriste'
-     *               values. The 'login' field identifies the account to update.
-     *               Must not be 'null'.
-     * @return The number of rows affected (typically 1 if the account exists and
-     *         was updated,
-     *         0 if no account with that 'login' was found, or -1 if an SQLException
-     *         occurs).
+     * @param compte L'objet CompteUtilisateur contenant les nouvelles valeurs.
+     * @return Le nombre de lignes affectées (1 si succès, 0 si non trouvé, -1 si erreur).
      */
     @Override
     public int update(CompteUtilisateur compte) {
@@ -140,15 +131,10 @@ public class CompteUtilisateurDAO extends DAO<CompteUtilisateur> {
     }
 
     /**
-     * Deletes a {@link CompteUtilisateur} from the database.
-     * The deletion is based on the 'login' of the provided account object.
+     * Supprime un CompteUtilisateur de la base de données en se basant sur le login.
      *
-     * @param compte The {@link CompteUtilisateur} object to delete. If 'null', the
-     *               method returns -1.
-     *               The 'login' field must be set to identify the account.
-     * @return The number of rows affected (typically 1 on success, 0 if no account
-     *         with that 'login'
-     *         was found, or -1 if 'compte' is 'null' or an SQLException occurs).
+     * @param compte L'objet CompteUtilisateur à supprimer.
+     * @return Le nombre de lignes affectées (1 si succès, 0 si non trouvé, -1 si erreur).
      */
     @Override
     public int delete(CompteUtilisateur compte) {
@@ -166,11 +152,18 @@ public class CompteUtilisateurDAO extends DAO<CompteUtilisateur> {
         }
     }
 
+    /**
+     * Non implémenté. Retourne une liste vide.
+     * La récupération de tous les comptes n'est pas un besoin actuel de l'application.
+     */
     @Override
     public List<CompteUtilisateur> findAll() {
         return new ArrayList<>();
     }
 
+    /**
+     * Non supporté. Utilisez `findByLogin(String)` pour cette classe.
+     */
     @Override
     public CompteUtilisateur findByID(Long id) {
         throw new UnsupportedOperationException("Utiliser findByLogin(String) pour cette classe.");
