@@ -4,72 +4,100 @@ import fr.erm.sae201.dao.AffectationDAO;
 import fr.erm.sae201.dao.DPSDAO;
 import fr.erm.sae201.dao.SecouristeDAO;
 import fr.erm.sae201.metier.persistence.*;
-// --- IMPORTS POUR LES MODÈLES PARTAGÉS ---
 import fr.erm.sae201.metier.service.ModelesAlgorithme.Poste;
 import fr.erm.sae201.metier.service.ModelesAlgorithme.AffectationResultat;
 
-import java.time.LocalDate;
 import java.util.*;
+import java.util.function.Function;
 import java.util.stream.Collectors;
 
+/**
+ * Implémente un algorithme d'affectation de type "glouton" avec priorités,
+ * CONFORMÉMENT AUX DIAPOSITIVES DE PRÉSENTATION.
+ * L'objectif est de suivre une approche simple et explicite :
+ * 1. Trier les secouristes (lignes) par ordre croissant de polyvalence.
+ * 2. Trier les postes (colonnes) par ordre croissant de "rareté" (nombre de candidats).
+ * 3. Appliquer une affectation gloutonne simple sur la matrice ainsi triée.
+ */
 public class ServiceAffectationGloutonne {
-
 
     private final DPSDAO dpsDAO = new DPSDAO();
     private final SecouristeDAO secouristeDAO = new SecouristeDAO();
     private final AffectationDAO affectationDAO = new AffectationDAO();
     private final ServiceCompetences serviceCompetences = new ServiceCompetences();
 
-    
+    /**
+     * Tente de trouver une affectation pour un DPS en suivant l'algorithme glouton des diapositives.
+     *
+     * @param dpsCible Le Dispositif Prévisionnel de Secours à traiter.
+     * @return Une liste d'affectations ({@link AffectationResultat}) trouvées.
+     */
     public List<AffectationResultat> trouverAffectationPourDPS(DPS dpsCible) {
-    System.out.println("\nLancement de l'algorithme glouton pour le DPS n°" + dpsCible.getId() + "...");
+        // --- Préparation des données ---
+        List<Poste> postesAPourvoir = preparerPostesPourUnSeulDps(dpsCible);
+        List<Secouriste> secouristesLibres = trouverSecouristesLibresPour(dpsCible);
 
-    List<Poste> postesAPourvoir = preparerPostesPourUnSeulDps(dpsCible);
-    List<Secouriste> secouristesLibres = trouverSecouristesLibresPour(dpsCible);
+        if (postesAPourvoir.isEmpty() || secouristesLibres.isEmpty()) {
+            return new ArrayList<>();
+        }
 
-    // --- CORRECTION DE CETTE LIGNE ---
-    // On spécifie explicitement le type (Poste p) dans l'expression lambda.
-    postesAPourvoir.sort(Comparator.comparingInt((Poste p) -> getProfondeurCompetence(p.competenceRequise())).reversed());
-    
-    List<AffectationResultat> affectationsTrouvees = new ArrayList<>();
-    Set<Long> secouristesDejaAffectes = new HashSet<>();
+        // --- Étape 1 : Trier les secouristes (lignes) ---
+        // On calcule pour chaque secouriste combien de postes il peut couvrir.
+        Map<Long, Long> polyvalenceSecouristes = secouristesLibres.stream()
+            .collect(Collectors.toMap(
+                Secouriste::getId,
+                secouriste -> postesAPourvoir.stream()
+                                             .filter(poste -> estApte(secouriste, poste))
+                                             .count()
+            ));
 
-    for (Poste poste : postesAPourvoir) {
-            // On trie les candidats potentiels pour ce poste
-            // du moins qualifié au plus qualifié pour éviter de "gâcher" un expert.
-            List<Secouriste> candidatsAptes = secouristesLibres.stream()
-                .filter(candidat -> !secouristesDejaAffectes.contains(candidat.getId()))
-                .filter(candidat -> estApte(candidat, poste))
-                .sorted(Comparator.comparingInt(s -> s.getCompetences().size())) // Stratégie simple : moins de compétences = moins qualifié
-                .collect(Collectors.toList());
+        // On trie la liste des secouristes du moins polyvalent au plus polyvalent.
+        secouristesLibres.sort(Comparator.comparing(secouriste -> polyvalenceSecouristes.get(secouriste.getId())));
 
-            // On prend le premier candidat apte (le moins sur-qualifié)
-            if (!candidatsAptes.isEmpty()) {
-                Secouriste meilleurCandidat = candidatsAptes.get(0);
-                affectationsTrouvees.add(new AffectationResultat(meilleurCandidat, poste));
-                secouristesDejaAffectes.add(meilleurCandidat.getId());
+        // --- Étape 2 : Trier les postes (colonnes) ---
+        // On calcule pour chaque type de poste combien de secouristes sont aptes.
+        // On utilise une map pour compter par intitulé de compétence.
+        Map<String, Long> raretePostes = postesAPourvoir.stream()
+            .map(poste -> poste.competenceRequise().getIntitule())
+            .distinct()
+            .collect(Collectors.toMap(
+                Function.identity(),
+                intitule -> secouristesLibres.stream()
+                                             .filter(secouriste -> serviceCompetences.possedeCompetenceRequiseOuSuperieure(
+                                                 secouriste.getCompetences(), 
+                                                 new Competence(intitule))) // Crée une compétence temporaire pour le test
+                                             .count()
+            ));
+
+        // On trie la liste des postes du plus rare (moins de candidats) au plus commun.
+        postesAPourvoir.sort(Comparator.comparing(poste -> raretePostes.get(poste.competenceRequise().getIntitule())));
+
+
+        // --- Étape 3 : Appliquer l'affectation gloutonne simple ---
+        List<AffectationResultat> affectationsTrouvees = new ArrayList<>();
+        Set<Long> secouristesDejaAffectes = new HashSet<>();
+        Set<Integer> indexPostesPourvus = new HashSet<>(); // Utiliser l'index pour gérer les postes identiques
+
+        // On parcourt les secouristes triés (les moins polyvalents d'abord).
+        for (Secouriste secouriste : secouristesLibres) {
+            // Pour chaque secouriste, on cherche le premier poste (trié par rareté) qu'il peut prendre.
+            for (int i = 0; i < postesAPourvoir.size(); i++) {
+                if (!indexPostesPourvus.contains(i)) { // Si le poste n'est pas déjà pris
+                    Poste poste = postesAPourvoir.get(i);
+                    if (estApte(secouriste, poste)) {
+                        affectationsTrouvees.add(new AffectationResultat(secouriste, poste));
+                        secouristesDejaAffectes.add(secouriste.getId()); // Le secouriste est pris.
+                        indexPostesPourvus.add(i); // Le poste est pris.
+                        break; // On passe au secouriste suivant.
+                    }
+                }
             }
         }
-
-    System.out.println("Recherche gloutonne terminée. " + affectationsTrouvees.size() + " affectations trouvées.");
-    return affectationsTrouvees;
-}
-
-
-    // --- Méthodes utilitaires (certaines sont copiées du service exhaustif) ---
-
-    private int getProfondeurCompetence(Competence c) {
-        // Fonction simple pour mesurer la "difficulté" d'une compétence.
-        // Plus elle a de prérequis (directs ou indirects), plus elle est "profonde".
-        if (c.getPrerequisites() == null || c.getPrerequisites().isEmpty()) {
-            return 0;
-        }
-        int maxProfondeur = 0;
-        for (Competence prerequis : c.getPrerequisites()) {
-            maxProfondeur = Math.max(maxProfondeur, getProfondeurCompetence(prerequis));
-        }
-        return 1 + maxProfondeur;
+        
+        return affectationsTrouvees;
     }
+
+    // --- Les méthodes utilitaires restent les mêmes ---
 
     private List<Poste> preparerPostesPourUnSeulDps(DPS dps) {
         List<Poste> postes = new ArrayList<>();
@@ -86,14 +114,11 @@ public class ServiceAffectationGloutonne {
         List<Secouriste> tousLesSecouristes = secouristeDAO.findAll();
         List<Affectation> affectationsDuJour = affectationDAO.findAllByDate(dpsCible.getJournee().getDate());
 
-        // CORRECTION : On ne garde que les IDs des secouristes qui sont occupés
-        // sur un AUTRE DPS que celui que nous sommes en train de traiter.
         Set<Long> idsSecouristesOccupes = affectationsDuJour.stream()
-                .filter(affectation -> affectation.getDps().getId() != dpsCible.getId()) // <<<--- LA LIGNE CLÉ
+                .filter(affectation -> affectation.getDps().getId() != dpsCible.getId())
                 .map(affectation -> affectation.getSecouriste().getId())
                 .collect(Collectors.toSet());
 
-        // Le reste est inchangé et devrait maintenant fonctionner.
         return tousLesSecouristes.stream()
                 .filter(secouriste -> estDisponibleCeJour(secouriste, dpsCible.getJournee().getDate()))
                 .filter(secouriste -> !idsSecouristesOccupes.contains(secouriste.getId()))
@@ -101,28 +126,10 @@ public class ServiceAffectationGloutonne {
     }
 
     private boolean estApte(Secouriste secouriste, Poste poste) {
-        String nomSecouriste = secouriste.getPrenom() + " " + secouriste.getNom();
-        String competenceRequise = poste.competenceRequise().getIntitule();
-
-        System.out.println("\n--- Test d'aptitude pour le poste [" + competenceRequise + "] ---");
-        System.out.println("Candidat : " + nomSecouriste);
-
-        // --- Vérification de la compétence ---
-        boolean aLaCompetence = serviceCompetences.possedeCompetenceRequiseOuSuperieure(
+        return serviceCompetences.possedeCompetenceRequiseOuSuperieure(
                 secouriste.getCompetences(),
                 poste.competenceRequise());
-
-        if (!aLaCompetence) {
-            System.out.println(" -> REJETÉ : N'a pas la compétence requise (" + competenceRequise + ").");
-            System.out.println("   Compétences possédées : " + secouriste.getCompetences());
-            return false;
-        }
-
-        // Si on arrive ici, c'est que toutes les conditions sont remplies
-        System.out.println(" -> ACCEPTÉ : Le secouriste est apte pour ce poste.");
-        return true;
     }
-
 
     private boolean estDisponibleCeJour(Secouriste secouriste, java.time.LocalDate date) {
         for (Journee jourDispo : secouriste.getDisponibilites()) {
