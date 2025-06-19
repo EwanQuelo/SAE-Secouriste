@@ -4,25 +4,37 @@ import fr.erm.sae201.metier.persistence.Competence;
 import fr.erm.sae201.metier.persistence.Secouriste;
 import org.junit.Test;
 import java.util.Date;
-import java.util.HashSet;
+
 import java.util.Set;
 import static org.junit.Assert.*;
 
 /**
- * Classe de test pour la classe de persistance Secouriste.
- * Utilise JUnit 4 et suit un format spécifique.
+ * Classe de tests unitaires pour la classe de persistance Secouriste.
+ * Ces tests valident le comportement des constructeurs, des setters (notamment
+ * avec validation de format pour l'email), la copie défensive des objets mutables,
+ * et le contrat des méthodes equals et hashCode.
+ *
+ * @author Ewan QUELO
+ * @author Raphael MILLE
+ * @author Matheo BIET
+ * @version 1.0
  */
 public class SecouristeTest {
 
-    // --- Méthode d'aide pour créer un objet de test valide ---
-
+    /**
+     * Crée un objet Secouriste valide pour les besoins des tests.
+     *
+     * @return Un nouvel objet Secouriste avec des données de test valides.
+     */
     private Secouriste createValidSecouriste() {
         return new Secouriste(1L, "Dupont", "Jean", new Date(), "jean.dupont@email.com", "0612345678",
                 "1 rue de la Paix");
     }
 
-    // --- Tests pour les Constructeurs ---
-
+    /**
+     * Méthode de test principale pour les constructeurs de la classe Secouriste.
+     * Elle valide un cas de création normal et plusieurs cas d'erreur (ID invalide, nom null).
+     */
     @Test
     public void testConstructors() {
         System.out.println("** testConstructors() **");
@@ -36,17 +48,27 @@ public class SecouristeTest {
             new Secouriste(0L, "Nom", "Prenom", new Date(), "test@test.com", null, null);
             fail("Exception attendue pour ID <= 0 mais non levée.");
         } catch (IllegalArgumentException e) {
-            // Succès
+            // Succès attendu
         }
         // Nom null
         try {
             new Secouriste(1L, null, "Prenom", new Date(), "test@test.com", null, null);
             fail("Exception attendue pour nom null mais non levée.");
         } catch (IllegalArgumentException e) {
-            // Succès
+            // Succès attendu
         }
     }
 
+    /**
+     * Méthode d'aide qui exécute un scénario de test pour le constructeur.
+     *
+     * @param id L'identifiant à tester.
+     * @param nom Le nom à tester.
+     * @param prenom Le prénom à tester.
+     * @param date La date de naissance à tester.
+     * @param email L'email à tester.
+     * @param exceptionAttendue La classe de l'exception attendue, ou null si aucune n'est attendue.
+     */
     private void testCasConstructor(long id, String nom, String prenom, Date date, String email,
             Class<? extends Throwable> exceptionAttendue) {
         try {
@@ -64,8 +86,9 @@ public class SecouristeTest {
         }
     }
 
-    // --- Test pour un setter spécifique : setEmail ---
-
+    /**
+     * Méthode de test principale pour le setter de l'email, qui inclut une validation de format.
+     */
     @Test
     public void testSetEmail() {
         System.out.println("\n** testSetEmail() **");
@@ -83,6 +106,12 @@ public class SecouristeTest {
         testCasSetEmail("email@sanspoint", IllegalArgumentException.class);
     }
 
+    /**
+     * Méthode d'aide qui exécute un scénario de test pour setEmail.
+     *
+     * @param email L'adresse email à tester.
+     * @param exceptionAttendue La classe de l'exception attendue, ou null si aucune n'est attendue.
+     */
     private void testCasSetEmail(String email, Class<? extends Throwable> exceptionAttendue) {
         Secouriste s = createValidSecouriste();
         try {
@@ -99,8 +128,11 @@ public class SecouristeTest {
         }
     }
 
-    // --- Test pour la copie défensive ---
-
+    /**
+     * Teste la robustesse des getters en vérifiant qu'ils retournent des copies
+     * défensives des objets mutables (Date et Set), empêchant ainsi toute
+     * modification externe de l'état interne de l'objet Secouriste.
+     */
     @Test
     public void testGettersReturnCopies() {
         System.out.println("\n** testGettersReturnCopies() **");
@@ -109,7 +141,7 @@ public class SecouristeTest {
         // Test pour DateNaissance
         System.out.println("Cas : Modification de la date de naissance récupérée");
         Date dateRecup = s.getDateNaissance();
-        dateRecup.setTime(0); // Change la date à 1er Jan 1970
+        dateRecup.setTime(0);
         assertNotEquals("La date originale ne doit pas être modifiée (copie défensive).", dateRecup.getTime(),
                 s.getDateNaissance().getTime());
 
@@ -121,7 +153,10 @@ public class SecouristeTest {
         assertEquals("Le set original ne doit contenir qu'un élément.", 1, s.getCompetences().size());
     }
 
-    // --- Test pour Equals et HashCode ---
+    /**
+     * Valide l'implémentation des méthodes equals et hashCode.
+     * L'égalité est basée sur l'identifiant (ID) du secouriste.
+     */
     @Test
     public void testEqualsAndHashCode() {
         System.out.println("\n** testEqualsAndHashCode() **");

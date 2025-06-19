@@ -5,14 +5,22 @@ import org.junit.Test;
 import static org.junit.Assert.*;
 
 /**
- * Classe de test pour la classe de persistance Site.
- * Utilise JUnit 4 et suit un format spécifique.
+ * Classe de tests unitaires pour la classe de persistance Site.
+ * Ces tests valident le comportement du constructeur, des setters (avec validation
+ * des chaînes de caractères), et le contrat des méthodes equals et hashCode.
+ *
+ * @author Ewan QUELO
+ * @author Raphael MILLE
+ * @author Matheo BIET
+ * @version 1.0
  */
 public class SiteTest {
 
-    // --- Tests pour le Constructeur ---
-    // Comme le constructeur appelle les setters, on teste principalement les cas d'erreur qui peuvent s'y produire.
-
+    /**
+     * Méthode de test principale pour le constructeur de la classe Site.
+     * Étant donné que le constructeur appelle les setters, ce test se concentre sur
+     * la validation des cas qui pourraient lever une exception via ces setters.
+     */
     @Test
     public void testConstructor() {
         System.out.println("** testConstructor() **");
@@ -21,12 +29,21 @@ public class SiteTest {
         testCasConstructor("SDF", "Stade de France", 2.360f, 48.924f, null);
 
         System.out.println("Cas erreur :");
-        // Test avec un code null
+        // Test avec un code null.
         testCasConstructor(null, "Stade de France", 2.360f, 48.924f, IllegalArgumentException.class);
-        // Test avec un nom vide
+        // Test avec un nom vide ou composé uniquement d'espaces.
         testCasConstructor("SDF", "   ", 2.360f, 48.924f, IllegalArgumentException.class);
     }
 
+    /**
+     * Méthode d'aide qui exécute un scénario de test pour le constructeur.
+     *
+     * @param code Le code du site à tester.
+     * @param nom Le nom du site à tester.
+     * @param longitude La longitude du site.
+     * @param latitude La latitude du site.
+     * @param exceptionAttendue La classe de l'exception attendue, ou null si aucune n'est attendue.
+     */
     private void testCasConstructor(String code, String nom, float longitude, float latitude, Class<? extends Throwable> exceptionAttendue) {
         try {
             Site site = new Site(code, nom, longitude, latitude);
@@ -44,8 +61,9 @@ public class SiteTest {
     }
 
 
-    // --- Tests pour les Setters ---
-
+    /**
+     * Méthode de test principale pour le setter setCode.
+     */
     @Test
     public void testSetCode() {
         System.out.println("\n** testSetCode() **");
@@ -62,8 +80,15 @@ public class SiteTest {
         testCasSetCode("   ", null, IllegalArgumentException.class);
     }
 
+    /**
+     * Méthode d'aide qui exécute un scénario de test pour setCode.
+     *
+     * @param code Le code à tester.
+     * @param resultatAttendu Le résultat attendu après l'appel.
+     * @param exceptionAttendue La classe de l'exception attendue, ou null.
+     */
     private void testCasSetCode(String code, String resultatAttendu, Class<? extends Throwable> exceptionAttendue) {
-        Site site = new Site("INIT", "Initial", 0, 0); // Objet de départ valide
+        Site site = new Site("INIT", "Initial", 0, 0);
         try {
             site.setCode(code);
             if (exceptionAttendue != null) {
@@ -78,6 +103,9 @@ public class SiteTest {
         }
     }
     
+    /**
+     * Méthode de test principale pour le setter setNom.
+     */
     @Test
     public void testSetNom() {
         System.out.println("\n** testSetNom() **");
@@ -90,6 +118,13 @@ public class SiteTest {
         testCasSetNom(" ", null, IllegalArgumentException.class);
     }
 
+    /**
+     * Méthode d'aide qui exécute un scénario de test pour setNom.
+     *
+     * @param nom Le nom à tester.
+     * @param resultatAttendu Le résultat attendu après l'appel.
+     * @param exceptionAttendue La classe de l'exception attendue, ou null.
+     */
     private void testCasSetNom(String nom, String resultatAttendu, Class<? extends Throwable> exceptionAttendue) {
         Site site = new Site("INIT", "Initial", 0, 0);
         try {
@@ -106,6 +141,10 @@ public class SiteTest {
         }
     }
     
+    /**
+     * Méthode de test principale pour le setter setLongitude.
+     * Ce setter n'a pas de validation, donc on ne teste que les assignations.
+     */
     @Test
     public void testSetLongitude() {
         System.out.println("\n** testSetLongitude() **");
@@ -118,22 +157,30 @@ public class SiteTest {
         testCasSetLongitude(-50.12f, -50.12f);
     }
     
+    /**
+     * Méthode d'aide qui exécute un scénario de test pour setLongitude.
+     *
+     * @param longitude La longitude à assigner.
+     * @param resultatAttendu Le résultat attendu.
+     */
     private void testCasSetLongitude(float longitude, float resultatAttendu) {
         Site site = new Site("INIT", "Initial", 0, 0);
         site.setLongitude(longitude);
-        // Pour les floats, il faut utiliser une tolérance (delta) dans assertEquals
+        // L'utilisation d'une tolérance (delta) est nécessaire pour comparer des flottants.
         assertEquals("La longitude n'a pas été modifiée correctement.", resultatAttendu, site.getLongitude(), 0.0001f);
     }
     
-    // --- Test pour Equals et HashCode ---
-
+    /**
+     * Valide l'implémentation des méthodes equals et hashCode.
+     * L'égalité est basée sur le code du site, qui est son identifiant unique.
+     */
     @Test
     public void testEqualsAndHashCode() {
         System.out.println("\n** testEqualsAndHashCode() **");
 
         Site s1 = new Site("SDF", "Stade de France", 2.36f, 48.92f);
-        Site s2 = new Site("SDF", "Autre Nom", 1.0f, 1.0f); // Même code, autres champs différents
-        Site s3 = new Site("TDF", "Tour Eiffel", 2.29f, 48.85f); // Code différent
+        Site s2 = new Site("SDF", "Autre Nom", 1.0f, 1.0f);
+        Site s3 = new Site("TDF", "Tour Eiffel", 2.29f, 48.85f);
 
         System.out.println("Cas normal : deux objets avec le même code");
         assertTrue("Deux sites avec le même code doivent être égaux.", s1.equals(s2));

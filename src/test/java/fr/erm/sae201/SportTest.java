@@ -5,13 +5,21 @@ import org.junit.Test;
 import static org.junit.Assert.*;
 
 /**
- * Classe de test pour la classe de persistance Sport.
- * Utilise JUnit 4 et suit un format spécifique.
+ * Classe de tests unitaires pour la classe de persistance Sport.
+ * Ces tests valident le comportement du constructeur, des setters (avec validation
+ * des chaînes de caractères), et le contrat des méthodes equals et hashCode.
+ *
+ * @author Ewan QUELO
+ * @author Raphael MILLE
+ * @author Matheo BIET
+ * @version 1.0
  */
 public class SportTest {
 
-    // --- Tests pour le Constructeur ---
-
+    /**
+     * Méthode de test principale pour le constructeur de la classe Sport.
+     * Elle valide un cas de création normal et des cas d'erreur (paramètres null ou vides).
+     */
     @Test
     public void testConstructor() {
         System.out.println("** testConstructor() **");
@@ -26,6 +34,13 @@ public class SportTest {
         testCasConstructor("ATH", "   ", IllegalArgumentException.class);
     }
 
+    /**
+     * Méthode d'aide qui exécute un scénario de test pour le constructeur.
+     *
+     * @param code Le code du sport à tester.
+     * @param nom Le nom du sport à tester.
+     * @param exceptionAttendue La classe de l'exception attendue, ou null si aucune n'est attendue.
+     */
     private void testCasConstructor(String code, String nom, Class<? extends Throwable> exceptionAttendue) {
         try {
             Sport sport = new Sport(code, nom);
@@ -43,8 +58,9 @@ public class SportTest {
     }
 
 
-    // --- Tests pour les Setters ---
-
+    /**
+     * Méthode de test principale pour le setter setCode.
+     */
     @Test
     public void testSetCode() {
         System.out.println("\n** testSetCode() **");
@@ -61,6 +77,13 @@ public class SportTest {
         testCasSetCode("   ", null, IllegalArgumentException.class);
     }
 
+    /**
+     * Méthode d'aide qui exécute un scénario de test pour setCode.
+     *
+     * @param code Le code à tester.
+     * @param resultatAttendu Le résultat attendu après l'appel.
+     * @param exceptionAttendue La classe de l'exception attendue, ou null.
+     */
     private void testCasSetCode(String code, String resultatAttendu, Class<? extends Throwable> exceptionAttendue) {
         Sport sport = new Sport("INIT", "Initial"); // Objet de départ valide
         try {
@@ -77,6 +100,9 @@ public class SportTest {
         }
     }
     
+    /**
+     * Méthode de test principale pour le setter setNom.
+     */
     @Test
     public void testSetNom() {
         System.out.println("\n** testSetNom() **");
@@ -89,6 +115,13 @@ public class SportTest {
         testCasSetNom(" ", null, IllegalArgumentException.class);
     }
 
+    /**
+     * Méthode d'aide qui exécute un scénario de test pour setNom.
+     *
+     * @param nom Le nom à tester.
+     * @param resultatAttendu Le résultat attendu après l'appel.
+     * @param exceptionAttendue La classe de l'exception attendue, ou null.
+     */
     private void testCasSetNom(String nom, String resultatAttendu, Class<? extends Throwable> exceptionAttendue) {
         Sport sport = new Sport("INIT", "Initial");
         try {
@@ -105,8 +138,10 @@ public class SportTest {
         }
     }
     
-    // --- Test pour Equals et HashCode ---
-
+    /**
+     * Valide l'implémentation des méthodes equals et hashCode.
+     * L'égalité est basée sur le code du sport, qui est son identifiant unique.
+     */
     @Test
     public void testEqualsAndHashCode() {
         System.out.println("\n** testEqualsAndHashCode() **");

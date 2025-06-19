@@ -1,34 +1,31 @@
 .login-root {
-    /* The background image is set via JavaFX ImageView to allow dynamic pathing and better control */
 }
 
 .login-box {
-    -fx-background-color: rgba(45, 45, 45, 0.85); /* Dark grey, semi-transparent */
+    -fx-background-color: rgba(45, 45, 45, 0.85);
     -fx-padding: 40px;
-    -fx-background-radius: 20px; /* Rounded corners */
-    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.5), 10, 0, 0, 5); /* Subtle shadow */
+    -fx-background-radius: 20px;
+    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.5), 10, 0, 0, 5);
 }
 
 .title-label {
     -fx-font-size: 38px;
     -fx-font-weight: bold;
     -fx-text-fill: white;
-    -fx-font-family: "Arial", sans-serif; /* Or your preferred sans-serif font */
+    -fx-font-family: "Arial", sans-serif;
 }
 
-/* ADDED: A style for form field labels like "Date of Birth" */
 .form-label {
     -fx-font-size: 14px;
     -fx-text-fill: white;
     -fx-font-family: "Arial", sans-serif;
-    -fx-padding: 10px 0 0 5px; /* Top padding and slight left indent */
+    -fx-padding: 10px 0 0 5px;
 }
 
-/* This style is now applied to TextFields, PasswordFields, AND ComboBoxes */
 .login-input {
-    -fx-background-color: #A9A9A9; /* Light grey background */
-    -fx-text-fill: #333333; /* Dark grey text */
-    -fx-prompt-text-fill: #666666; /* Lighter grey for prompt text */
+    -fx-background-color: #A9A9A9;
+    -fx-text-fill: #333333;
+    -fx-prompt-text-fill: #666666;
     -fx-font-size: 14px;
     -fx-background-radius: 10px;
     -fx-border-radius: 10px;
@@ -37,7 +34,7 @@
 }
 
 .login-input:focused {
-    -fx-border-color: #0078D7; /* Optional: highlight on focus */
+    -fx-border-color: #0078D7;
     -fx-border-width: 1.5px;
 }
 
@@ -52,7 +49,7 @@
 }
 
 .login-button {
-    -fx-background-color: #5A5A5A; /* Darker grey */
+    -fx-background-color: #5A5A5A;
     -fx-text-fill: white;
     -fx-font-size: 16px;
     -fx-font-weight: bold;
@@ -66,7 +63,7 @@
 }
 
 .signup-button {
-    -fx-background-color: #3C3C3C; /* Even darker grey/black */
+    -fx-background-color: #3C3C3C;
     -fx-text-fill: white;
     -fx-font-size: 14px;
     -fx-background-radius: 10px;

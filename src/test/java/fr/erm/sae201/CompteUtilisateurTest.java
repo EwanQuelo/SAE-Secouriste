@@ -1,18 +1,27 @@
 package fr.erm.sae201;
 
 import fr.erm.sae201.metier.persistence.CompteUtilisateur;
-import fr.erm.sae201.metier.persistence.Role; // CHANGEMENT : Import de la vraie énumération
+import fr.erm.sae201.metier.persistence.Role;
 import org.junit.Test;
 import static org.junit.Assert.*;
 
 /**
- * Classe de test pour la classe de persistance CompteUtilisateur.
- * Utilise JUnit 4 et suit un format spécifique. (VERSION CORRIGÉE)
+ * Classe de tests unitaires pour la classe de persistance CompteUtilisateur.
+ * Ces tests valident le comportement du constructeur, des getters, des setters, ainsi que
+ * le contrat des méthodes equals et hashCode, en couvrant les cas normaux, limites et d'erreur.
+ *
+ * @author Ewan QUELO
+ * @author Raphael MILLE
+ * @author Matheo BIET
+ * @version 1.0
  */
 public class CompteUtilisateurTest {
 
-    // --- Tests pour le Constructeur et les Getters ---
-
+    /**
+     * Teste le constructeur principal et les getters correspondants.
+     * Valide la création d'un compte secouriste (avec un ID de secouriste) et d'un compte
+     * administrateur (sans ID de secouriste).
+     */
     @Test
     public void testConstructorAndGetters() {
         System.out.println("** testConstructorAndGetters() **");
@@ -27,11 +36,16 @@ public class CompteUtilisateurTest {
     }
 
     /**
-     * Méthode d'aide pour tester le constructeur.
-     * Crée un CompteUtilisateur et vérifie que tous les getters retournent les bonnes valeurs initiales.
+     * Méthode d'aide pour tester un cas spécifique du constructeur.
+     * Crée un CompteUtilisateur et vérifie que tous les getters retournent les valeurs initiales fournies.
+     *
+     * @param login Le login à passer au constructeur.
+     * @param hash Le hash du mot de passe.
+     * @param role Le rôle de l'utilisateur.
+     * @param idSecouriste L'identifiant du secouriste associé, ou null.
      */
     private void testCasConstructor(String login, String hash, Role role, Long idSecouriste) {
-        // Il n'y a pas d'exception attendue ici, car le constructeur est simple.
+        // Aucune exception n'est attendue ici, car le constructeur est simple.
         try {
             CompteUtilisateur compte = new CompteUtilisateur(login, hash, role, idSecouriste);
             
@@ -45,8 +59,10 @@ public class CompteUtilisateurTest {
         }
     }
 
-    // --- Tests pour les Setters ---
-
+    /**
+     * Teste le setter pour le rôle ({@code setRole}).
+     * Vérifie la modification normale d'un rôle et le cas limite où le rôle est défini à null.
+     */
     @Test
     public void testSetRole() {
         System.out.println("\n** testSetRole() **");
@@ -61,8 +77,11 @@ public class CompteUtilisateurTest {
     }
 
     /**
-     * Méthode d'aide pour tester un setter.
-     * Crée un compte, modifie une valeur, et vérifie que le changement a bien eu lieu.
+     * Méthode d'aide pour tester un cas spécifique du setter de rôle.
+     * Crée un compte, modifie le rôle, et vérifie que la nouvelle valeur est correcte.
+     *
+     * @param nouveauRole Le nouveau rôle à assigner.
+     * @param resultatAttendu Le rôle attendu après l'appel du setter.
      */
     private void testCasSetRole(Role nouveauRole, Role resultatAttendu) {
         CompteUtilisateur compte = new CompteUtilisateur("test@test.com", "hash", Role.SECOURISTE, 1L);
@@ -74,8 +93,10 @@ public class CompteUtilisateurTest {
         }
     }
     
-    // --- Test pour Equals et HashCode ---
-
+    /**
+     * Valide l'implémentation des méthodes {@code equals} et {@code hashCode}.
+     * L'égalité entre deux objets CompteUtilisateur est déterminée uniquement par leur login.
+     */
     @Test
     public void testEqualsAndHashCode() {
         System.out.println("\n** testEqualsAndHashCode() **");

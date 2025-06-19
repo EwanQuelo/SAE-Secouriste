@@ -5,14 +5,22 @@ import org.junit.Test;
 import static org.junit.Assert.*;
 
 /**
- * Classe de test pour l'énumération Role.
- * Utilise JUnit 4 et suit un format spécifique.
+ * Classe de tests unitaires pour l'énumération Role.
+ * Ces tests valident le comportement des méthodes statiques comme valueOf,
+ * la représentation textuelle via toString, et les propriétés fondamentales
+ * de l'énumération (nombre de valeurs, non-nullité, etc.).
+ *
+ * @author Ewan QUELO
+ * @author Raphael MILLE
+ * @author Matheo BIET
+ * @version 1.0
  */
 public class RoleTest {
 
-    // --- Tests pour la méthode statique valueOf() ---
-    // Cette méthode convertit une chaîne de caractères en une valeur de l'enum.
-
+    /**
+     * Méthode de test principale pour la méthode statique valueOf.
+     * Elle vérifie la conversion d'une chaîne de caractères en une valeur de l'énumération.
+     */
     @Test
     public void testValueOf() {
         System.out.println("** testValueOf() **");
@@ -22,22 +30,22 @@ public class RoleTest {
         testCasValueOf("ADMINISTRATEUR", Role.ADMINISTRATEUR, null);
         
         System.out.println("Cas erreur :");
-        // Test avec une chaîne qui ne correspond à aucune valeur
+        // Test avec une chaîne qui ne correspond à aucune valeur de l'énumération.
         testCasValueOf("UTILISATEUR", null, IllegalArgumentException.class);
-        // Test avec une casse incorrecte
+        // Test avec une casse incorrecte, valueOf est sensible à la casse.
         testCasValueOf("secouriste", null, IllegalArgumentException.class);
-        // Test avec une chaîne vide
+        // Test avec une chaîne vide.
         testCasValueOf("", null, IllegalArgumentException.class);
-        // Test avec une valeur null (doit lever une NullPointerException)
+        // Test avec une valeur null.
         testCasValueOf(null, null, NullPointerException.class);
     }
 
     /**
-     * Méthode d'aide pour tester Role.valueOf().
-     * Tente de convertir une chaîne et vérifie si le résultat ou l'exception est conforme.
-     * @param nom Le nom de la constante enum à chercher.
-     * @param resultatAttendu La valeur enum attendue.
-     * @param exceptionAttendue Le type d'exception attendu.
+     * Méthode d'aide pour tester un scénario de Role.valueOf.
+     *
+     * @param nom Le nom de la constante à rechercher.
+     * @param resultatAttendu La valeur de l'énumération attendue.
+     * @param exceptionAttendue La classe de l'exception attendue, ou null si aucune n'est attendue.
      */
     private void testCasValueOf(String nom, Role resultatAttendu, Class<? extends Throwable> exceptionAttendue) {
         try {
@@ -55,9 +63,10 @@ public class RoleTest {
     }
     
     
-    // --- Tests pour la méthode toString() ---
-    // Cette méthode retourne le nom de la constante enum sous forme de chaîne.
-
+    /**
+     * Méthode de test principale pour la méthode toString.
+     * Elle vérifie que la représentation textuelle de chaque constante est correcte.
+     */
     @Test
     public void testToString() {
         System.out.println("\n** testToString() **");
@@ -68,8 +77,9 @@ public class RoleTest {
     }
 
     /**
-     * Méthode d'aide pour tester la méthode toString() de l'enum.
-     * @param role La valeur de l'enum à tester.
+     * Méthode d'aide pour tester la méthode toString.
+     *
+     * @param role La valeur de l'énumération à tester.
      * @param resultatAttendu La chaîne de caractères attendue.
      */
     private void testCasToString(Role role, String resultatAttendu) {
@@ -77,21 +87,20 @@ public class RoleTest {
     }
 
 
-    // --- Test des propriétés fondamentales de l'enum ---
-    // Ce test ne suit pas le format "testCas" car il vérifie des propriétés de base.
-
+    /**
+     * Teste les propriétés fondamentales de l'énumération Role.
+     * Vérifie que les constantes ne sont pas nulles, qu'elles sont distinctes,
+     * et que le nombre total de valeurs est correct.
+     */
     @Test
     public void testEnumProperties() {
         System.out.println("\n** testEnumProperties() **");
 
-        // On vérifie que les valeurs ne sont pas nulles
         assertNotNull("La constante SECOURISTE ne doit pas être nulle.", Role.SECOURISTE);
         assertNotNull("La constante ADMINISTRATEUR ne doit pas être nulle.", Role.ADMINISTRATEUR);
 
-        // On vérifie que les valeurs sont distinctes
         assertNotEquals("Les constantes de l'enum doivent être distinctes.", Role.SECOURISTE, Role.ADMINISTRATEUR);
 
-        // On vérifie le nombre total de valeurs dans l'enum
         assertEquals("L'enum Role doit contenir exactement 2 valeurs.", 2, Role.values().length);
     }
 }

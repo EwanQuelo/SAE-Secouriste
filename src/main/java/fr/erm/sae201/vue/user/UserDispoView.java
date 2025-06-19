@@ -23,6 +23,17 @@ import java.util.Locale;
 import java.util.Set;
 import java.util.stream.Collectors;
 
+/**
+ * La vue permettant à un utilisateur secouriste de gérer ses disponibilités.
+ * Elle affiche un calendrier mensuel où l'utilisateur peut cliquer sur les jours
+ * pour les marquer comme disponibles ou indisponibles. Les changements sont suivis
+ * et peuvent être enregistrés ou annulés.
+ *
+ * @author Ewan QUELO
+ * @author Raphael MILLE
+ * @author Matheo BIET
+ * @version 1.0
+ */
 public class UserDispoView extends BaseView {
 
     private final CompteUtilisateur compte;
@@ -38,6 +49,12 @@ public class UserDispoView extends BaseView {
     private Button saveButton;
     private Button cancelButton;
 
+    /**
+     * Construit la vue des disponibilités pour le secouriste.
+     *
+     * @param navigator L'instance principale de l'application pour la navigation.
+     * @param compte Le compte de l'utilisateur connecté.
+     */
     public UserDispoView(MainApp navigator, CompteUtilisateur compte) {
         super(navigator, compte, "Disponibilités");
         this.compte = compte;
@@ -53,25 +70,47 @@ public class UserDispoView extends BaseView {
         populateView();
     }
     
-    // NOUVEAU : Méthodes pour que le contrôleur se branche sur les boutons
+    /**
+     * Lie une action au bouton "Enregistrer".
+     *
+     * @param handler Le gestionnaire d'événement à exécuter lors du clic.
+     */
     public void setSaveAction(EventHandler<ActionEvent> handler) {
         saveButton.setOnAction(handler);
     }
     
+    /**
+     * Lie une action au bouton "Annuler".
+     *
+     * @param handler Le gestionnaire d'événement à exécuter lors du clic.
+     */
     public void setCancelAction(EventHandler<ActionEvent> handler) {
         cancelButton.setOnAction(handler);
     }
     
-    // NOUVEAU : Getters pour que le contrôleur récupère les changements
+    /**
+     * Récupère l'ensemble des dates que l'utilisateur a marquées comme nouvellement disponibles.
+     *
+     * @return Une copie de l'ensemble des disponibilités ajoutées.
+     */
     public Set<LocalDate> getAddedDisponibilites() {
         return new HashSet<>(addedDisponibilites);
     }
 
+    /**
+     * Récupère l'ensemble des dates que l'utilisateur a marquées comme nouvellement indisponibles.
+     *
+     * @return Une copie de l'ensemble des disponibilités supprimées.
+     */
     public Set<LocalDate> getRemovedDisponibilites() {
         return new HashSet<>(removedDisponibilites);
     }
 
-    // MODIFIÉ : Le code de création de la vue reste, mais la logique des actions est retirée.
+    /**
+     * Crée la barre de boutons d'action "Enregistrer" et "Annuler".
+     *
+     * @return Un HBox contenant les boutons d'action.
+     */
     private Node createActionButtons() {
         HBox buttonBar = new HBox(20);
         buttonBar.setAlignment(Pos.CENTER);
@@ -88,6 +127,12 @@ public class UserDispoView extends BaseView {
         buttonBar.getChildren().addAll(saveButton, cancelButton);
         return buttonBar;
     }
+    
+    /**
+     * Crée et retourne le contenu central de la vue.
+     *
+     * @return Le conteneur VBox principal de la vue.
+     */
     @Override
     protected Node createCenterContent() {
         mainContainer = new VBox(10);
@@ -96,6 +141,9 @@ public class UserDispoView extends BaseView {
         return mainContainer;
     }
 
+    /**
+     * Peuple ou repeuple la vue du calendrier avec tous ses composants.
+     */
     private void populateView() {
         mainContainer.getChildren().clear();
 
@@ -106,11 +154,21 @@ public class UserDispoView extends BaseView {
         mainContainer.getChildren().addAll(monthNavigationBar, calendarGrid, actionButtons);
     }
 
+    /**
+     * Change le mois affiché dans le calendrier.
+     *
+     * @param monthsToAdd Le nombre de mois à avancer (positif) ou reculer (négatif).
+     */
     private void changeMonth(int monthsToAdd) {
         currentMonth = currentMonth.plusMonths(monthsToAdd);
         populateView();
     }
 
+    /**
+     * Crée la barre de navigation du mois avec les flèches et le nom du mois.
+     *
+     * @return Un HBox représentant la barre de navigation.
+     */
     private Node createMonthNavigationBar() {
         HBox navBar = new HBox(20);
         navBar.setAlignment(Pos.CENTER);
@@ -134,6 +192,11 @@ public class UserDispoView extends BaseView {
         return navBar;
     }
 
+    /**
+     * Crée la grille du calendrier pour le mois en cours.
+     *
+     * @return Un GridPane peuplé avec les jours du mois.
+     */
     private Node createCalendarGrid() {
         GridPane grid = new GridPane();
         grid.getStyleClass().add("dispo-grid");
@@ -173,6 +236,12 @@ public class UserDispoView extends BaseView {
         return grid;
     }
 
+    /**
+     * Gère le clic sur un jour du calendrier, en basculant son état de disponibilité.
+     *
+     * @param date La date du jour cliqué.
+     * @param dayButton Le bouton associé au jour.
+     */
     private void handleDayClick(LocalDate date, Button dayButton) {
         boolean isOriginallyAvailable = originalDisponibilites.contains(date);
         boolean isCurrentlyAvailable = !removedDisponibilites.contains(date)
@@ -194,6 +263,12 @@ public class UserDispoView extends BaseView {
         updateButtonStyle(date, dayButton);
     }
 
+    /**
+     * Met à jour le style visuel d'un bouton de jour en fonction de son état de disponibilité.
+     *
+     * @param day La date du jour à mettre à jour.
+     * @param button Le bouton à styliser.
+     */
     private void updateButtonStyle(LocalDate day, Button button) {
         button.getStyleClass().removeAll("dispo-available", "dispo-to-add", "dispo-to-remove");
         boolean isOriginallyAvailable = originalDisponibilites.contains(day);

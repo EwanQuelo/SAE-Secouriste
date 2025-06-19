@@ -7,13 +7,21 @@ import java.time.DateTimeException;
 import static org.junit.Assert.*;
 
 /**
- * Classe de test pour la classe de persistance Journee.
- * Utilise JUnit 4 et suit un format spécifique. (VERSION CORRIGÉE)
+ * Classe de tests unitaires pour la classe de persistance Journee.
+ * Elle valide le comportement des deux constructeurs, du setter, ainsi que
+ * le contrat des méthodes equals et hashCode.
+ *
+ * @author Ewan QUELO
+ * @author Raphael MILLE
+ * @author Matheo BIET
+ * @version 1.0
  */
 public class JourneeTest {
 
-    // --- Tests pour le Constructeur avec LocalDate ---
-
+    /**
+     * Méthode de test principale pour le constructeur qui accepte un objet LocalDate.
+     * Valide un cas normal et un cas d'erreur (paramètre null).
+     */
     @Test
     public void testConstructorWithLocalDate() {
         System.out.println("** testConstructorWithLocalDate() **");
@@ -25,6 +33,12 @@ public class JourneeTest {
         testCasConstructorWithLocalDate(null, IllegalArgumentException.class);
     }
 
+    /**
+     * Méthode d'aide pour tester un scénario du constructeur avec LocalDate.
+     *
+     * @param date L'objet LocalDate à passer au constructeur.
+     * @param exceptionAttendue La classe de l'exception attendue, ou null si aucune n'est attendue.
+     */
     private void testCasConstructorWithLocalDate(LocalDate date, Class<? extends Throwable> exceptionAttendue) {
         try {
             Journee journee = new Journee(date);
@@ -41,8 +55,10 @@ public class JourneeTest {
     }
 
 
-    // --- Tests pour le Constructeur avec des entiers (jour, mois, annee) ---
-
+    /**
+     * Méthode de test principale pour le constructeur avec des entiers (jour, mois, annee).
+     * Valide un cas normal, un cas limite (année bissextile), et plusieurs cas d'erreur (date invalide).
+     */
     @Test
     public void testConstructorWithInts() {
         System.out.println("\n** testConstructorWithInts() **");
@@ -59,6 +75,14 @@ public class JourneeTest {
         testCasConstructorWithInts(29, 2, 2025, DateTimeException.class);
     }
 
+    /**
+     * Méthode d'aide pour tester un scénario du constructeur avec des entiers.
+     *
+     * @param jour Le jour du mois.
+     * @param mois Le mois de l'année.
+     * @param annee L'année.
+     * @param exceptionAttendue La classe de l'exception attendue, ou null si aucune n'est attendue.
+     */
     private void testCasConstructorWithInts(int jour, int mois, int annee, Class<? extends Throwable> exceptionAttendue) {
         try {
             Journee journee = new Journee(jour, mois, annee);
@@ -75,8 +99,10 @@ public class JourneeTest {
     }
 
 
-    // --- Tests pour le setter setDate() ---
-
+    /**
+     * Méthode de test principale pour le setter setDate.
+     * Valide la modification normale d'une date et le cas d'erreur (paramètre null).
+     */
     @Test
     public void testSetDate() {
         System.out.println("\n** testSetDate() **");
@@ -88,9 +114,14 @@ public class JourneeTest {
         testCasSetDate(null, IllegalArgumentException.class);
     }
     
+    /**
+     * Méthode d'aide pour tester un scénario du setter setDate.
+     *
+     * @param nouvelleDate La nouvelle date à assigner.
+     * @param exceptionAttendue La classe de l'exception attendue, ou null si aucune n'est attendue.
+     */
     private void testCasSetDate(LocalDate nouvelleDate, Class<? extends Throwable> exceptionAttendue) {
-        // CORRIGÉ : L'ordre est jour, mois, annee
-        Journee journee = new Journee(1, 1, 2024); // Objet de départ
+        Journee journee = new Journee(1, 1, 2024);
         try {
             journee.setDate(nouvelleDate);
             if (exceptionAttendue != null) {
@@ -105,16 +136,16 @@ public class JourneeTest {
         }
     }
 
-    // --- Test pour Equals et HashCode ---
-
+    /**
+     * Valide l'implémentation des méthodes equals et hashCode.
+     * Le test vérifie que deux objets Journee sont égaux si et seulement si leurs dates sont identiques.
+     */
     @Test
     public void testEqualsAndHashCode() {
         System.out.println("\n** testEqualsAndHashCode() **");
 
-        // CORRIGÉ : L'ordre est jour, mois, annee
         Journee j1 = new Journee(26, 7, 2024);
         Journee j2 = new Journee(LocalDate.of(2024, 7, 26)); // Même date, autre constructeur
-        // CORRIGÉ : L'ordre est jour, mois, annee
         Journee j3 = new Journee(27, 7, 2024); // Date différente
 
         System.out.println("Cas normal : deux objets avec la même date");

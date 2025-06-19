@@ -9,12 +9,21 @@ import java.util.Set;
 import static org.junit.Assert.*;
 
 /**
- * Classe de test pour la classe de persistance Competence.
- * Suit un format spécifique avec des méthodes de test principales
- * et des méthodes d'aide pour chaque cas.
+ * Classe de tests unitaires pour la classe de persistance {@code Competence}.
+ * Ces tests valident le comportement des setters et des méthodes de manipulation
+ * des prérequis, en couvrant les cas normaux, les cas limites et les cas d'erreur.
+ *
+ * @author Ewan QUELO
+ * @author Raphael MILLE
+ * @author Matheo BIET
+ * @version 1.0
  */
 public class CompetenceTest {
 
+    /**
+     * Méthode de test principale pour le setter de l'intitulé ({@code setIntitule}).
+     * Elle orchestre l'appel de plusieurs cas de test via une méthode d'aide.
+     */
     @Test
     public void testSetIntitule() {
         System.out.println("** testSetIntitule() **");
@@ -32,8 +41,15 @@ public class CompetenceTest {
         testCasSetIntitule("   ", null, IllegalArgumentException.class);
     }
 
+    /**
+     * Méthode d'aide pour tester un cas spécifique de {@code setIntitule}.
+     *
+     * @param intitule L'intitulé à tester.
+     * @param resultatAttendu La valeur attendue de l'intitulé après l'appel, si aucune exception n'est levée.
+     * @param exceptionAttendue Le type d'exception qui doit être levée, ou null si aucune n'est attendue.
+     */
     private void testCasSetIntitule(String intitule, String resultatAttendu, Class<? extends Throwable> exceptionAttendue) {
-        Competence c = new Competence("ValideInitial"); // On part d'un objet valide
+        Competence c = new Competence("ValideInitial");
         try {
             c.setIntitule(intitule);
             if (exceptionAttendue != null) {
@@ -48,8 +64,9 @@ public class CompetenceTest {
         }
     }
 
-    // --- Tests pour les Prérequis ---
-
+    /**
+     * Méthode de test principale pour le setter de l'ensemble des prérequis ({@code setPrerequisites}).
+     */
     @Test
     public void testSetPrerequisites() {
         System.out.println("\n** testSetPrerequisites() **");
@@ -71,6 +88,13 @@ public class CompetenceTest {
         testCasSetPrerequisites(errorSet, null, IllegalArgumentException.class);
     }
 
+    /**
+     * Méthode d'aide pour tester un cas spécifique de {@code setPrerequisites}.
+     *
+     * @param prerequis L'ensemble de prérequis à tester.
+     * @param resultatAttendu L'ensemble attendu après l'appel, si aucune exception n'est levée.
+     * @param exceptionAttendue Le type d'exception qui doit être levée, ou null si aucune n'est attendue.
+     */
     private void testCasSetPrerequisites(Set<Competence> prerequis, Set<Competence> resultatAttendu, Class<? extends Throwable> exceptionAttendue) {
         Competence c = new Competence("Programmation Avancée");
         try {
@@ -87,6 +111,10 @@ public class CompetenceTest {
         }
     }
 
+    /**
+     * Méthode de test principale pour l'ajout d'un prérequis ({@code addPrerequisite}).
+     * Valide l'ajout simple, le non-ajout d'un doublon et le cas d'erreur (ajout de null).
+     */
     @Test
     public void testAddPrerequisite() {
         System.out.println("\n** testAddPrerequisite() **");
@@ -97,6 +125,7 @@ public class CompetenceTest {
         System.out.println("Cas limite :");
         Competence c = new Competence("Data Science");
         c.addPrerequisite(new Competence("SQL"));
+        // L'ajout d'un doublon ne doit pas augmenter la taille de l'ensemble (Set).
         c.addPrerequisite(new Competence("SQL")); 
         assertEquals("L'ajout d'un doublon ne doit pas changer la taille du set.", 1, c.getPrerequisites().size());
 
@@ -104,6 +133,13 @@ public class CompetenceTest {
         testCasAddPrerequisite(null, 0, IllegalArgumentException.class);
     }
 
+    /**
+     * Méthode d'aide pour tester un cas spécifique de {@code addPrerequisite}.
+     *
+     * @param prerequis La compétence à ajouter comme prérequis.
+     * @param tailleAttendue La taille attendue de l'ensemble de prérequis après l'ajout.
+     * @param exceptionAttendue Le type d'exception qui doit être levée, ou null si aucune n'est attendue.
+     */
     private void testCasAddPrerequisite(Competence prerequis, int tailleAttendue, Class<? extends Throwable> exceptionAttendue) {
         Competence c = new Competence("Programmation Avancée");
         try {
