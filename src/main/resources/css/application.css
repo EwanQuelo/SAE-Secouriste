@@ -1843,3 +1843,14 @@ Styles pour les Vues Administrateur
     -fx-font-style: normal; /* On retire l'italique */
     -fx-padding-top: 4px;
 }
+
+.icon-button {
+    -fx-background-color: transparent;
+    -fx-padding: 6px;
+    -fx-cursor: hand;
+    -fx-background-radius: 50%; /* Arrondi pour un effet circulaire au survol */
+}
+
+.icon-button:hover {
+    -fx-background-color: rgba(255, 255, 255, 0.15);
+}

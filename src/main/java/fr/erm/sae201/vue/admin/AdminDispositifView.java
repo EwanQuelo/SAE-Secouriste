@@ -1,9 +1,11 @@
+// Dans le fichier src/main/java/fr/erm/sae201/vue/admin/AdminDispositifView.java
+
 package fr.erm.sae201.vue.admin;
 
 import fr.erm.sae201.controleur.admin.AdminDispositifController;
 import fr.erm.sae201.metier.persistence.CompteUtilisateur;
 import fr.erm.sae201.metier.persistence.DPS;
-import fr.erm.sae201.utils.RessourceLoader; // Assurez-vous d'importer le RessourceLoader
+import fr.erm.sae201.utils.RessourceLoader;
 import fr.erm.sae201.vue.MainApp;
 import fr.erm.sae201.vue.base.BaseView;
 import javafx.event.ActionEvent;
@@ -13,7 +15,6 @@ import javafx.geometry.Pos;
 import javafx.scene.Node;
 import javafx.scene.shape.SVGPath;
 import javafx.scene.control.Button;
-
 import javafx.scene.control.Label;
 import javafx.scene.control.ScrollPane;
 import javafx.scene.image.ImageView;
@@ -25,14 +26,13 @@ public class AdminDispositifView extends BaseView {
 
     private VBox dpsListContainer;
     private Button addButton;
+    private Button exportButton; // NOUVEAU
     private final CompteUtilisateur compte;
-    private AdminDispositifController controller; // On stocke une référence au contrôleur
+    private AdminDispositifController controller;
 
     public AdminDispositifView(MainApp navigator, CompteUtilisateur compte) {
         super(navigator, compte, "Dispositifs");
         this.compte = compte;
-
-        // La vue crée le contrôleur et stocke une référence à celui-ci.
         this.controller = new AdminDispositifController(this, navigator);
     }
 
@@ -61,20 +61,26 @@ public class AdminDispositifView extends BaseView {
         return mainContainer;
     }
 
+    // MODIFIÉ : Ajout du bouton d'exportation
     private HBox createHeader() {
-        HBox headerBox = new HBox();
+        HBox headerBox = new HBox(10); // Ajout d'un espacement
         headerBox.setAlignment(Pos.CENTER_LEFT);
         Label title = new Label("Gestion des Dispositifs");
         title.getStyleClass().add("admin-title");
         Region spacer = new Region();
         HBox.setHgrow(spacer, Priority.ALWAYS);
+
+        // NOUVEAU BOUTON D'EXPORTATION
+        exportButton = new Button("Exporter (CSV)");
+        exportButton.getStyleClass().add("cancel-button"); // Réutilisation d'un style existant
+        
         addButton = new Button("+");
         addButton.getStyleClass().add("add-button");
-        headerBox.getChildren().addAll(title, spacer, addButton);
+        
+        headerBox.getChildren().addAll(title, spacer, exportButton, addButton);
         return headerBox;
     }
 
-    // --- CORRECTION FINALE : La méthode n'a besoin que du DPS ---
     public void addDpsCard(DPS dps) {
         HBox cardContainer = new HBox(10);
         cardContainer.getStyleClass().add("dps-card");
@@ -106,26 +112,24 @@ public class AdminDispositifView extends BaseView {
         SVGPath pencilIcon = new SVGPath();
         pencilIcon.setContent(
                 "M16.862 4.487l1.687-1.688a1.875 1.875 0 112.652 2.652L6.832 19.82a4.5 4.5 0 01-1.897 1.13l-2.685.8.8-2.685a4.5 4.5 0 011.13-1.897l8.932-8.931zm0 0L19.5 7.125");
-        pencilIcon.getStyleClass().add("edit-icon"); // Nouvelle classe CSS
+        pencilIcon.getStyleClass().add("edit-icon");
         editButton.setGraphic(pencilIcon);
-        editButton.getStyleClass().add("edit-button"); // Nouvelle classe CSS
+        editButton.getStyleClass().add("edit-button");
         editButton.setOnAction(e -> controller.handleEditDps(dps));
 
         Button deleteButton = new Button();
         SVGPath trashIcon = new SVGPath();
         trashIcon.setContent(
                 "M14.74 9l-.346 9m-4.788 0L9.26 9m9.968-3.21c.342.052.682.107 1.022.166m-1.022-.165L18.16 19.673a2.25 2.25 0 01-2.244 2.077H8.084a2.25 2.25 0 01-2.244-2.077L4.772 5.79m14.456 0a48.108 48.108 0 00-3.478-.397m-12 .562c.34-.059.68-.114 1.022-.165m0 0a48.11 48.11 0 013.478-.397m7.5 0v-.916c0-1.18-.91-2.164-2.09-2.201a51.964 51.964 0 00-3.32 0c-1.18.037-2.09 1.022-2.09 2.201v.916m7.5 0a48.667 48.667 0 00-7.5 0");
-        trashIcon.getStyleClass().add("delete-icon"); // On donne une classe à l'icône pour la styliser
+        trashIcon.getStyleClass().add("delete-icon");
 
         deleteButton.setGraphic(trashIcon);
         deleteButton.getStyleClass().add("delete-button");
-
         deleteButton.setOnAction(e -> controller.handleDeleteDps(dps));
 
         HBox actionButtons = new HBox(10, editButton, deleteButton);
         actionButtons.setAlignment(Pos.CENTER);
 
-        // On assemble la carte finale
         cardContainer.getChildren().addAll(infoBox, spacer, actionButtons);
         dpsListContainer.getChildren().add(cardContainer);
     }
@@ -143,6 +147,13 @@ public class AdminDispositifView extends BaseView {
     public void setAddButtonAction(EventHandler<ActionEvent> eventHandler) {
         if (addButton != null) {
             addButton.setOnAction(eventHandler);
+        }
+    }
+    
+    // NOUVEAU : Méthode pour lier l'action du bouton d'exportation
+    public void setExportButtonAction(EventHandler<ActionEvent> eventHandler) {
+        if (exportButton != null) {
+            exportButton.setOnAction(eventHandler);
         }
     }
 }
