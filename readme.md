@@ -3,6 +3,8 @@
 Notre projet consiste à développer une application permettant de gérer et d’optimiser le déploiement des secouristes pour les Jeux Olympiques d’hiver de 2030.
 Elle vise à assurer une répartition efficace des compétences sur les différents sites d’intervention.
 
+[VIDEO DE DEMONSTRATION ICI](https://ewanquelo.github.io/videouploaded/demonstration.mp4)
+
 <table align="center">
   <tr>
     <td align="center"><b>Calendrier</b></td>
@@ -42,6 +44,7 @@ Elle vise à assurer une répartition efficace des compétences sur les différe
     </td>
   </tr>
 </table>
+
 
 ## Prérequis
 
