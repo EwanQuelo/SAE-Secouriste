@@ -3,6 +3,46 @@
 Notre projet consiste à développer une application permettant de gérer et d’optimiser le déploiement des secouristes pour les Jeux Olympiques d’hiver de 2030.
 Elle vise à assurer une répartition efficace des compétences sur les différents sites d’intervention.
 
+<table align="center">
+  <tr>
+    <td align="center"><b>Calendrier</b></td>
+    <td align="center"><b>Carte d'affectations</b></td>
+  </tr>
+  <tr>
+    <td align="center">
+      <img src="https://i.postimg.cc/pdzfQMQn/image.png" alt="" width="400px">
+    </td>
+    <td align="center">
+      <img src="https://i.postimg.cc/pXScqxj0/image.png" alt="" width="400px">
+    </td>
+  </tr>
+  <tr>
+    <td align="center"><b>Accueil admin</b></td>
+    <td align="center"><b>Gestion des DPS</b></td>
+  </tr>
+  <tr>
+    <td align="center">
+      <img src="https://i.postimg.cc/RZXyr8N8/image.png" alt="" width="400px">
+    </td>
+    <td align="center">
+      <img src="https://i.postimg.cc/L6s0tDy3/image.png" alt="" width="400px">
+    </td>
+  </tr>
+
+  <tr>
+    <td align="center"><b>Gestion des compétences</b></td>
+    <td align="center"><b>Affectations</b></td>
+  </tr>
+  <tr>
+    <td align="center">
+      <img src="https://i.postimg.cc/sgd6kzjw/image.png" alt="" width="400px">
+    </td>
+    <td align="center">
+      <img src="https://i.postimg.cc/26WRQw25/image.png" alt="" width="400px">
+    </td>
+  </tr>
+</table>
+
 ## Prérequis
 
 Avant de commencer, assurez-vous d'avoir installé les prérequis suivants :
